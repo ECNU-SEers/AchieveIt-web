@@ -192,7 +192,7 @@ export default {
       refreshPagination: true, // 页数增加的时候，因为缓存的缘故，需要刷新Pagination组件
       currentPage: 1, // 默认获取第一页的数据
       pageCount: 10, // 每页10条数据
-      total_nums: 180, // 分组内的用户总数
+      total_nums: 180, // 角色内的用户总数
       // 固定列相关
       dialogTableVisible: false,
       fixedLeftList: [],

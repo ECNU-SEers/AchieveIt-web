@@ -2,8 +2,8 @@
   <div class="container">
     <div class="header">
       <div class="title">用户列表</div>
-      <!-- 分组选择下拉框 -->
-      <el-select size="medium" filterable v-model="group_id" placeholder="请选择分组" @change="handleChange" clearable>
+      <!-- 角色选择下拉框 -->
+      <el-select size="medium" filterable v-model="group_id" placeholder="请选择角色" @change="handleChange" clearable>
         <el-option v-for="(group, index) in groups" :key="index" :label="group.name" :value="group.id"> </el-option>
       </el-select>
     </div>
@@ -63,7 +63,7 @@
 </template>
 
 <script>
-import Admin from '@/lin/models/admin'
+import Admin from '@/sys/models/admin'
 import LinTable from '@/components/base/table/lin-table'
 import UserInfo from './UserInfo'
 import UserPassword from './UserPassword'
@@ -76,15 +76,15 @@ export default {
       id: 0, // 用户id
       refreshPagination: true, // 页数增加的时候，因为缓存的缘故，需要刷新Pagination组件
       editIndex: null, // 编辑的行
-      total_nums: 0, // 分组内的用户总数
+      total_nums: 0, // 角色内的用户总数
       currentPage: 1, // 默认获取第一页的数据
       pageCount: 10, // 每页10条数据
       tableData: [], // 表格数据
       tableColumn: [], // 表头数据
       operate: [], // 表格按键操作区
       dialogFormVisible: false, // 控制弹窗显示
-      selectGroup: '', // 选中的分组Id
-      groups: [], // 所有分组
+      selectGroup: '', // 选中的角色Id
+      groups: [], // 所有角色
       group_id: undefined,
       activeTab: '修改信息',
       form: {
@@ -99,7 +99,7 @@ export default {
     }
   },
   methods: {
-    // 根据分组 刷新/获取分组内的用户
+    // 根据角色 刷新/获取角色内的用户
     async getAdminUsers() {
       let res
       const currentPage = this.currentPage - 1
@@ -114,7 +114,7 @@ export default {
         console.log(e)
       }
     },
-    // 获取所有分组
+    // 获取所有角色
     async getAllGroups() {
       try {
         this.loading = true
@@ -142,7 +142,7 @@ export default {
       this.form.group_ids = selectedData.groups
       this.dialogFormVisible = true
     },
-    // 下拉框选择分组
+    // 下拉框选择角色
     async handleChange() {
       this.currentPage = 1
       this.loading = true
@@ -260,7 +260,7 @@ export default {
   async created() {
     await this.getAdminUsers()
     this.getAllGroups()
-    this.tableColumn = [{ prop: 'username', label: '名称' }, { prop: 'groupNames', label: '所属分组' }] // 设置表头信息
+    this.tableColumn = [{ prop: 'username', label: '名称' }, { prop: 'groupNames', label: '所属角色' }] // 设置表头信息
     this.operate = [
       { name: '编辑', func: 'handleEdit', type: 'primary' },
       { name: '删除', func: 'handleDelete', type: 'danger' },

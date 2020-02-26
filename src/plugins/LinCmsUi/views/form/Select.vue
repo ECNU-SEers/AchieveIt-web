@@ -83,7 +83,7 @@
       </el-card>
 
       <el-card class="box-card" style="margin-bottom:50px;">
-        <div slot="header"><span>分组</span></div>
+        <div slot="header"><span>角色</span></div>
         <el-row>
           <el-select v-model="value6" placeholder="请选择">
             <el-option-group v-for="group in options3" :key="group.label" :label="group.label">

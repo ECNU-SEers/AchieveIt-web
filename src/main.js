@@ -3,10 +3,10 @@ import Vue from 'vue';
 import ElementUI from 'element-ui';
 
 import '@/config/global';
-import '@/lin/mixin';
-import '@/lin/filter';
-import '@/lin/plugins';
-import '@/lin/directives';
+import '@/sys/mixin';
+import '@/sys/filter';
+import '@/sys/plugins';
+import '@/sys/directives';
 
 import CollapseTransition from 'element-ui/lib/transitions/collapse-transition';
 import router from '@/router';

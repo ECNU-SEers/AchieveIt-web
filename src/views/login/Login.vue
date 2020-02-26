@@ -13,17 +13,17 @@
             <el-button type="primary" class="login-btn btn" @click="userLogin"
                        :loading="loading" :disabled="loading"
             >
-                用户登录
+                登录
             </el-button>
-            <el-button class="tourist-btn btn" @click="login">游客登录</el-button>
+            <!--            <el-button class="tourist-btn btn" @click="login">游客登录</el-button>-->
         </el-card>
     </div>
 </template>
 
 <script>
   import {mapActions, mapMutations} from 'vuex';
-  import User from '@/lin/models/user';
-  import Utils from '@/lin/utils/util';
+  import User from '@/sys/models/user';
+  import Utils from '@/sys/utils/util';
 
   export default {
     data() {
@@ -102,12 +102,12 @@
 
     .title {
         font-size: 48px;
-        margin-top: 120px;
+        margin-top: 160px;
     }
 
     .login-box {
         width: 480px;
-        height: 380px;
+        height: 320px;
         margin: 80px auto;
         text-align: center;
     }

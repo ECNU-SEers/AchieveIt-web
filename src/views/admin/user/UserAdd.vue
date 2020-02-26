@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import Admin from '@/lin/models/admin'
+import Admin from '@/sys/models/admin'
 import UserInfo from './UserInfo'
 
 export default {

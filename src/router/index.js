@@ -3,7 +3,7 @@ import Router from 'vue-router';
 import routes from './routes';
 import store from '../store';
 import appConfig from '@/config/index';
-import Util from '@/lin/utils/util';
+import Util from '@/sys/utils/util';
 
 Vue.use(Router);
 

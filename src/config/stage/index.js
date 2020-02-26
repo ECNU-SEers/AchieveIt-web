@@ -1,7 +1,5 @@
 import adminConfig from './admin';
-import bookConfig from './book';
-import pluginsConfig from './plugins';
-import Utils from '@/lin/utils/util';
+import Utils from '@/sys/utils/util';
 
 // eslint-disable-next-line import/no-mutable-exports
 let homeRouter = [
@@ -44,11 +42,10 @@ let homeRouter = [
     inNav: false,
     icon: 'iconfont icon-rizhiguanli',
   },
-  bookConfig,
   adminConfig,
 ];
 
-const plugins = [...pluginsConfig];
+const plugins = [];
 
 // 筛除已经被添加的插件
 function filterPlugin(data) {

@@ -34,13 +34,13 @@
       <el-form-item v-if="pageType === 'add'" label="确认密码" prop="confirm_password" label-position="top">
         <el-input size="medium" clearable type="password" v-model="form.confirm_password" autocomplete="off"></el-input>
       </el-form-item>
-      <el-form-item v-if="pageType !== 'password'" label="选择分组">
+      <el-form-item v-if="pageType !== 'password'" label="选择角色">
         <!-- <el-select
           size="medium"
           multiple
           v-model="form.group_ids"
           :disabled="groups.length === 0"
-          placeholder="请选择分组"
+          placeholder="请选择角色"
         >
           <el-option v-for="item in groups" :key="item.id" :label="item.name" :value="item.id"> </el-option>
         </el-select> -->
@@ -59,8 +59,8 @@
 </template>
 
 <script>
-import Admin from '@/lin/models/admin'
-import User from '@/lin/models/user'
+import Admin from '@/sys/models/admin'
+import User from '@/sys/models/user'
 
 export default {
   props: {
@@ -74,7 +74,7 @@ export default {
       default: undefined,
     },
     groups: {
-      // 所有分组
+      // 所有角色
       type: Array,
       default: () => {},
     },
@@ -262,7 +262,7 @@ export default {
 </style>
 
 <style lang="scss">
-// .el-radio-group {
+// .el-radio-role {
 //   &.user-info {
 //     display: flex;
 //     flex-wrap: wrap;
