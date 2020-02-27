@@ -43,7 +43,7 @@
             </div>
             <div class="official-account">
                 <div class="official-account-box">
-                    <p>软件开发实践课程项目</p>
+                    <p>软件开发实践课程项目 Group08</p>
                     <p>指导教师：姜宁康 孙海英 毛宏燕</p>
                     <p>项目组成员：孙雨晶 侯峂欣 卢苇 龙万成 刘少彬 陈佳蕾</p>
                 </div>
