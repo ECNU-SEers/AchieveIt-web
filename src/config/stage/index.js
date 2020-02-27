@@ -1,6 +1,6 @@
 import adminConfig from './admin';
 import Utils from '@/sys/utils/util';
-
+import projectRouter from "./project";
 // eslint-disable-next-line import/no-mutable-exports
 let homeRouter = [
   {
@@ -43,6 +43,7 @@ let homeRouter = [
     icon: 'iconfont icon-rizhiguanli',
   },
   adminConfig,
+  projectRouter
 ];
 
 const plugins = [];

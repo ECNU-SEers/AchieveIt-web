@@ -24,7 +24,6 @@
   import {mapActions, mapMutations} from 'vuex';
   import User from '@/sys/models/user';
   import Utils from '@/sys/utils/util';
-
   export default {
     data() {
       return {

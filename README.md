@@ -1,7 +1,6 @@
 # AchieveIt-web
 
 ### 目录结构
-
 ├───public // 公共资源目录，该目录webpack原封打包 <br>
 │    ├───icons // icon图片存放目录 <br>
 │    │   ecnu.ico // favicon图片 <br>
