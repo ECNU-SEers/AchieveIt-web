@@ -4,7 +4,7 @@
 
 ├───public // 公共资源目录，该目录webpack原封打包 <br>
 │    ├───icons // icon图片存放目录 <br>
-│    │   favicon.ico // favicon图片 <br>
+│    │   ecnu.ico // favicon图片 <br>
 │    │   iconfont.css // 阿里iconfont文件 <br>
 │    │   index.html // template模板 <br>
 │    │   robots.txt // Robots协议 <br>
