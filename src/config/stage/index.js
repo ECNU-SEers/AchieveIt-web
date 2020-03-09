@@ -1,7 +1,8 @@
 import adminConfig from './admin';
 import Utils from '@/sys/utils/util';
-import projectRouter from "./project";
-// eslint-disable-next-line import/no-mutable-exports
+import projectRouter from './project';
+import dictRouter from './dict';
+import worktimeRouter from './worktime';
 let homeRouter = [
   {
     title: '项目简介',
@@ -43,7 +44,9 @@ let homeRouter = [
     icon: 'iconfont icon-rizhiguanli',
   },
   adminConfig,
-  projectRouter
+  projectRouter,
+  dictRouter,
+  worktimeRouter
 ];
 
 const plugins = [];
