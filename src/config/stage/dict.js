@@ -12,7 +12,7 @@ const dictRouter = {
         type: 'view',
         inNav: true,
         icon: 'iconfont icon-huiyuan1',
-        filePath: 'views/dictionary/dictConfig.vue',
+        filePath: 'views/dictionary/DictConfig.vue',
         title: '字典设置'
     }]
 };
