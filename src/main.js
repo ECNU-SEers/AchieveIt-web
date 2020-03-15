@@ -17,7 +17,7 @@ import StickyTop from '@/components/base/sticky-top/sticky-top';
 import LIcon from '@/components/base/icon/lin-icon';
 import SourceCode from '@/components/base/source-code/source-code';
 
-import '@/assets/styles/index.scss' // eslint-disable-line
+import "@/assets/styles/index.scss"; // eslint-disable-line
 import '@/assets/styles/realize/element-variables.scss';
 import 'element-ui/lib/theme-chalk/display.css';
 
@@ -36,7 +36,7 @@ Vue.component('source-code', SourceCode);
 const AppInstance = new Vue({
   router,
   store,
-  render: h => h(App),
+  render: h => h(App)
 }).$mount('#app');
 
 // 设置 App 实例

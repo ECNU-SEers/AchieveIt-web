@@ -1,0 +1,9 @@
+@mixin flex-container($direction:column,$justify:center,$align:center,$flex-wrap: wrap) {
+  display: flex;
+  flex-wrap: $flex-wrap;
+  flex-direction: $direction;
+  justify-content: $justify;
+  align-items: $align;
+}
+
+
