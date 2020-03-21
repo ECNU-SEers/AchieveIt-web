@@ -451,9 +451,7 @@ export default {
 
     editProjectSubmit() {},
 
-    handleDel(row) {
-
-    }
+    handleDel(row) {}
   }
 };
 </script>
