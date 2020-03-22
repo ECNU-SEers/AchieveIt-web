@@ -1,38 +1,16 @@
 <template>
-  <section>
+  <div>
+    <PageHeader title="项目缺陷信息">
+      <Search />
+      <el-button type="primary" class="add-btn" @click="addFormVisible = true"
+        >新增</el-button
+      >
+    </PageHeader>
     <!-- <p v-permission="{name:'查看系统消息',type:'disabled'}">Hello word</p>
         <p v-permission="'查看日志'">Hello word</p>
     <button v-permission="['修改信息','修改密码']">编辑</button>-->
     <!--工具条：搜索栏-->
-    <el-row :span="24">
-      <el-form :inline="true">
-        <el-form-item>
-          <el-select
-            v-model="defectNameSearch"
-            placeholder="请输入缺陷名称"
-            clearable
-            filterable
-            style="width:500px;"
-            :loading="defectNameLoading"
-          >
-            <el-option
-              v-for="item in defectOptions"
-              :key="item.defectId"
-              :label="item.defectName"
-              :value="item.defectName"
-            >
-              <span style="float: left">{{item.defectName}}</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">{{item.defectId}}</span>
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" v-on:click="getDefect">查询</el-button>
-          <el-button type="primary" v-on:click="addDefect">新增</el-button>
-        </el-form-item>
-      </el-form>
-    </el-row>
-    <template style="margin: 0 auto">
+    <Pagination>
       <el-table :data="defects" highlight-current-row border style="width: 100%">
         <el-table-column type="index" label="序号" width="70px"></el-table-column>
         <el-table-column label="缺陷ID" prop="defectId"></el-table-column>
@@ -47,12 +25,21 @@
           </template>
         </el-table-column>
       </el-table>
-    </template>
-  </section>
+    </Pagination>
+  </div>
 </template>
 
 <script>
+import PageHeader from '../../components/common/PageHeader';
+import Search from '../../components/common/Search';
+import Pagination from '../../components/common/Pagination';
+
 export default {
+  components: {
+    PageHeader,
+    Search,
+    Pagination
+  },
   data() {
     return {
       defectOptions: [{
@@ -80,18 +67,27 @@ export default {
           recorder: "JJJ",
           handler: "yyy"
         }
-      ]
+      ],
+
+      // 分页
+      page: 1,
+      pageSize: 15,
+      projectId: 1
     };
   },
   methods: {
-    getDefect() {
-
+    async getAllDefects() {
+        this.defects = await Project.getDefects(projectId, page, pageSize);
+        console.log(this.defects);
     },
 
     addDefect() {
 
     }
-  }
+  },
+  mounted () {
+        this.getAllDefects();
+    }
 };
 </script>
 

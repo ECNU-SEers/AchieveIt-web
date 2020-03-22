@@ -360,14 +360,111 @@ export default {
             triggle: 'blur'
           }
         ],
-        endDate: [
+
+        projectNameLoading: false,
+        projectNameSearch: "",
+
+        projects: [
           {
             required: true,
             message: '请选择交付日',
             triggle: 'blur'
           }
         ],
-        projectManager: [
+
+        // 新增项目
+        addFormVisible: false,
+        addForm: {
+          projectId: "",
+          projectName: "",
+          clientId: "",
+          startDate: "",
+          endDate: "",
+          projectManager: "",
+          projectMentor: "",
+          tech: "",
+          area: "",
+          function: ""
+        },
+        addFormRules: {
+          projectId: [
+            {
+              required: true,
+              message: "请选择项目ID",
+              triggle: "blur"
+            }
+          ],
+          projectName: [
+            {
+              required: true,
+              message: "请填写项目名称",
+              triggle: "blur"
+            }
+          ],
+          clientId: [
+            {
+              required: true,
+              message: "请选择客户",
+              triggle: "blur"
+            }
+          ],
+          startDate: [
+            {
+              required: true,
+              message: "请选择预定日期",
+              triggle: "blur"
+            }
+          ],
+          endDate: [
+            {
+              required: true,
+              message: "请选择交付日",
+              triggle: "blur"
+            }
+          ],
+          projectManager: [
+            {
+              required: true,
+              message: "请选择项目经理",
+              triggle: "blur"
+            }
+          ],
+          projectMentor: [
+            {
+              required: true,
+              message: "请选择项目主管",
+              triggle: "blur"
+            }
+          ],
+          tech: [
+            {
+              required: true,
+              message: "请选择技术",
+              triggle: "blur"
+            }
+          ]
+        },
+
+        // 编辑项目
+        editFormVisible: false,
+        editForm: {
+          projectId: "",
+          projectName: "",
+          clientId: "",
+          startDate: "",
+          endDate: "",
+          projectManager: "",
+          projectMentor: "",
+          tech: "",
+          area: "",
+          function: ""
+        },
+
+        submitLoading: false,
+
+        // 时间轴
+        reverse: false,
+        activities: [
           {
             required: true,
             message: '请选择项目经理',
@@ -388,48 +485,7 @@ export default {
             triggle: 'blur'
           }
         ]
-      },
-
-      // 编辑项目
-      editFormVisible: false,
-      editForm: {
-        projectId: '',
-        projectName: '',
-        clientId: '',
-        startDate: '',
-        endDate: '',
-        projectManager: '',
-        projectMentor: '',
-        tech: '',
-        area: '',
-        function: ''
-      },
-
-      submitLoading: false,
-
-      // 删除项目
-      delVisible: false,
-
-      // 时间轴
-      reverse: false,
-      activities: [
-        {
-          state: '进行中',
-          timestamp: '2018-04-15',
-          type: 'primary',
-          size: 'large'
-        },
-        {
-          state: '已立项',
-          timestamp: '2018-04-13',
-          type: 'success'
-        },
-        {
-          state: '申请立项',
-          timestamp: '2018-04-11',
-          type: 'success'
-        }
-      ]
+      }
     };
   },
   methods: {
@@ -444,10 +500,10 @@ export default {
 
     addProjectSubmit() {},
 
-    handleEdit(row) {
-      this.editFormVisible = true;
-      this.editForm = Object.assign({}, row);
-    },
+      handleEdit(row) {
+        this.editFormVisible = true;
+        this.editForm = Object.assign({}, row);
+      },
 
     editProjectSubmit() {},
 
@@ -457,10 +513,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.add-btn {
-  height: 40px;
-  margin-left: 20px;
-  border-radius: 3px;
-  width: 80px;
-}
+    .add-btn {
+        height: 40px;
+        margin-left: 20px;
+        border-radius: 3px;
+        width: 80px;
+    }
 </style>
