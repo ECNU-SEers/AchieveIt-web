@@ -5,7 +5,6 @@
             <el-pagination
                     @current-change="handleCurrentChange"
                     :background="true"
-                    :hide-on-single-page="true"
                     :page-size="pageSize"
                     :current-page="currentPage"
                     layout="prev, pager, next, jumper"
@@ -24,11 +23,11 @@
       },
       pageSize: {
         type: Number,
-        default: 20
+        default: 10
       },
       total: {
         type: Number,
-        default: 100
+        default: 0
       }
     },
     data() {
