@@ -1,5 +1,6 @@
 <template>
     <div>
+        <EditUserDialog :visibility.sync="showEditUserDialog" :user-info="editingUserInfo"/>
         <PageHeader title="用户权限">
             <Search @search="onSearch"/>
         </PageHeader>
@@ -12,12 +13,8 @@
                 />
                 <el-table-column label="操作">
                     <template slot-scope="scope">
-                        <el-button
-                                @click="handleClick(scope.row)"
-                                type="primary"
-                                plain
-                                size="mini"
-                        >编辑
+                        <el-button @click="onEditUser(scope.row)" type="primary" plain size="mini">
+                            编辑
                         </el-button>
                     </template>
                 </el-table-column>
@@ -30,20 +27,25 @@
   import Search from '@/components/common/Search';
   import PageHeader from '@/components/common/PageHeader';
   import Pagination from '@/components/common/Pagination';
+  import EditUserDialog from "@/views/permission/user/EditUserDialog";
   import {userPermissionTableHeader} from "../const";
+  import {getUserList} from "@/api/permisssion";
 
   export default {
     components: {
       Search,
       PageHeader,
-      Pagination
+      Pagination,
+      EditUserDialog
     },
     data() {
       return {
         tableData: [],
         currentPage: 1,
         total: 100,
-        tableHeader: Object.freeze(userPermissionTableHeader)
+        tableHeader: Object.freeze(userPermissionTableHeader),
+        showEditUserDialog: false,
+        editingUserInfo: null
       };
     },
     methods: {
@@ -52,11 +54,21 @@
       },
       onPageChange(currentPage) {
         console.log(currentPage, this.currentPage);
+      },
+      onEditUser(row) {
+        this.editingUserInfo = row;
+        this.showEditUserDialog = true;
+      },
+      getUserListFromServe() {
+        getUserList().then(res => this.tableData = res);
       }
+    },
+    created() {
+      this.getUserListFromServe();
     },
     watch: {
       currentPage: nextPage => {
-        //TODO 向后端请求表数据
+        //TODO 向后端请求单页数据
       }
     }
   };
