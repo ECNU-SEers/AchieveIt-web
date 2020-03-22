@@ -74,7 +74,6 @@
 //   ],
 // };
 
-
 const adminRouter = {
   route: null,
   name: null,
@@ -85,25 +84,28 @@ const adminRouter = {
   order: null,
   inNav: true,
   permission: ['超级管理员独有权限'],
-  children: [{
-    route: '/admin/user',
+  children: [
+    {
+      route: '/admin/user',
       type: 'view',
       name: null,
-      filePath: 'views/admin/userList.vue',
+      filePath: 'views/admin/UserList.vue',
       inNav: true,
       title: '用户权限',
       icon: 'iconfont icon-add',
-      permission: ['超级管理员独有权限'],
-  }, {
-    route: '/admin/list',
+      permission: ['超级管理员独有权限']
+    },
+    {
+      route: '/admin/list',
       type: 'view',
       name: null,
-      filePath: 'views/admin/roleList.vue',
+      filePath: 'views/admin/RoleList.vue',
       inNav: true,
       title: '角色设置',
       icon: 'iconfont icon-add',
-      permission: ['超级管理员独有权限'],
-  }]
+      permission: ['超级管理员独有权限']
+    }
+  ]
 };
 
 export default adminRouter;
