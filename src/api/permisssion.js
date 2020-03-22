@@ -23,7 +23,7 @@ export const getRoleList = () => MOCK
     : get('');
 
 
-export const addNewRow = () => MOCK
+export const addNewRole = () => MOCK
     ? Promise.resolve()
     : post('');
 
