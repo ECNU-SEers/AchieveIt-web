@@ -10,7 +10,7 @@
                     <el-input readonly :value="item.prop"/>
                 </el-form-item>
                 <el-form-item label="角色">
-                    <el-select v-model="currentRole">
+                    <el-select v-model="role">
                         <el-option
                                 class="option"
                                 v-for="item in roles"
@@ -36,7 +36,7 @@
   export default {
     props: {
       visibility: Boolean,
-      userInfo: Object
+      role: String
     },
     data() {
       return {
@@ -61,7 +61,6 @@
     },
     created() {
       this.getRoleListFromServe();
-      this.userInfo && this.userInfo.role && (this.currentRole = this.userInfo.role);
     }
   };
 </script>

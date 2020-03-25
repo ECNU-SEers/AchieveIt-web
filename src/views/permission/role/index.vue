@@ -1,6 +1,7 @@
 <template>
     <div>
         <AddRoleDialog :visibility.sync="showAddRoleDialog"/>
+        <EditRoleDialog :visibility.sync="showEditRoleDialog" v-bind="editingRoleInfo"/>
         <PageHeader title="角色设置">
             <Search/>
             <el-button @click="onAddRole" type="primary" class="add-btn">新增</el-button>
@@ -32,6 +33,7 @@
   import PageHeader from '@/components/common/PageHeader';
   import Pagination from '@/components/common/Pagination';
   import AddRoleDialog from "@/views/permission/role/AddRoleDialog";
+  import EditRoleDialog from "@/views/permission/role/EditRoleDialog";
   import {roleListTableHeader} from "../const";
   import {getRoleList} from "@/api/permisssion";
 
@@ -40,7 +42,8 @@
       Search,
       PageHeader,
       Pagination,
-      AddRoleDialog
+      AddRoleDialog,
+      EditRoleDialog
     },
     data() {
       return {

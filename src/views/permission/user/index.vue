@@ -1,6 +1,6 @@
 <template>
     <div>
-        <EditUserDialog :visibility.sync="showEditUserDialog" :user-info="editingUserInfo"/>
+        <EditUserDialog :visibility.sync="showEditUserDialog" v-bind="editingUserInfo"/>
         <PageHeader title="用户权限">
             <Search @search="onSearch"/>
         </PageHeader>

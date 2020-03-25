@@ -26,7 +26,7 @@
 
 <script>
   import RolePermissions from "@/views/admin/role/RolePermissions";
-  import {addNewRow} from "@/api/permisssion";
+  import {addNewRole} from "@/api/permisssion";
 
   export default {
     components: {
@@ -55,7 +55,7 @@
       onAddRole() {
         console.log(JSON.stringify(this.permissions));
         //TODO 向后端发送新建角色请求
-        addNewRow().then(() => {
+        addNewRole().then(() => {
           this.close();
           this.$message.success('新增角色成功');
         });
