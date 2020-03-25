@@ -21,8 +21,10 @@
               :label="item.defectName"
               :value="item.defectName"
             >
-              <span style="float: left">{{item.defectName}}</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">{{item.defectId}}</span>
+              <span style="float: left">{{ item.defectName }}</span>
+              <span style="float: right; color: #8492a6; font-size: 13px">{{
+                item.defectId
+              }}</span>
             </el-option>
           </el-select>
         </el-form-item>
@@ -33,11 +35,23 @@
       </el-form>
     </el-row>
     <template style="margin: 0 auto">
-      <el-table :data="defects" highlight-current-row border style="width: 100%">
-        <el-table-column type="index" label="序号" width="70px"></el-table-column>
+      <el-table
+        :data="defects"
+        highlight-current-row
+        border
+        style="width: 100%"
+      >
+        <el-table-column
+          type="index"
+          label="序号"
+          width="70px"
+        ></el-table-column>
         <el-table-column label="缺陷ID" prop="defectId"></el-table-column>
         <el-table-column label="缺陷名称" prop="defectName"></el-table-column>
-        <el-table-column label="缺陷描述" prop="defectDescription"></el-table-column>
+        <el-table-column
+          label="缺陷描述"
+          prop="defectDescription"
+        ></el-table-column>
         <el-table-column label="缺陷状态" prop="defectState"></el-table-column>
         <el-table-column label="提交人" prop="recorder"></el-table-column>
         <el-table-column label="处理人" prop="handler"></el-table-column>
@@ -55,19 +69,24 @@
 export default {
   data() {
     return {
-      defectOptions: [{
-        defectName: "缺陷1",
-        defectId: "id1"
-      }, {
-        defectName: "缺陷2",
-        defectId: "id2"
-      }, {
-        defectName: "缺陷3",
-        defectId: "id3"
-      }, {
-        defectName: "缺陷4",
-        defectId: "id4"
-      }],
+      defectOptions: [
+        {
+          defectName: "缺陷1",
+          defectId: "id1"
+        },
+        {
+          defectName: "缺陷2",
+          defectId: "id2"
+        },
+        {
+          defectName: "缺陷3",
+          defectId: "id3"
+        },
+        {
+          defectName: "缺陷4",
+          defectId: "id4"
+        }
+      ],
       defectNameSearch: "",
       defectNameLoading: false,
 
@@ -84,22 +103,18 @@ export default {
     };
   },
   methods: {
-    getDefect() {
+    getDefect() {},
 
-    },
-
-    addDefect() {
-
-    }
+    addDefect() {}
   }
 };
 </script>
 
 <style scoped>
 .el-form--inline .el-form-item {
-    display: inline-block;
-    margin-right: 10px;
-    margin-left: 20px;
-    margin-top: 30px;
+  display: inline-block;
+  margin-right: 10px;
+  margin-left: 20px;
+  margin-top: 30px;
 }
 </style>
