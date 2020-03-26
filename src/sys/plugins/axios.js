@@ -141,7 +141,7 @@ _axios.interceptors.response.use(
         if (cache.url !== url) {
           cache.url = url;
           const refreshResult = await _axios("/auth/token");
-          saveAccessToken(refreshResult.access_token);
+          saveAccessToken(refreshResult.accessToken);
           // 将上次失败请求重发
           const result = await _axios(res.config);
           return resolve(result);
