@@ -2,7 +2,7 @@
   <div>
     <PageHeader title="项目缺陷信息">
       <Search />
-      <el-button type="primary" class="add-btn" @click="addFormVisible = true">新增</el-button>
+      <el-button type="primary" class="add-btn" @click="handleAdd">新增</el-button>
     </PageHeader>
     <!-- <p v-permission="{name:'查看系统消息',type:'disabled'}">Hello word</p>
         <p v-permission="'查看日志'">Hello word</p>
@@ -25,79 +25,76 @@
         <el-table-column fixed="right" label="操作" width="100px">
           <template slot-scope>
             <el-button
-                size="medium"
-                type="primary"
-                @click.stop="handleEdit(scope.$index, scope.row)"
-                icon="el-icon-edit"
-              ></el-button>
+              size="medium"
+              type="primary"
+              @click.stop="handleEdit(scope.$index, scope.row)"
+              icon="el-icon-edit"
+            ></el-button>
           </template>
         </el-table-column>
       </el-table>
     </Pagination>
 
-    <!-- 新建项目 -->
-    <el-dialog title="新增缺陷" :visible.sync="addFormVisible">
+    <!-- 新建缺陷 -->
+    <el-dialog title="新增缺陷" :visible.sync="addFormVisible" :close-on-click-modal="false">
       <el-form
+        @submit.native.prevent
         ref="addForm"
         :model="addForm"
         :rules="addFormRules"
         label-width="100px"
         class="demo-ruleForm"
       >
-        <el-form-item label="缺陷名称" style="width:500px" required>
+        <el-form-item label="缺陷名称" prop="name">
           <el-input v-model="addForm.name" placeholder="请填写缺陷名称"></el-input>
         </el-form-item>
-        <el-form-item label="缺陷类型" style="width:500px" required>
-          <el-input v-model="addForm.type" placeholder="请填写缺陷类型"></el-input>
-        </el-form-item>
-        <el-form-item label="缺陷等级" style="width:500px" required>
-          <el-input v-model="addForm.level" placeholder=""></el-input>
-        </el-form-item>
-        <el-form-item label="客户" required>
-          <el-select v-model="addForm.company" placeholder="请选择客户">
+        <el-form-item label="缺陷类型" prop="type">
+          <el-select v-model="addForm.type.name" placeholder="请选择缺陷类型">
             <el-option
-              v-for="item in clients"
-              :key="item.outerId"
-              :label="item.company"
-              :value="item.outerId"
+              v-for="item in type"
+              :key="item.name"
+              :label="item.name"
+              :value="item.name"
             >
-              <span style="float: left">{{ item.company }}</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">{{ item.outerId }}</span>
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="预定时间" required>
-          <el-date-picker v-model="addForm.startDate" placeholder="请选择预定时间" type="date"></el-date-picker>
-        </el-form-item>
-        <el-form-item label="交付日" required>
-          <el-date-picker v-model="addForm.endDate" placeholder="请选择交付日" type="date"></el-date-picker>
-        </el-form-item>
-        <el-form-item label="项目经理" style="width: 500px" required>
-          <el-input v-model="addForm.manager" disabled width="200px"></el-input>
-        </el-form-item>
-        <el-form-item label="项目主管" required>
-          <el-select v-model="addForm.supervisorName" placeholder="请选择项目主管"></el-select>
-        </el-form-item>
-        <el-form-item label="采用技术" required>
-          <el-select v-model="addForm.tech" placeholder="请选择采用技术">
-            <el-option v-for="item in teches" :key="item.id" :label="item.name" :value="item.id">
               <span style="float: left">{{ item.name }}</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">{{ item.id }}</span>
+              <span style="float: right; color: #8492a6; font-size: 13px">{{item.remark}}</span>
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="业务领域">
-          <el-select v-model="addForm.area" placeholder="请选择业务领域">
-            <el-option v-for="item in busiAreas" :key="item.id" :label="item.name" :value="item.id">
+        <el-form-item label="缺陷等级" prop="level">
+          <el-select v-model="addForm.level.name" placeholder="请选择缺陷等级">
+            <el-option
+              v-for="item in level"
+              :key="item.name"
+              :label="item.name"
+              :value="item.name"
+            >
               <span style="float: left">{{ item.name }}</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">{{ item.id }}</span>
+              <span style="float: right; color: #8492a6; font-size: 13px">{{item.remark}}</span>
             </el-option>
           </el-select>
+        </el-form-item>
+        <el-form-item label="提交人" prop="creatorName">
+          <el-input v-model="addForm.creatorName" placeholder="请填写缺陷名称" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="创建日期" prop="createdAt">
+          <el-date-picker v-model="addForm.createdAt" placeholder="请填写缺陷名称" type="date" disabled></el-date-picker>
+        </el-form-item>
+        <el-form-item label="预定日期" prop="due">
+          <el-date-picker
+            v-model="addForm.due"
+            placeholder="请选择交付日"
+            type="date"
+            :picker-options="pickerOptions"
+          ></el-date-picker>
+        </el-form-item>
+        <el-form-item label="缺陷描述" prop="description">
+          <el-input type="textarea" v-model="addForm.description" placeholder></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="addFormVisible = false">取消</el-button>
-        <el-button type="primary" @click="addProjectSubmit" :loading="submitLoading">提交</el-button>
+        <el-button @click.native="addFormVisible = false">取消</el-button>
+        <el-button type="primary" @click.native="addDefectSubmit" :loading="submitLoading">提交</el-button>
       </div>
     </el-dialog>
   </div>
@@ -121,6 +118,31 @@ export default {
       page: 1,
       pageSize: 10,
       projectId: 1,
+      userName: "管理员",
+      defects: [],
+      type: [],
+      level: [
+        {
+          id: 1,
+          name: "致命",
+          remark: "Fatal defects"
+        },
+        {
+          id: 2,
+          name: "严重",
+          remark: "Serious defects"
+        },
+        {
+          id: 3,
+          name: "一般",
+          remark: "General defects"
+        },
+        {
+          id: 4,
+          name: "轻微",
+          remark: "Minor defect"
+        }
+      ],
 
       defectOptions: [
         {
@@ -144,40 +166,135 @@ export default {
       defectNameLoading: false,
 
       // 新增缺陷
-      addFormVisible: false
+      addFormVisible: false,
+      submitLoading: false,
+      
+      addFormRules: {
+        name: [
+          {
+            required: true,
+            message: "请填写缺陷名称",
+            triggle: "blur"
+          }
+        ],
+        type: [
+          {
+            required: true,
+            message: "请选择缺陷类型",
+            triggle: "blur"
+          }
+        ],
+        level: [
+          {
+            required: true,
+            message: "请选择缺陷等级",
+            triggle: "change"
+          }
+        ],
+        description: [
+          {
+            required: true,
+            message: "请填写缺陷描述",
+            triggle: "blur"
+          }
+        ],
+        due: [
+          {
+            type: 'date',
+            required: true,
+            message: "请选择预定日期",
+            triggle: "blur"
+          }
+        ]
+      },
+
+      addForm: {
+        name: '',
+        type: {
+          name: ''
+        },
+        level: {
+          name: ''
+        },
+        creatorName: '',
+        createdAt: '',
+        due: '',
+        description: ''
+      },
+      
+      pickerOptions: {
+        disabledDate(time) {
+          return time.getTime() < Date.now();
+        }
+      }
     };
   },
   methods: {
+    getNowFormatDate() {
+      var date = new Date();
+      var seperator1 = "-";
+      var year = date.getFullYear();
+      var month = date.getMonth() + 1;
+      var strDate = date.getDate();
+      if (month >= 1 && month <= 9) {
+        month = "0" + month;
+      }
+      if (strDate >= 0 && strDate <= 9) {
+        strDate = "0" + strDate;
+      }
+      var currentdate = year + seperator1 + month + seperator1 + strDate;
+      return currentdate;
+    },
+
     async getAllDefects() {
       const res = await ProjectSYJ.getProjectDefects(
-        this.projectId,
         this.page,
-        this.pageSize
+        this.pageSize,
+        this.projectId
       );
-      if (res.code === 1000) {
-        this.defects = res.data.items;
-        let i = 0;
-        for (i = 0; i < this.defects.length; i++) {
-          this.defects[i].due = moment(this.defects[i].due).format(
-            "YYYY-MM-DD"
-          );
-          this.defects[i].createdAt = moment(this.defects[i].createdAt).format(
-            "YYYY-MM-DD"
-          );
-          this.defects[i].updatedAt = moment(this.defects[i].updatedAt).format(
-            "YYYY-MM-DD"
-          )
-        }
-      } else {
-        this.$message.error("获取缺陷列表失败");
+
+      this.defects = res.items;
+      let i = 0;
+      for (i = 0; i < this.defects.length; i++) {
+        this.defects[i].due = moment(this.defects[i].due).format("YYYY-MM-DD");
+        this.defects[i].createdAt = moment(this.defects[i].createdAt).format(
+          "YYYY-MM-DD"
+        );
+        this.defects[i].updatedAt = moment(this.defects[i].updatedAt).format(
+          "YYYY-MM-DD"
+        );
       }
+    },
+
+    // 获取缺陷类型模态框
+    async getDefectTypeModal() {
+      const res = await ProjectSYJ.getAllDefectTypes();
+      this.type = res;
+    },
+
+    handleAdd() {
+      this.addFormVisible = true;
+      this.getDefectTypeModal();
+      this.addForm.creatorName = this.userName;
+      this.addForm.createdAt = this.getNowFormatDate();
     },
 
     addDefect() {},
 
-    handleEdit(index, row) {
+    addDefectSubmit() {
+      this.$refs.addForm.validate(valid => {
+        if (valid) {
+          this.$confirm("确定提交吗？", "提示", {}).then(() => {
+            this.submitLoading = true;
+            const para = Object.assign({}, this.addForm);
+            console.log(para);
+            // const res = ProjectSYJ.addProjectDefect();
+          });
+        }
+      });
+    },
 
-    }
+    handleEdit(index, row) {}
   },
   mounted() {
     this.getAllDefects();
