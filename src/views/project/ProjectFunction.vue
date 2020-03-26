@@ -150,7 +150,7 @@
 export default {
   data() {
     return {
-      search: "",
+      search: '',
       addExcelFormVisible: false,
       fileList: [],
       functionId: 0,
@@ -159,41 +159,41 @@ export default {
       tableData: [
         {
           id: 1,
-          functionId: "001",
-          functionName: "功能1",
-          functionInfo: "xxxxxxxxxxxxxxxxxxx"
+          functionId: '001',
+          functionName: '功能1',
+          functionInfo: 'xxxxxxxxxxxxxxxxxxx'
         },
         {
           id: 3,
-          functionId: "003",
-          functionName: "功能2",
-          functionInfo: "xxxxxxxxxxxxxxxxxxx",
+          functionId: '003',
+          functionName: '功能2',
+          functionInfo: 'xxxxxxxxxxxxxxxxxxx',
           children: [
             {
               id: 31,
-              functionId: "003001",
-              date: "2016-05-01",
-              functionName: "功能3",
-              functionInfo: "xxxxxxxxxxxxxxxxxxx"
+              functionId: '003001',
+              date: '2016-05-01',
+              functionName: '功能3',
+              functionInfo: 'xxxxxxxxxxxxxxxxxxx'
             },
             {
               id: 32,
-              functionId: "003002",
-              functionName: "功能4",
-              functionInfo: "xxxxxxxxxxxxxxxxxxx"
+              functionId: '003002',
+              functionName: '功能4',
+              functionInfo: 'xxxxxxxxxxxxxxxxxxx'
             }
           ]
         }
       ],
       addForm: {
-        id: "",
-        name: "",
-        info: ""
+        id: '',
+        name: '',
+        info: ''
       },
       editForm: {
-        id: "",
-        name: "",
-        info: ""
+        id: '',
+        name: '',
+        info: ''
       }
     };
   },
@@ -222,21 +222,21 @@ export default {
       this.editFormVisible = true;
     },
     handleDelete() {
-      this.$confirm("是否确定删除?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
+      this.$confirm('是否确定删除?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       })
         .then(() => {
           this.$message({
-            type: "success",
-            message: "删除成功!"
+            type: 'success',
+            message: '删除成功!'
           });
         })
         .catch(() => {
           this.$message({
-            type: "info",
-            message: "已取消"
+            type: 'info',
+            message: '已取消'
           });
         });
     }

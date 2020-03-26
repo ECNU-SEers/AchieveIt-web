@@ -128,61 +128,61 @@ export default {
   data() {
     return {
       dialogFormVisible: false,
-      formLabelWidth: "120px",
+      formLabelWidth: '120px',
 
       tableData: [
         {
-          name: "项目ID",
-          detail: "G08_20200312"
+          name: '项目ID',
+          detail: 'G08_20200312'
         },
         {
-          name: "项目名称",
-          detail: "AchieveIt项目管理系统"
+          name: '项目名称',
+          detail: 'AchieveIt项目管理系统'
         },
         {
-          name: "客户信息",
-          detail: "小明"
+          name: '客户信息',
+          detail: '小明'
         },
         {
-          name: "预定时间",
-          detail: "2020-02-23"
+          name: '预定时间',
+          detail: '2020-02-23'
         },
         {
-          name: "交付日",
-          detail: "2020-04-29"
+          name: '交付日',
+          detail: '2020-04-29'
         },
         {
-          name: "项目上级",
-          detail: "小张"
+          name: '项目上级',
+          detail: '小张'
         },
         {
-          name: "主要里程碑",
-          detail: "主要里程碑主要里程碑主要里程碑主要里程碑"
+          name: '主要里程碑',
+          detail: '主要里程碑主要里程碑主要里程碑主要里程碑'
         },
         {
-          name: "采用技术",
-          detail: ["技术1", "技术2"]
+          name: '采用技术',
+          detail: ['技术1', '技术2']
         },
         {
-          name: "业务领域",
-          detail: "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+          name: '业务领域',
+          detail: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
         },
         {
-          name: "主要功能",
-          detail: "XXXXXXXXXXXXXXXXXXXXXXXX"
+          name: '主要功能',
+          detail: 'XXXXXXXXXXXXXXXXXXXXXXXX'
         }
       ],
 
       ruleForm: {
-        name: "",
-        userName: "",
-        date1: "",
-        date2: "",
-        leader: "",
-        milestone: "",
+        name: '',
+        userName: '',
+        date1: '',
+        date2: '',
+        leader: '',
+        milestone: '',
         skills: [],
-        area: "",
-        function: ""
+        area: '',
+        function: ''
       },
 
       // 修改Form初始为原本的项目信息
@@ -198,44 +198,44 @@ export default {
 
       rules: {
         name: [
-          { required: true, message: "请输入项目名称", trigger: "blur" },
-          { min: 3, max: 30, message: "长度在 3 到 30 个字符", trigger: "blur" }
+          { required: true, message: '请输入项目名称', trigger: 'blur' },
+          { min: 3, max: 30, message: '长度在 3 到 30 个字符', trigger: 'blur' }
         ],
         userName: [
-          { required: true, message: "请选择客户姓名", trigger: "change" }
+          { required: true, message: '请选择客户姓名', trigger: 'change' }
         ],
         date1: [
           {
-            type: "date",
+            type: 'date',
             required: true,
-            message: "请选择预定日期",
-            trigger: "blur"
+            message: '请选择预定日期',
+            trigger: 'blur'
           }
         ],
         date2: [
           {
-            type: "date",
+            type: 'date',
             required: true,
-            message: "请选择交付时间",
-            trigger: "blur"
+            message: '请选择交付时间',
+            trigger: 'blur'
           }
         ],
         leader: [
-          { required: true, message: "请选择项目上级", trigger: "blur" }
+          { required: true, message: '请选择项目上级', trigger: 'blur' }
         ],
         milestone: [
-          { required: true, message: "请填写主要里程碑", trigger: "blur" }
+          { required: true, message: '请填写主要里程碑', trigger: 'blur' }
         ],
         skills: [
           {
-            type: "array",
+            type: 'array',
             required: true,
-            message: "请至少选择一个技术",
-            trigger: "blur"
+            message: '请至少选择一个技术',
+            trigger: 'blur'
           }
         ],
         function: [
-          { required: true, message: "请填写项目主要功能", trigger: "blur" }
+          { required: true, message: '请填写项目主要功能', trigger: 'blur' }
         ]
       },
 
@@ -246,9 +246,9 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          alert("submit!");
+          alert('submit!');
         } else {
-          console.log("error submit!!");
+          console.log('error submit!!');
           return false;
         }
       });

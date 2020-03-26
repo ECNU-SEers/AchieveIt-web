@@ -61,27 +61,27 @@ export default {
   data() {
     return {
       editFormVisible: false,
-      formLabelWidth: "120px",
+      formLabelWidth: '120px',
 
       tableData: [
         {
-          name: "Git仓库地址",
-          detail: "暂无数据"
+          name: 'Git仓库地址',
+          detail: '暂无数据'
         },
         {
-          name: "虚拟机空间",
-          detail: "暂无数据"
+          name: '虚拟机空间',
+          detail: '暂无数据'
         },
         {
-          name: "文件服务器目录",
-          detail: "未生成"
+          name: '文件服务器目录',
+          detail: '未生成'
         }
       ],
 
       ruleForm: {
-        GitAddress: "",
-        virtualSpace: "",
-        fileCatalog: ""
+        GitAddress: '',
+        virtualSpace: '',
+        fileCatalog: ''
       },
 
       hiddenTableHeader: false
@@ -91,9 +91,9 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          alert("submit!");
+          alert('submit!');
         } else {
-          console.log("error submit!!");
+          console.log('error submit!!');
           return false;
         }
       });

@@ -239,205 +239,202 @@
 </template>
 
 <script>
-  import PageHeader from "../../components/common/PageHeader";
-  import Search from "../../components/common/Search";
-  import Pagination from "../../components/common/Pagination";
+import PageHeader from '../../components/common/PageHeader';
+import Search from '../../components/common/Search';
+import Pagination from '../../components/common/Pagination';
 
-  export default {
-    components: {
-      PageHeader,
-      Search,
-      Pagination
-    },
-    data() {
-      return {
-        projectOptions: [
-          {
-            projectName: "项目1",
-            projectId: "id1"
-          },
-          {
-            projectName: "项目2",
-            projectId: "id2"
-          },
-          {
-            projectName: "项目2",
-            projectId: "id3"
-          },
-          {
-            projectName: "项目2",
-            projectId: "id4"
-          }
-        ],
-
-        projectNameLoading: false,
-        projectNameSearch: "",
-
-        projects: [
-          {
-            projectId: "123",
-            projectName: "项目test",
-            clientName: "客户1",
-            startDate: "2020-01-01",
-            endDate: "2020-08-01",
-            projectManager: "项目经理",
-            projectState: "进行中",
-            projectMem: 10,
-            projectProgress: [
-              {
-                updateDate: "2020-01-01",
-                state: "申请立项",
-                recorder: "项目经理"
-              },
-              {
-                updateDate: "2020-01-03",
-                state: "已立项",
-                recorder: "项目经理主管"
-              },
-              {
-                updateDate: "2020-01-05",
-                state: "进行中",
-                recorder: "项目经理"
-              }
-            ]
-          }
-        ],
-
-        // 新增项目
-        addFormVisible: false,
-        addForm: {
-          projectId: "",
-          projectName: "",
-          clientId: "",
-          startDate: "",
-          endDate: "",
-          projectManager: "",
-          projectMentor: "",
-          tech: "",
-          area: "",
-          function: ""
+export default {
+  components: {
+    PageHeader,
+    Search,
+    Pagination
+  },
+  data() {
+    return {
+      projectOptions: [
+        {
+          projectName: '项目1',
+          projectId: 'id1'
         },
-        addFormRules: {
-          projectId: [
+        {
+          projectName: '项目2',
+          projectId: 'id2'
+        },
+        {
+          projectName: '项目2',
+          projectId: 'id3'
+        },
+        {
+          projectName: '项目2',
+          projectId: 'id4'
+        }
+      ],
+
+      projectNameLoading: false,
+      projectNameSearch: '',
+
+      projects: [
+        {
+          projectId: '123',
+          projectName: '项目test',
+          clientName: '客户1',
+          startDate: '2020-01-01',
+          endDate: '2020-08-01',
+          projectManager: '项目经理',
+          projectState: '进行中',
+          projectMem: 10,
+          projectProgress: [
             {
-              required: true,
-              message: "请选择项目ID",
-              triggle: "blur"
-            }
-          ],
-          projectName: [
+              updateDate: '2020-01-01',
+              state: '申请立项',
+              recorder: '项目经理'
+            },
             {
-              required: true,
-              message: "请填写项目名称",
-              triggle: "blur"
-            }
-          ],
-          clientId: [
+              updateDate: '2020-01-03',
+              state: '已立项',
+              recorder: '项目经理主管'
+            },
             {
-              required: true,
-              message: "请选择客户",
-              triggle: "blur"
-            }
-          ],
-          startDate: [
-            {
-              required: true,
-              message: "请选择预定日期",
-              triggle: "blur"
-            }
-          ],
-          endDate: [
-            {
-              required: true,
-              message: "请选择交付日",
-              triggle: "blur"
-            }
-          ],
-          projectManager: [
-            {
-              required: true,
-              message: "请选择项目经理",
-              triggle: "blur"
-            }
-          ],
-          projectMentor: [
-            {
-              required: true,
-              message: "请选择项目主管",
-              triggle: "blur"
-            }
-          ],
-          tech: [
-            {
-              required: true,
-              message: "请选择技术",
-              triggle: "blur"
+              updateDate: '2020-01-05',
+              state: '进行中',
+              recorder: '项目经理'
             }
           ]
-        },
+        }
+      ],
 
-        // 编辑项目
-        editFormVisible: false,
-        editForm: {
-          projectId: "",
-          projectName: "",
-          clientId: "",
-          startDate: "",
-          endDate: "",
-          projectManager: "",
-          projectMentor: "",
-          tech: "",
-          area: "",
-          function: ""
-        },
-
-        submitLoading: false,
-
-        // 时间轴
-        reverse: false,
-        activities: [
+      // 新增项目
+      addFormVisible: false,
+      addForm: {
+        projectId: '',
+        projectName: '',
+        clientId: '',
+        startDate: '',
+        endDate: '',
+        projectManager: '',
+        projectMentor: '',
+        tech: '',
+        area: '',
+        function: ''
+      },
+      addFormRules: {
+        projectId: [
           {
-            state: "进行中",
-            timestamp: "2018-04-15",
-            type: "primary",
-            size: "large"
-          },
+            required: true,
+            message: '请选择项目ID',
+            triggle: 'blur'
+          }
+        ],
+        projectName: [
           {
-            state: "已立项",
-            timestamp: "2018-04-13",
-            type: "success"
-          },
+            required: true,
+            message: '请填写项目名称',
+            triggle: 'blur'
+          }
+        ],
+        clientId: [
           {
-            state: "申请立项",
-            timestamp: "2018-04-11",
-            type: "success"
+            required: true,
+            message: '请选择客户',
+            triggle: 'blur'
+          }
+        ],
+        startDate: [
+          {
+            required: true,
+            message: '请选择预定日期',
+            triggle: 'blur'
+          }
+        ],
+        endDate: [
+          {
+            required: true,
+            message: '请选择交付日',
+            triggle: 'blur'
+          }
+        ],
+        projectManager: [
+          {
+            required: true,
+            message: '请选择项目经理',
+            triggle: 'blur'
+          }
+        ],
+        projectMentor: [
+          {
+            required: true,
+            message: '请选择项目主管',
+            triggle: 'blur'
+          }
+        ],
+        tech: [
+          {
+            required: true,
+            message: '请选择技术',
+            triggle: 'blur'
           }
         ]
-      };
+      },
+
+      // 编辑项目
+      editFormVisible: false,
+      editForm: {
+        projectId: '',
+        projectName: '',
+        clientId: '',
+        startDate: '',
+        endDate: '',
+        projectManager: '',
+        projectMentor: '',
+        tech: '',
+        area: '',
+        function: ''
+      },
+
+      submitLoading: false,
+
+      // 时间轴
+      reverse: false,
+      activities: [
+        {
+          state: '进行中',
+          timestamp: '2018-04-15',
+          type: 'primary',
+          size: 'large'
+        },
+        {
+          state: '已立项',
+          timestamp: '2018-04-13',
+          type: 'success'
+        },
+        {
+          state: '申请立项',
+          timestamp: '2018-04-11',
+          type: 'success'
+        }
+      ]
+    };
+  },
+  methods: {
+    testNotify() {
+      this.$notify({
+        title: '成功',
+        message: '这是一条成功的提示消息',
+        type: 'success'
+      });
     },
-    methods: {
-      testNotify() {
-        this.$notify({
-          title: "成功",
-          message: "这是一条成功的提示消息",
-          type: "success"
-        });
-      },
-      getProject() {
-      },
+    getProject() {},
 
-      addProjectSubmit() {
-      },
+    addProjectSubmit() {},
 
-      handleEdit(row) {
-        this.editFormVisible = true;
-        this.editForm = Object.assign({}, row);
-      },
+    handleEdit(row) {
+      this.editFormVisible = true;
+      this.editForm = Object.assign({}, row);
+    },
 
-      editProjectSubmit() {
-      }
-    }
-  };
+    editProjectSubmit() {}
+  }
+};
 </script>
 
 <style lang="scss" scoped>

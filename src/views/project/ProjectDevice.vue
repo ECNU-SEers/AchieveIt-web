@@ -2,7 +2,12 @@
   <div>
     <PageHeader title="设备信息">
       <!--工具条：搜索栏-->
-      <Search />
+      <Search placeholder="请输入设备ID" :query-search="searchDevice">
+          <template slot-scope="{ item }">
+          <span >{{ item.outerId }}</span>
+        </template>
+
+      </Search>
       <div style="width:20px;height=100%;"></div>
 
       <!--新增-->
@@ -31,13 +36,13 @@
               class="table-expand"
             >
               <el-form-item label="检查日期:">
-                <span>{{ props.row.checkDate }}</span>
+                <span>{{ props.row.inspectDate }}</span>
               </el-form-item>
               <el-form-item label="设备状态:">
-                <span>{{ props.row.status }}</span>
+                <span>{{ props.row.intact }}</span>
               </el-form-item>
               <el-form-item label="备注:">
-                <span>{{ props.row.tip }}</span>
+                <span>{{ props.row.remark }}</span>
               </el-form-item>
             </el-form>
           </template>
@@ -67,7 +72,7 @@
                 type="primary"
                 icon="el-icon-edit"
                 size="medium"
-                @click="addFormVisible = true"
+                @click="editFormVisible = true;"
               ></el-button>
 
               <el-button
@@ -98,7 +103,7 @@
       >
         <!--文本框-->
         <el-form-item label="资产ID:" prop="id">
-          <el-input v-model="addForm.id"></el-input>
+          <el-input v-model="addForm.outerId"></el-input>
         </el-form-item>
 
         <!--单选-->
@@ -114,15 +119,15 @@
         <!--带搜索的下拉选择-->
         <el-form-item label="资产管理者:" prop="monitor">
           <el-select
-            v-model="addForm.monitor"
+            v-model="addForm.managerName"
             filterable
             placeholder="请选择资产管理者"
           >
             <el-option
-              v-for="item in monitors"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
+              v-for="item in users"
+              :key="item.userId"
+              :label="item.username"
+              :value="item.userId"
             ></el-option>
           </el-select>
         </el-form-item>
@@ -130,11 +135,16 @@
         <!--日期段-->
         <el-form-item label="资产使用期限:" prop="date">
           <el-date-picker
-            v-model="addForm.date"
-            type="daterange"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
+          v-model="addForm.startDate"
+          type="date"
+          placeholder="开始日期"
+          >
+          </el-date-picker>
+          <span>&nbsp;至&nbsp;</span>
+          <el-date-picker
+            v-model="addForm.dueDate"
+            type="date"
+            placeholder="结束日期"
           ></el-date-picker>
         </el-form-item>
 
@@ -142,7 +152,7 @@
         <el-form-item label="资产状态:">
           <el-input
             placeholder="已领取"
-            v-model="addForm.status"
+            v-model="addForm.state"
             :disabled="true"
           ></el-input>
         </el-form-item>
@@ -162,25 +172,25 @@
     <!--编辑-->
     <el-dialog
       title="资产信息"
-      :visible.sync="addFormVisible"
+      :visible.sync="editFormVisible"
       :before-close="handleClose"
       @open="handleForm"
       :append-to-body="true"
     >
       <el-form
-        :model="addForm"
+        :model="editForm"
         :rules="rules"
-        ref="addForm"
-        label-width="120px"
+        ref="editForm"
+        label-width="120px" 
       >
         <!--文本框-->
         <el-form-item label="资产ID:" prop="id">
-          <el-input v-model="addForm.id"></el-input>
+          <el-input v-model="editForm.outerId"></el-input>
         </el-form-item>
 
         <!--单选-->
         <el-form-item label="资产类型:" prop="type">
-          <el-radio-group v-model="addForm.type">
+          <el-radio-group v-model="editForm.type">
             <el-radio label="电脑"></el-radio>
             <el-radio label="手机"></el-radio>
             <el-radio label="PAD"></el-radio>
@@ -191,15 +201,15 @@
         <!--带搜索的下拉选择-->
         <el-form-item label="资产管理者:" prop="monitor">
           <el-select
-            v-model="addForm.monitor"
+            v-model="editForm.managerName"
             filterable
             placeholder="请选择资产管理者"
           >
             <el-option
-              v-for="item in monitors"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
+              v-for="item in users"
+              :key="item.userId"
+              :label="item.username"
+              :value="item.userId"
             ></el-option>
           </el-select>
         </el-form-item>
@@ -207,11 +217,16 @@
         <!--日期段-->
         <el-form-item label="资产使用期限:" prop="date">
           <el-date-picker
-            v-model="addForm.date"
-            type="daterange"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
+          v-model="editForm.startDate"
+          type="date"
+          placeholder="开始日期"
+          >
+          </el-date-picker>
+          <span>至</span>
+          <el-date-picker
+            v-model="editForm.dueDate"
+            type="date"
+            placeholder="结束日期"
           ></el-date-picker>
         </el-form-item>
 
@@ -219,7 +234,7 @@
         <el-form-item label="资产状态:">
           <el-input
             placeholder="已领取"
-            v-model="addForm.status"
+            v-model="editForm.state"
             :disabled="true"
           ></el-input>
         </el-form-item>
@@ -227,7 +242,7 @@
         <el-form-item>
           <el-button
             type="primary"
-            @click="editSubmit('addForm')"
+            @click="editSubmit('editForm')"
             style="margin-right:8%;"
             >修改</el-button
           >
@@ -253,28 +268,36 @@ export default {
   data() {
     return {
       //分页
-      pageNo:1,
-      pageSize:1,
-      projectId:1,
-      deviceData:[],
-      //列表
-   
-      monitors: [
-        {
-          //资产管理者选项
-          value: "1",
-          label: "人名1"
-        }
-      ],
+      pageNo: 1,
+      pageSize: 1,
+      projectId: 1,
+
+        //列表
+      deviceData: [],
+      //下拉管理员名单
+      users:[],
+
+      //编辑
+      editFormVisible: false,
+      editForm:{
+        outerId:"",
+        type:"",
+        managerName:"",
+        startDate:"",
+        dueDate:"",
+        sate:""
+      },
+    
 
       //新增
       addFormVisible: false,
       addForm: {
-        id: "",
+        outerId: "",
         type: "",
-        monitor: "",
-        date: "",
-        status: ""
+        managerName: "",
+        startDate: "",
+        dueDate:"",
+        state: ""
       },
       rules: {
         id: [{ required: true, message: "请输入资产ID", trigger: "blur" }],
@@ -291,9 +314,26 @@ export default {
     };
   },
   mounted() {
-  this.getDeviceList();
+    this.getDeviceList();
+    this.getUserModal();
   },
   methods: {
+    //搜索
+    searchDevice(queryString,cb){
+      var deviceData = this.deviceData;
+      var results =queryString
+      ? deviceData.filter(this.createFilter(queryString))
+      :deviceData;
+      cb(results);
+    },
+      createFilter(queryString) {
+      return device => {
+        return (
+          device.outerId.toLowerCase().indexOf(queryString.toLowerCase()) === 0
+        );
+      };
+    },
+
     //列表展示
     async getDeviceList() {
       const res = await ProjectLW.getDeviceList(
@@ -302,9 +342,9 @@ export default {
         this.projectId
       );
 
-      if(res.code===1000){
+      if (res.code === 1000) {
         this.deviceData = res.data.items;
-      }else{
+      } else {
         this.$message.error("获取设备信息失败");
       }
     },
@@ -335,9 +375,26 @@ export default {
       }
     },
 
-    //修改
-    editSubmit(formName) {
-      alert("修改成功");
+    //编辑
+    //获取备选管理员
+    async getUserModal(){
+      const res =await ProjectLW.getAllUser();
+      if(res.code===1000){
+        this.users=res.data;
+      }else{
+        this.$message.error("获取管理者名单失败");
+      }
+    },
+     editSubmit(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+            const res =  ProjectLW.updateDeviceDetail(this.form)
+        }else{
+          console.log('error submit!')
+          this.$message.error('信息错误')
+          return false
+        }
+      })
       addFormVisible = false;
     },
 

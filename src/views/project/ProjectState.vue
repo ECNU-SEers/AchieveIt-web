@@ -43,8 +43,8 @@
 </template>
 
 <script>
-import PageHeader from "@/components/common/PageHeader";
-import Pagination from "@/components/common/Pagination";
+import PageHeader from '@/components/common/PageHeader';
+import Pagination from '@/components/common/Pagination';
 
 export default {
   components: {
@@ -56,17 +56,17 @@ export default {
       //列表
       statusData: [
         {
-          index: "1",
-          changeDate: "2020-3-23",
-          status: "立项驳回",
-          trigger: "孙二狗"
+          index: '1',
+          changeDate: '2020-3-23',
+          status: '立项驳回',
+          trigger: '孙二狗'
           // action: "",
         },
         {
-          index: "1",
-          changeDate: "2020-3-23",
-          status: "立项驳回",
-          trigger: "孙二狗"
+          index: '1',
+          changeDate: '2020-3-23',
+          status: '立项驳回',
+          trigger: '孙二狗'
           // action: "",
         }
       ],

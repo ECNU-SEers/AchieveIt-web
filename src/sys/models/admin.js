@@ -1,5 +1,5 @@
 /* eslint-disable class-methods-use-this */
-import {post, get, put, _delete} from '@/sys/plugins/axios';
+import {post, get, put, _delete} from "@/sys/plugins/axios";
 
 export default class Admin {
   constructor(uPage = 0, uCount = 10, gPage = 0, gCount = 5) {
@@ -9,7 +9,7 @@ export default class Admin {
     this.gCount = gCount;
   }
 
-  async increseUpage() {
+  increseUpage() {
     this.uPage += 1;
   }
 
@@ -31,22 +31,38 @@ export default class Admin {
     }
   }
 
-  static getAllPermissions() {
-    return get('cms/admin/permission');
+  static async getAllPermissions() {
+    const permissions = await get("/view/permissions");
+    let res = {};
+    permissions.forEach(permission => {
+      res[permission.module]
+          ? res[permission.module].push({
+            ...permission,
+            name: permission.permission
+          })
+          : (res[permission.module] = [
+            {...permission, name: permission.permission}
+          ]);
+    });
+    return res;
   }
 
-  static async getAdminUsers({group_id, count = this.uCount, page = this.uPag}) {
+  static async getAdminUsers({
+                               group_id,
+                               count = this.uCount,
+                               page = this.uPag
+                             }) {
     let res;
     if (group_id) {
-      res = await get('cms/admin/users', {
+      res = await get("cms/admin/users", {
         count,
         page,
-        group_id,
+        group_id
       });
     } else {
-      res = await get('cms/admin/users', {
+      res = await get("cms/admin/users", {
         count,
-        page,
+        page
       });
     }
     return res;
@@ -63,9 +79,9 @@ export default class Admin {
   }
 
   async getGroupsWithPermissions({count = this.uCount, page = this.uPag}) {
-    const res = await get('cms/admin/groups', {
+    const res = await get("cms/admin/groups", {
       count,
-      page,
+      page
     });
     return res;
   }
@@ -81,7 +97,7 @@ export default class Admin {
   }
 
   static async getAllGroups() {
-    const groups = await get('cms/admin/group/all');
+    const groups = await get("cms/admin/group/all");
     return groups;
   }
 
@@ -91,10 +107,10 @@ export default class Admin {
   }
 
   static async createOneGroup(name, info, permission_ids) {
-    const res = await post('cms/admin/role', {
+    const res = await post("cms/admin/role", {
       name,
       info,
-      permission_ids,
+      permission_ids
     });
     return res;
   }
@@ -102,7 +118,7 @@ export default class Admin {
   static async updateOneGroup(name, info, id) {
     const res = await put(`cms/admin/group/${id}`, {
       name,
-      info,
+      info
     });
     return res;
   }
@@ -120,15 +136,15 @@ export default class Admin {
   static async updateOneUser(email, group_ids, id) {
     const res = await put(`cms/admin/user/${id}`, {
       email,
-      group_ids,
+      group_ids
     });
     return res;
   }
 
   static async dispatchPermissions(group_id, permission_ids) {
-    const res = await post('cms/admin/permission/dispatch/batch', {
+    const res = await post("cms/admin/permission/dispatch/batch", {
       group_id,
-      permission_ids,
+      permission_ids
     });
     return res;
   }
@@ -136,15 +152,15 @@ export default class Admin {
   static async changePassword(new_password, confirm_password, id) {
     const res = await put(`cms/admin/user/${id}/password`, {
       new_password,
-      confirm_password,
+      confirm_password
     });
     return res;
   }
 
   static async removePermissions(group_id, permission_ids) {
-    const res = await post('cms/admin/permission/remove', {
+    const res = await post("cms/admin/permission/remove", {
       group_id,
-      permission_ids,
+      permission_ids
     });
     return res;
   }

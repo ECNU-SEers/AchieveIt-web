@@ -71,33 +71,33 @@ export default {
     return {
       defectOptions: [
         {
-          defectName: "缺陷1",
-          defectId: "id1"
+          defectName: '缺陷1',
+          defectId: 'id1'
         },
         {
-          defectName: "缺陷2",
-          defectId: "id2"
+          defectName: '缺陷2',
+          defectId: 'id2'
         },
         {
-          defectName: "缺陷3",
-          defectId: "id3"
+          defectName: '缺陷3',
+          defectId: 'id3'
         },
         {
-          defectName: "缺陷4",
-          defectId: "id4"
+          defectName: '缺陷4',
+          defectId: 'id4'
         }
       ],
-      defectNameSearch: "",
+      defectNameSearch: '',
       defectNameLoading: false,
 
       defects: [
         {
-          defectId: "123",
-          defectName: "缺陷test",
-          defectDescription: "缺陷描述",
-          defectState: "缺陷状态",
-          recorder: "JJJ",
-          handler: "yyy"
+          defectId: '123',
+          defectName: '缺陷test',
+          defectDescription: '缺陷描述',
+          defectState: '缺陷状态',
+          recorder: 'JJJ',
+          handler: 'yyy'
         }
       ]
     };

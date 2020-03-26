@@ -190,44 +190,44 @@ export default {
   data() {
     return {
       editId: 0,
-      search: "",
+      search: '',
       addFormVisible: false,
       addExcelFormVisible: false,
       editFormVisible: false,
       fileList: [],
       addForm: {
-        name: "",
+        name: '',
         roles: [],
-        leader: ""
+        leader: ''
       },
       editForm: {
         roles: [],
-        leader: ""
+        leader: ''
       },
       tableData: [
         {
-          id: "1",
-          userId: "00001",
-          userName: "小明",
-          role: "测试Leader",
-          userEmail: "123456789@163.com",
-          department: "achieve项目组",
-          leader: "张大虎",
-          leaderEmail: "987654321@163.com",
-          userPhone: "12345678900",
-          laborHour: "456"
+          id: '1',
+          userId: '00001',
+          userName: '小明',
+          role: '测试Leader',
+          userEmail: '123456789@163.com',
+          department: 'achieve项目组',
+          leader: '张大虎',
+          leaderEmail: '987654321@163.com',
+          userPhone: '12345678900',
+          laborHour: '456'
         },
         {
-          id: "2",
-          userId: "00002",
-          userName: "小张",
-          role: "配置管理员",
-          userEmail: "123456789@163.com",
-          department: "achieve项目组",
-          leader: "张大虎",
-          leaderEmail: "987654321@163.com",
-          userPhone: "12345678900",
-          laborHour: "56"
+          id: '2',
+          userId: '00002',
+          userName: '小张',
+          role: '配置管理员',
+          userEmail: '123456789@163.com',
+          department: 'achieve项目组',
+          leader: '张大虎',
+          leaderEmail: '987654321@163.com',
+          userPhone: '12345678900',
+          laborHour: '56'
         }
       ]
     };
@@ -253,21 +253,21 @@ export default {
       this.editFormVisible = true;
     },
     handleDelete(index, row) {
-      this.$confirm("是否将该成员移出项目组?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
+      this.$confirm('是否将该成员移出项目组?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       })
         .then(() => {
           this.$message({
-            type: "success",
-            message: "已移除!"
+            type: 'success',
+            message: '已移除!'
           });
         })
         .catch(() => {
           this.$message({
-            type: "info",
-            message: "已取消"
+            type: 'info',
+            message: '已取消'
           });
         });
     }

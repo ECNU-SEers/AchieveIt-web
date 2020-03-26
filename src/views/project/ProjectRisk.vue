@@ -394,9 +394,9 @@
 </template>
 
 <script>
-import Search from "@/components/common/Search";
-import PageHeader from "@/components/common/PageHeader";
-import Pagination from "@/components/common/Pagination";
+import Search from '@/components/common/Search';
+import PageHeader from '@/components/common/PageHeader';
+import Pagination from '@/components/common/Pagination';
 
 export default {
   components: {
@@ -408,109 +408,109 @@ export default {
     return {
       riskData: [
         {
-          index: "1",
-          id: "1",
-          type: "技术",
-          description: "巴拉巴拉",
-          level: "中",
-          influence: "中",
-          strategy: "巴拉巴拉",
-          monitor: "dd",
-          frequency: "一周一次",
-          related: ["狗蛋子", "李四", "二麻子"],
-          status: "未解决",
-          source: "项目自己识别"
+          index: '1',
+          id: '1',
+          type: '技术',
+          description: '巴拉巴拉',
+          level: '中',
+          influence: '中',
+          strategy: '巴拉巴拉',
+          monitor: 'dd',
+          frequency: '一周一次',
+          related: ['狗蛋子', '李四', '二麻子'],
+          status: '未解决',
+          source: '项目自己识别'
         },
         {
-          index: "1",
-          id: "1",
-          type: "技术",
-          description: "巴拉巴拉",
-          level: "中",
-          influence: "中",
-          strategy: "巴拉巴拉",
-          monitor: "dd",
-          frequency: "一周一次",
-          related: ["狗蛋子", "李四", "二麻子"],
-          status: "未解决",
-          source: "项目自己识别"
+          index: '1',
+          id: '1',
+          type: '技术',
+          description: '巴拉巴拉',
+          level: '中',
+          influence: '中',
+          strategy: '巴拉巴拉',
+          monitor: 'dd',
+          frequency: '一周一次',
+          related: ['狗蛋子', '李四', '二麻子'],
+          status: '未解决',
+          source: '项目自己识别'
         }
       ],
       monitors: [
         {
           //资产管理者选项
-          value: "1",
-          label: "人名1"
+          value: '1',
+          label: '人名1'
         }
       ],
 
       //新增
       addFormVisible: false,
       addForm: {
-        id: "",
-        type: "",
-        description: "",
-        level: "",
-        influence: "",
-        strategy: "",
-        monitor: "",
-        frequency: "",
+        id: '',
+        type: '',
+        description: '',
+        level: '',
+        influence: '',
+        strategy: '',
+        monitor: '',
+        frequency: '',
         related: []
       },
       rules: {
-        id: [{ required: true, message: "请输入风险ID", trigger: "blur" }],
+        id: [{ required: true, message: '请输入风险ID', trigger: 'blur' }],
         type: [
-          { required: true, message: "请选择风险类型", trigger: "change" }
+          { required: true, message: '请选择风险类型', trigger: 'change' }
         ],
         description: [
-          { required: true, message: "请输入风险描述", trigger: "blur" }
+          { required: true, message: '请输入风险描述', trigger: 'blur' }
         ],
         level: [
-          { required: true, message: "请选择风险级别", trigger: "change" }
+          { required: true, message: '请选择风险级别', trigger: 'change' }
         ],
         influence: [
-          { required: true, message: "请选择风险影响度", trigger: "change" }
+          { required: true, message: '请选择风险影响度', trigger: 'change' }
         ],
         strategy: [
-          { required: true, message: "请输入风险策略", trigger: "blur" }
+          { required: true, message: '请输入风险策略', trigger: 'blur' }
         ],
         monitor: [
-          { required: true, message: "请选择资风险管理者", trigger: "change" }
+          { required: true, message: '请选择资风险管理者', trigger: 'change' }
         ],
         frequency: [
-          { required: true, message: "请选择风险跟踪频度", trigger: "change" }
+          { required: true, message: '请选择风险跟踪频度', trigger: 'change' }
         ],
         status: [
-          { required: true, message: "请选择风险状态", trigger: "change" }
+          { required: true, message: '请选择风险状态', trigger: 'change' }
         ],
         related: [
           {
             required: true,
-            message: "请选择至少一位风险相关者",
-            trigger: "change"
+            message: '请选择至少一位风险相关者',
+            trigger: 'change'
           }
         ]
       },
 
       //导入
       importFormVisible: false,
-      importSource: "",
+      importSource: '',
       importSources: [
         {
-          value: "standard",
-          label: "组织标准风险库"
+          value: 'standard',
+          label: '组织标准风险库'
         },
         {
-          value: "otherProject",
-          label: "其他项目",
+          value: 'otherProject',
+          label: '其他项目',
           children: [
             {
-              value: "1", //设为label 可搜索
-              label: "开心项目（ID：balaba）"
+              value: '1', //设为label 可搜索
+              label: '开心项目（ID：balaba）'
             },
             {
-              value: "22",
-              label: "快乐项目（ID：balaba）"
+              value: '22',
+              label: '快乐项目（ID：balaba）'
             }
           ]
         }
@@ -522,16 +522,16 @@ export default {
     addSubmit(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          alert("提交成功");
+          alert('提交成功');
         } else {
-          alert("提交失败");
+          alert('提交失败');
           return false;
         }
       });
     },
 
     handleClose(done) {
-      this.$confirm("确认关闭？")
+      this.$confirm('确认关闭？')
         .then(_ => {
           done();
         })
@@ -547,13 +547,13 @@ export default {
 
     //修改
     editSubmit(formName) {
-      alert("修改成功");
+      alert('修改成功');
       addFormVisible = false;
     },
 
     //删除
     deleteSubmit() {
-      alert("删除成功");
+      alert('删除成功');
     }
   }
 };
