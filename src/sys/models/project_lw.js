@@ -11,7 +11,7 @@ export default class ProjectLW {
    */
 
   static async getDeviceList(pageNo, pageSize, projectId) {
-   // return await get('/device/show/all/details?pageNo=pageNo&pageSize=pageSize&projectId=projectId');
+    // return await get('/device/show/all/details?pageNo=pageNo&pageSize=pageSize&projectId=projectId');
     const res = {
       code: 1000,
       message: "Success",
@@ -39,21 +39,21 @@ export default class ProjectLW {
   /**
    * 获取平台用户作为可选管理员
    */
-  static async getAllUsers(){
+  static async getAllUsers() {
     //  return await get('/api/employees');
     const users = {
-        "code": 1000,
-        "message": "Success",
-        "data": [
-            {
-                "userId": 3,
-                "username": "小张"
-            },
-            {
-                "userId": 4,
-                "username": "小力"
-            }
-        ]
+      code: 1000,
+      message: "Success",
+      data: [
+        {
+          userId: 3,
+          username: "小张"
+        },
+        {
+          userId: 4,
+          username: "小力"
+        }
+      ]
     };
     return users;
   }
@@ -67,44 +67,51 @@ export default class ProjectLW {
    * @param {string} managerName
    * @param {日期}  startDate
    * @param {日期} dueDate
-   * 
+   *
    */
-   static  updateDeviceDetail({outerId,type,projectId,managerId,managerName,startDate,dueDate}){
+  static updateDeviceDetail({
+    outerId,
+    type,
+    projectId,
+    managerId,
+    managerName,
+    startDate,
+    dueDate
+  }) {
     return put("api/device/update", {
-        outerId,
-        type,
-        projectId,
-        managerId,
-        managerName,
-        startDate,
-        dueDate
-      });
-   }
+      outerId,
+      type,
+      projectId,
+      managerId,
+      managerName,
+      startDate,
+      dueDate
+    });
+  }
 
- /**
+  /**
    * 获取当前项目所有设备信息
    * @param {当前页码} pageNo
    * @param {页面大小} pageSize
    * @param {设备id} deviceId
    */
-  static async getDeviceInspection(pageNo,pageSize,deviceId){
-     const res ={
-        "code": 1000,
-        "message": "Success",
-        "data": {
-            "page": 1,
-            "pageSize": 1,
-            "total": 1,
-            "items": [
-                {
-                    "inspectDate": "2020-02-02",
-                    "intact": "损坏",
-                    "remark": "设备完好"
-                }
-            ]
-        }
-     };
-     return res;
+  static async getDeviceInspection(pageNo, pageSize, deviceId) {
+    const res = {
+      code: 1000,
+      message: "Success",
+      data: {
+        page: 1,
+        pageSize: 1,
+        total: 1,
+        items: [
+          {
+            inspectDate: "2020-02-02",
+            intact: "损坏",
+            remark: "设备完好"
+          }
+        ]
+      }
+    };
+    return res;
   }
-
 }

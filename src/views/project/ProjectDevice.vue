@@ -3,10 +3,9 @@
     <PageHeader title="设备信息">
       <!--工具条：搜索栏-->
       <Search placeholder="请输入设备ID" :query-search="searchDevice">
-          <template slot-scope="{ item }">
-          <span >{{ item.outerId }}</span>
+        <template slot-scope="{ item }">
+          <span>{{ item.outerId }}</span>
         </template>
-
       </Search>
       <div style="width:20px;height=100%;"></div>
 
@@ -72,7 +71,7 @@
                 type="primary"
                 icon="el-icon-edit"
                 size="medium"
-                @click="editFormVisible = true;"
+                @click="editFormVisible = true"
               ></el-button>
 
               <el-button
@@ -135,9 +134,9 @@
         <!--日期段-->
         <el-form-item label="资产使用期限:" prop="date">
           <el-date-picker
-          v-model="addForm.startDate"
-          type="date"
-          placeholder="开始日期"
+            v-model="addForm.startDate"
+            type="date"
+            placeholder="开始日期"
           >
           </el-date-picker>
           <span>&nbsp;至&nbsp;</span>
@@ -181,7 +180,7 @@
         :model="editForm"
         :rules="rules"
         ref="editForm"
-        label-width="120px" 
+        label-width="120px"
       >
         <!--文本框-->
         <el-form-item label="资产ID:" prop="id">
@@ -217,9 +216,9 @@
         <!--日期段-->
         <el-form-item label="资产使用期限:" prop="date">
           <el-date-picker
-          v-model="editForm.startDate"
-          type="date"
-          placeholder="开始日期"
+            v-model="editForm.startDate"
+            type="date"
+            placeholder="开始日期"
           >
           </el-date-picker>
           <span>至</span>
@@ -272,22 +271,21 @@ export default {
       pageSize: 1,
       projectId: 1,
 
-        //列表
+      //列表
       deviceData: [],
       //下拉管理员名单
-      users:[],
+      users: [],
 
       //编辑
       editFormVisible: false,
-      editForm:{
-        outerId:"",
-        type:"",
-        managerName:"",
-        startDate:"",
-        dueDate:"",
-        sate:""
+      editForm: {
+        outerId: "",
+        type: "",
+        managerName: "",
+        startDate: "",
+        dueDate: "",
+        sate: ""
       },
-    
 
       //新增
       addFormVisible: false,
@@ -296,7 +294,7 @@ export default {
         type: "",
         managerName: "",
         startDate: "",
-        dueDate:"",
+        dueDate: "",
         state: ""
       },
       rules: {
@@ -319,14 +317,14 @@ export default {
   },
   methods: {
     //搜索
-    searchDevice(queryString,cb){
+    searchDevice(queryString, cb) {
       var deviceData = this.deviceData;
-      var results =queryString
-      ? deviceData.filter(this.createFilter(queryString))
-      :deviceData;
+      var results = queryString
+        ? deviceData.filter(this.createFilter(queryString))
+        : deviceData;
       cb(results);
     },
-      createFilter(queryString) {
+    createFilter(queryString) {
       return device => {
         return (
           device.outerId.toLowerCase().indexOf(queryString.toLowerCase()) === 0
@@ -377,24 +375,24 @@ export default {
 
     //编辑
     //获取备选管理员
-    async getUserModal(){
-      const res =await ProjectLW.getAllUser();
-      if(res.code===1000){
-        this.users=res.data;
-      }else{
+    async getUserModal() {
+      const res = await ProjectLW.getAllUser();
+      if (res.code === 1000) {
+        this.users = res.data;
+      } else {
         this.$message.error("获取管理者名单失败");
       }
     },
-     editSubmit(formName) {
+    editSubmit(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-            const res =  ProjectLW.updateDeviceDetail(this.form)
-        }else{
-          console.log('error submit!')
-          this.$message.error('信息错误')
-          return false
+          const res = ProjectLW.updateDeviceDetail(this.form);
+        } else {
+          console.log("error submit!");
+          this.$message.error("信息错误");
+          return false;
         }
-      })
+      });
       addFormVisible = false;
     },
 
