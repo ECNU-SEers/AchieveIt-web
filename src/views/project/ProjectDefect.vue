@@ -2,15 +2,26 @@
   <div>
     <PageHeader title="项目缺陷信息">
       <Search />
-      <el-button type="primary" class="add-btn" @click="handleAdd">新增</el-button>
+      <el-button type="primary" class="add-btn" @click="handleAdd"
+        >新增</el-button
+      >
     </PageHeader>
     <!-- <p v-permission="{name:'查看系统消息',type:'disabled'}">Hello word</p>
         <p v-permission="'查看日志'">Hello word</p>
     <button v-permission="['修改信息','修改密码']">编辑</button>-->
     <!--工具条：搜索栏-->
     <Pagination>
-      <el-table :data="defects" highlight-current-row border style="width: 100%">
-        <el-table-column type="index" label="序号" width="70px"></el-table-column>
+      <el-table
+        :data="defects"
+        highlight-current-row
+        border
+        style="width: 100%"
+      >
+        <el-table-column
+          type="index"
+          label="序号"
+          width="70px"
+        ></el-table-column>
         <el-table-column label="缺陷ID" prop="id"></el-table-column>
         <el-table-column label="缺陷名称" prop="name"></el-table-column>
         <el-table-column label="缺陷描述" prop="description"></el-table-column>
@@ -36,7 +47,11 @@
     </Pagination>
 
     <!-- 新建缺陷 -->
-    <el-dialog title="新增缺陷" :visible.sync="addFormVisible" :close-on-click-modal="false">
+    <el-dialog
+      title="新增缺陷"
+      :visible.sync="addFormVisible"
+      :close-on-click-modal="false"
+    >
       <el-form
         @submit.native.prevent
         ref="addForm"
@@ -46,7 +61,10 @@
         class="demo-ruleForm"
       >
         <el-form-item label="缺陷名称" prop="name">
-          <el-input v-model="addForm.name" placeholder="请填写缺陷名称"></el-input>
+          <el-input
+            v-model="addForm.name"
+            placeholder="请填写缺陷名称"
+          ></el-input>
         </el-form-item>
         <el-form-item label="缺陷类型" prop="type">
           <el-select v-model="addForm.type.name" placeholder="请选择缺陷类型">
@@ -57,7 +75,9 @@
               :value="item.name"
             >
               <span style="float: left">{{ item.name }}</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">{{item.remark}}</span>
+              <span style="float: right; color: #8492a6; font-size: 13px">{{
+                item.remark
+              }}</span>
             </el-option>
           </el-select>
         </el-form-item>
@@ -70,15 +90,26 @@
               :value="item.name"
             >
               <span style="float: left">{{ item.name }}</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">{{item.remark}}</span>
+              <span style="float: right; color: #8492a6; font-size: 13px">{{
+                item.remark
+              }}</span>
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="提交人" prop="creatorName">
-          <el-input v-model="addForm.creatorName" placeholder="请填写缺陷名称" disabled></el-input>
+          <el-input
+            v-model="addForm.creatorName"
+            placeholder="请填写缺陷名称"
+            disabled
+          ></el-input>
         </el-form-item>
         <el-form-item label="创建日期" prop="createdAt">
-          <el-date-picker v-model="addForm.createdAt" placeholder="请填写缺陷名称" type="date" disabled></el-date-picker>
+          <el-date-picker
+            v-model="addForm.createdAt"
+            placeholder="请填写缺陷名称"
+            type="date"
+            disabled
+          ></el-date-picker>
         </el-form-item>
         <el-form-item label="预定日期" prop="due">
           <el-date-picker
@@ -89,12 +120,21 @@
           ></el-date-picker>
         </el-form-item>
         <el-form-item label="缺陷描述" prop="description">
-          <el-input type="textarea" v-model="addForm.description" placeholder></el-input>
+          <el-input
+            type="textarea"
+            v-model="addForm.description"
+            placeholder
+          ></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click.native="addFormVisible = false">取消</el-button>
-        <el-button type="primary" @click.native="addDefectSubmit" :loading="submitLoading">提交</el-button>
+        <el-button
+          type="primary"
+          @click.native="addDefectSubmit"
+          :loading="submitLoading"
+          >提交</el-button
+        >
       </div>
     </el-dialog>
   </div>
@@ -168,7 +208,7 @@ export default {
       // 新增缺陷
       addFormVisible: false,
       submitLoading: false,
-      
+
       addFormRules: {
         name: [
           {
@@ -200,7 +240,7 @@ export default {
         ],
         due: [
           {
-            type: 'date',
+            type: "date",
             required: true,
             message: "请选择预定日期",
             triggle: "blur"
@@ -209,19 +249,19 @@ export default {
       },
 
       addForm: {
-        name: '',
+        name: "",
         type: {
-          name: ''
+          name: ""
         },
         level: {
-          name: ''
+          name: ""
         },
-        creatorName: '',
-        createdAt: '',
-        due: '',
-        description: ''
+        creatorName: "",
+        createdAt: "",
+        due: "",
+        description: ""
       },
-      
+
       pickerOptions: {
         disabledDate(time) {
           return time.getTime() < Date.now();

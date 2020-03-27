@@ -2,17 +2,29 @@
   <div>
     <!--工具条：搜索栏-->
     <PageHeader title="项目列表">
-      <Search placeholder="请输入项目名称" :query-search="searchProject">
-        <template slot-scope="{ item }">
+      <Search
+        placeholder="请输入项目名称"
+        v-model="projectNameSearch"
+        :query-search="querySearch"
+        @search="searchProject"
+      >
+        <!-- <template slot-scope="item">
           <div style="text-overflow: ellipsis; overflow: hidden;">{{ item.name }}</div>
-          <span style="float: right; color: #8492a6; font-size: 13px">{{item.outerId}}</span>
-        </template>
+          <span style="float: right; color: #8492a6; font-size: 13px">
+            {{
+            item.outerId
+            }}
+          </span>
+        </template>-->
       </Search>
       <el-button type="primary" class="add-btn" @click="handleAdd">新增</el-button>
     </PageHeader>
 
     <!--项目列表-->
-    <Pagination>
+    <Pagination :current-page.sync="pageNo"
+      :page-size="pageSize"
+      :total="projectsLength"
+      @page-change="handlePageChange">
       <el-table :data="projects" highlight-current-row style="width: 100%">
         <!-- <el-table-column type="expand">
                     <template slot-scope="props">
@@ -74,9 +86,9 @@
     <el-dialog title="新建项目" :visible.sync="addFormVisible" :close-on-click-modal="false">
       <el-form
         @submit.native.prevent
-        ref="addForm"
         :model="addForm"
         :rules="addFormRules"
+        ref="addForm"
         label-width="100px"
       >
         <el-form-item label="项目ID" prop="outerId">
@@ -88,70 +100,91 @@
           <el-input v-model="addForm.name" placeholder="请填写项目名称"></el-input>
         </el-form-item>
         <el-form-item label="客户" prop="company">
-          <el-select v-model="addForm.company" placeholder="请选择客户">
+          <el-select v-model="addForm.company" value-key="outerId" placeholder="请选择客户">
             <el-option
               v-for="item in clients"
               :key="item.outerId"
               :label="item.company"
-              :value="item.outerId"
+              :value="item"
             >
               <span style="float: left">{{ item.company }}</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">{{item.outerId}}</span>
+              <span style="float: right; color: #8492a6; font-size: 13px">
+                {{
+                item.outerId
+                }}
+              </span>
             </el-option>
           </el-select>
         </el-form-item>
-        <!-- <el-form-item label="预定时间" prop="startDate">
-          <el-date-picker v-model="addForm.startDate" placeholder="请选择预定时间" type="date"></el-date-picker>
+        <el-form-item label="起止时间" required>
+          <el-col :span="11">
+            <el-form-item prop="startDate">
+              <el-date-picker
+                type="date"
+                placeholder="选择日期"
+                v-model="addForm.startDate"
+                value-format="yyyy-MM-dd"
+                :picker-options="add_start_Date"
+                style="width: 100%;"
+              ></el-date-picker>
+            </el-form-item>
+          </el-col>
+          <el-col class="line" :span="2">至</el-col>
+          <el-col :span="11">
+            <el-form-item prop="endDate">
+              <el-date-picker
+                type="date"
+                placeholder="选择日期"
+                v-model="addForm.endDate"
+                value-format="yyyy-MM-dd"
+                :picker-options="add_end_Date"
+                style="width: 100%;"
+              ></el-date-picker>
+            </el-form-item>
+          </el-col>
         </el-form-item>
-        <el-form-item label="交付日" prop="endDate">
-          <el-date-picker v-model="addForm.endDate" placeholder="请选择交付日" type="date"></el-date-picker>
-        </el-form-item>-->
-        <el-form-item label="起止时间" prop="dateRange">
-          <el-date-picker
-            v-model="addForm.dateRange"
-            type="daterange"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-          ></el-date-picker>
+        <el-form-item label="项目经理" prop="managerName">
+          <el-input v-model="addForm.managerName" disabled></el-input>
         </el-form-item>
-        <el-form-item label="项目经理" prop="manager">
-          <el-input v-model="addForm.manager" disabled></el-input>
-        </el-form-item>
-        <el-form-item label="项目主管" prop="supervisor">
-          <el-select v-model="addForm.supervisor" placeholder="请选择项目主管">
-            <el-option v-for="item in mentors" :key="item.id" :label="item.name" :value="item.id">
-              <span style="float: left">{{ item.name }}</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">{{item.id}}</span>
+        <el-form-item label="项目主管" prop="supervisorName">
+          <el-select v-model="addForm.supervisorName" value-key="id" placeholder="请选择项目主管">
+            <el-option v-for="item in mentors" :key="item.id" :label="item.realName" :value="item">
+              <span style="float: left">{{ item.realName }}</span>
+              <span style="float: right; color: #8492a6; font-size: 13px">{{ item.username }}</span>
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="采用技术" prop="tech">
-          <el-select v-model="addForm.tech" placeholder="请选择采用技术">
-            <el-option v-for="item in teches" :key="item.id" :label="item.name" :value="item.id">
-              <span style="float: left">{{ item.name }}</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">{{item.id}}</span>
-            </el-option>
+        <el-form-item label="采用技术" prop="skillNames">
+          <el-select v-model="addForm.skillNames" multiple placeholder="请选择采用技术">
+            <el-option v-for="item in teches" :key="item.id" :label="item.name" :value="item.name"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="业务领域" prop="area">
-          <el-select v-model="addForm.area" placeholder="请选择业务领域">
-            <el-option v-for="item in busiAreas" :key="item.id" :label="item.name" :value="item.id">
-              <span style="float: left">{{ item.name }}</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">{{item.id}}</span>
-            </el-option>
+        <el-form-item label="业务领域" prop="businessAreaName">
+          <el-select v-model="addForm.businessAreaName" placeholder="请选择业务领域">
+            <el-option
+              v-for="item in busiAreas"
+              :key="item.id"
+              :label="item.name"
+              :value="item.name"
+            ></el-option>
           </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="addFormVisible = false">取消</el-button>
-        <el-button type="primary" @click="addProjectSubmit('addForm')" :loading="submitLoading">提交</el-button>
+        <el-button type="primary" @click.native="addProjectSubmit" :loading="submitLoading">提交</el-button>
       </div>
     </el-dialog>
 
     <!--编辑项目-->
-    <el-dialog title="编辑项目" :visible.sync="editFormVisible">
-      <el-form ref="editForm" :model="editForm" label-width="80px" class="demo-ruleForm">
+    <el-dialog title="编辑项目" :visible.sync="editFormVisible" :close-on-click-modal="false">
+      <el-form
+        @submit.native.prevent
+        ref="editForm"
+        :model="editForm"
+        :rules="editFormRules"
+        label-width="100px"
+      >
         <el-form-item label="项目ID" prop="outerId">
           <el-select v-model="editForm.outerId" placeholder="请选择ID" disabled></el-select>
         </el-form-item>
@@ -159,23 +192,48 @@
           <el-input v-model="editForm.name" placeholder="请填写项目名称"></el-input>
         </el-form-item>
         <el-form-item label="客户" prop="company">
-          <el-select v-model="editForm.company" placeholder="请选择客户">
+          <el-select v-model="editForm.company" value-key="outerId"  placeholder="请选择客户">
             <el-option
               v-for="item in clients"
               :key="item.outerId"
               :label="item.company"
-              :value="item.outerId"
+              :value="item"
             >
               <span style="float: left">{{ item.company }}</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">{{item.outerId}}</span>
+              <span style="float: right; color: #8492a6; font-size: 13px">
+                {{
+                item.outerId
+                }}
+              </span>
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="预定时间" prop="startDate">
-          <el-date-picker v-model="editForm.startDate" placeholder="请选择预定时间" type="date"></el-date-picker>
-        </el-form-item>
-        <el-form-item label="交付日" prop="endDate">
-          <el-date-picker v-model="editForm.endDate" placeholder="请选择交付日" type="date"></el-date-picker>
+        <el-form-item label="起止时间" required>
+          <el-col :span="11">
+            <el-form-item prop="startDate">
+              <el-date-picker
+                type="date"
+                placeholder="选择日期"
+                v-model="editForm.startDate"
+                value-format="yyyy-MM-dd"
+                :picker-options="start_Date"
+                style="width: 100%;"
+              ></el-date-picker>
+            </el-form-item>
+          </el-col>
+          <el-col class="line" :span="2">至</el-col>
+          <el-col :span="11">
+            <el-form-item prop="endDate">
+              <el-date-picker
+                type="date"
+                placeholder="选择日期"
+                v-model="editForm.endDate"
+                value-format="yyyy-MM-dd"
+                :picker-options="end_Date"
+                style="width: 100%;"
+              ></el-date-picker>
+            </el-form-item>
+          </el-col>
         </el-form-item>
         <el-form-item label="项目经理" prop="managerName">
           <el-input v-model="editForm.managerName" disabled></el-input>
@@ -212,57 +270,50 @@ export default {
       userId: 1,
       userName: "管理员",
       projects: [],
+      projectsLength: 0,
 
+      // 模态框
       clients: [],
-
       teches: [],
-
       busiAreas: [],
-
       mentors: [],
-
       IDs: [],
+
+      // 搜索框
+      projectModal: [],
+      projectNameSearch: "",
+      timeout: null,
 
       projectOptions: [
         {
           projectName: "项目1",
           projectId: "id1"
-        },
-        {
-          projectName: "项目2",
-          projectId: "id2"
-        },
-        {
-          projectName: "项目2",
-          projectId: "id3"
-        },
-        {
-          projectName: "项目2",
-          projectId: "id4"
         }
       ],
       projectNameLoading: false,
-      projectNameSearch: "",
+
       // 新增项目
       addFormVisible: false,
       addForm: {
         outerId: "",
         name: "",
-        company: "",
         startDate: "",
         endDate: "",
-        manager: "",
-        supervisor: "",
-        tech: "",
-        area: "",
-        dateRange: ""
+        clientOuterId: "",
+        company: "",
+        supervisorId: 0,
+        supervisorName: "",
+        managerId: 0,
+        managerName: "",
+        skillNames: [],
+        businessAreaName: ""
       },
       addFormRules: {
         outerId: [
           {
             required: true,
             message: "请选择项目ID",
-            triggle: "change"
+            triggle: "blur"
           }
         ],
         name: [
@@ -274,44 +325,40 @@ export default {
         ],
         company: [
           {
+            type: "object",
             required: true,
             message: "请选择客户",
-            triggle: "change"
+            triggle: "blur"
           }
         ],
         startDate: [
           {
             required: true,
-            message: "请选择预定日期",
-            triggle: "change"
+            message: "请选择项目开始日期",
+            triggle: "blur"
           }
         ],
         endDate: [
           {
             required: true,
-            message: "请选择交付日",
-            triggle: "change"
+            message: "请选择项目结束日期",
+            triggle: "blur"
           }
         ],
-        manager: [
+        supervisorName: [
           {
-            required: true,
-            message: "请选择项目经理",
-            triggle: "change"
-          }
-        ],
-        supervisor: [
-          {
+            type: "object",
             required: true,
             message: "请选择项目主管",
-            triggle: "change"
+            triggle: "blur"
           }
         ],
-        tech: [
+        skillNames: [
           {
+            type: "array",
             required: true,
             message: "请选择采用技术",
-            triggle: "change"
+            triggle: "blur"
           }
         ]
       },
@@ -320,20 +367,60 @@ export default {
       editForm: {
         outerId: "",
         name: "",
-        company: "",
+        company: {},
         startDate: "",
         endDate: "",
+        managerId: "",
         managerName: "",
-        supervisorName: ""
+        supervisorName: "",
+        supervisorId: ""
       },
-      editFormRules: {
-        outerId: [
-          {
-            required: true,
-            message: "请选择项目ID",
-            triggle: "change"
+
+      // 起止日期限制
+      start_Date: {
+        disabledDate: time => {
+          if (this.editForm.endDate) {
+            return time.getTime() > new Date(this.editForm.endDate).getTime();
+          } else {
+            return;
           }
-        ],
+        }
+      },
+      end_Date: {
+        disabledDate: time => {
+          if (
+            this.editForm.startDate &&
+            new Date(this.editForm.startDate).getTime() > Date.now()
+          ) {
+            return time.getTime() < new Date(this.editForm.startDate).getTime();
+          } else {
+            return time.getTime() < Date.now();
+          }
+        }
+      },
+      add_start_Date: {
+        disabledDate: time => {
+          if (this.addForm.endDate) {
+            return time.getTime() > new Date(this.addForm.endDate).getTime();
+          } else {
+            return;
+          }
+        }
+      },
+      add_end_Date: {
+        disabledDate: time => {
+          if (
+            this.addForm.startDate &&
+            new Date(this.addForm.startDate).getTime() > Date.now()
+          ) {
+            return time.getTime() < new Date(this.addForm.startDate).getTime();
+          } else {
+            return time.getTime() < Date.now();
+          }
+        }
+      },
+
+      editFormRules: {
         name: [
           {
             required: true,
@@ -343,26 +430,28 @@ export default {
         ],
         company: [
           {
+            type: 'object',
             required: true,
             message: "请选择客户",
-            triggle: "change"
+            triggle: "blur"
           }
         ],
         startDate: [
           {
             required: true,
             message: "请选择预定日期",
-            triggle: "change"
+            triggle: "blur"
           }
         ],
         endDate: [
           {
             required: true,
-            message: "请选择交付日",
-            triggle: "change"
+            message: "请选择交付日期",
+            triggle: "blur"
           }
         ]
       },
+
       submitLoading: false,
       // 时间轴
       reverse: false,
@@ -388,6 +477,10 @@ export default {
   },
   mounted() {
     this.getProjects();
+    ProjectSYJ.getProjectModal(this.userId).then(res => {
+      this.projectModal = res;
+      this.projectsLength = res.length;
+    });
   },
   methods: {
     testNotify() {
@@ -396,6 +489,11 @@ export default {
         message: "这是一条成功的提示消息",
         type: "success"
       });
+    },
+
+    handlePageChange(val) {
+      this.pageNo = val;
+      this.getProjects();
     },
 
     // 获取所有项目列表
@@ -409,23 +507,30 @@ export default {
     },
 
     // 项目搜索框
-    searchProject(queryString, cb) {
-      var projects = this.projects;
-      console.log(projects);
+    querySearch(queryString, cb) {
+      var projectModal = this.projectModal;
+      console.log(projectModal);
       console.log(queryString);
       var results = queryString
-        ? projects.filter(this.createFilter(queryString))
-        : projects;
-      cb(results);
+        ? projectModal.filter(this.createFilter(queryString))
+        : projectModal;
+      clearTimeout(this.timeout);
+      this.timeout = setTimeout(() => {
+        cb(results);
+      }, 3000 * Math.random());
     },
 
     createFilter(queryString) {
-      return project => {
+      return projectNameSearch => {
         return (
-          project.name.toLowerCase().indexOf(queryString.toLowerCase()) === 0
+          projectNameSearch.name
+            .toLowerCase()
+            .indexOf(queryString.toLowerCase()) === 0
         );
       };
     },
+
+    searchProject(project) {},
 
     // 获取客户模态框
     async getClientModal() {
@@ -459,27 +564,36 @@ export default {
     // 新增项目
     handleAdd() {
       this.addFormVisible = true;
-      this.addForm.manager = this.userName;
+      this.addForm.managerName = this.userName;
       this.getClientModal();
       this.getTechModal();
       this.getBusinessModal();
-      // this.getMentorModal();
+      this.getMentorModal();
       this.getProjectIdModal();
     },
 
-    addProjectSubmit(addForm) {
-      console.log(this.addForm.dateRange);
-      console.log(this.addForm);
-      this.$refs[addForm].validate(valid => {
+    addProjectSubmit() {
+      this.$refs.addForm.validate(valid => {
         if (valid) {
           this.$confirm("确定提交吗？", "提示", {}).then(() => {
             this.submitLoading = true;
             const para = Object.assign({}, this.addForm);
+            para.clientOuterId = para.company.outerId;
+            para.company = para.company.company;
+            para.supervisorId = para.supervisorName.id;
+            para.supervisorName = para.supervisorName.username;
+            para.managerId = this.userId;
             console.log(para);
+            ProjectSYJ.addProject(para).then(res => {
+              this.submitLoading = false;
+              this.$message({
+                message: "提交成功！",
+                type: "success"
+              });
+            });
           });
         }
       });
-      // this.submitLoading = false;
     },
 
     handleEdit(index, row) {
@@ -488,10 +602,34 @@ export default {
       this.getClientModal();
       this.getTechModal();
       this.getBusinessModal();
-      // this.getMentorModal();
+      this.getMentorModal();
       this.getProjectIdModal();
     },
-    editProjectSubmit() {},
+    async editProjectSubmit() {
+      this.$refs.editForm.validate(valid => {
+        if (valid) {
+          this.$confirm("确认提交吗", "提示", {}).then(() => {
+            this.submitLoading = true;
+            const para = {};
+            para.outerId = this.editForm.outerId;
+            para.name = this.editForm.name;
+            if (typeof(this.editForm.company) === 'object') {
+              para.clientOuterId = this.editForm.company.clientOuterId;
+              para.company = this.editForm.company.company;
+            } else {
+              para.clientOuterId = this.editForm.clientOuterId;
+              para.company = this.editForm.company;
+            }
+            para.startDate = this.editForm.startDate;
+            para.endDate = this.editForm.endDate;
+            para.supervisorId = this.editForm.supervisorId;
+            para.supervisorName = this.editForm.supervisorName;
+            console.log(para);
+            // ProjectSYJ.updateProject(para);
+          });
+        }
+      });
+    },
 
     handleDel(index, row) {
       this.$confirm("确定对该项目进行归档吗?", "提示", {
@@ -539,6 +677,9 @@ export default {
     .highlighted .addr {
       color: #ddd;
     }
+  }
+  .line {
+    text-align: right;
   }
 }
 </style>
