@@ -27,7 +27,7 @@ export default class ProjectSYJ {
 
   static async getAllBusinessArea() {
     return await get("/business/area/all");
-  }  
+  }
 
   static async getAllMentors() {
     return await get("/supervisors");
@@ -38,8 +38,8 @@ export default class ProjectSYJ {
   }
 
   static async getProjectModal(userId) {
-    let keyword = '';
-    return await get("/project/search", {userId, keyword});
+    let keyword = "";
+    return await get("/project/search", { userId, keyword });
   }
 
   static async addProject(project) {
@@ -63,6 +63,10 @@ export default class ProjectSYJ {
   }
 
   static async addProjectDefect(projectId, defect) {
-    return await post("/project/defect", defect, projectId);
+    return await post("/project/" + projectId + "/defect",  defect);
+  }
+
+  static async updateProjectDefect(projectId, defectId, defect) {
+    return await put("/project/" + projectId + "/defect/" + defectId, defect);
   }
 }

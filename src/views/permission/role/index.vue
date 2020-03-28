@@ -6,7 +6,7 @@
       v-bind="editingRoleInfo"
     />
     <PageHeader title="角色设置">
-      <Search />
+      <Search :query-search="querySearch" />
       <el-button @click="onAddRole" type="primary" class="add-btn"
         >新增</el-button
       >
@@ -83,6 +83,9 @@ export default {
     onDeleteRole(row) {},
     getRoleListFromServe() {
       getRoleList().then(res => (this.tableData = res));
+    },
+    querySearch(queryString, cb) {
+      cb([{ value: '111' }]);
     }
   },
   created() {

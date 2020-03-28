@@ -21,10 +21,12 @@
     </PageHeader>
 
     <!--项目列表-->
-    <Pagination :current-page.sync="pageNo"
+    <Pagination
+      :current-page.sync="pageNo"
       :page-size="pageSize"
       :total="projectsLength"
-      @page-change="handlePageChange">
+      @page-change="handlePageChange"
+    >
       <el-table :data="projects" highlight-current-row style="width: 100%">
         <!-- <el-table-column type="expand">
                     <template slot-scope="props">
@@ -63,7 +65,7 @@
         <el-table-column fixed="right" label="操作" width="180px">
           <template slot-scope="scope">
             <el-button-group>
-              <el-button size="medium" @click="testNotify" icon="el-icon-search"></el-button>
+              <el-button size="medium" @click.stop="handleDetail(scope.$index, scope.row)" icon="el-icon-search"></el-button>
               <el-button
                 size="medium"
                 type="primary"
@@ -108,11 +110,7 @@
               :value="item"
             >
               <span style="float: left">{{ item.company }}</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">
-                {{
-                item.outerId
-                }}
-              </span>
+              <span style="float: right; color: #8492a6; font-size: 13px">{{ item.outerId }}</span>
             </el-option>
           </el-select>
         </el-form-item>
@@ -150,7 +148,11 @@
           <el-select v-model="addForm.supervisorName" value-key="id" placeholder="请选择项目主管">
             <el-option v-for="item in mentors" :key="item.id" :label="item.realName" :value="item">
               <span style="float: left">{{ item.realName }}</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">{{ item.username }}</span>
+              <span style="float: right; color: #8492a6; font-size: 13px">
+                {{
+                item.username
+                }}
+              </span>
             </el-option>
           </el-select>
         </el-form-item>
@@ -192,7 +194,7 @@
           <el-input v-model="editForm.name" placeholder="请填写项目名称"></el-input>
         </el-form-item>
         <el-form-item label="客户" prop="company">
-          <el-select v-model="editForm.company" value-key="outerId"  placeholder="请选择客户">
+          <el-select v-model="editForm.company" value-key="outerId" placeholder="请选择客户">
             <el-option
               v-for="item in clients"
               :key="item.outerId"
@@ -200,11 +202,7 @@
               :value="item"
             >
               <span style="float: left">{{ item.company }}</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">
-                {{
-                item.outerId
-                }}
-              </span>
+              <span style="float: right; color: #8492a6; font-size: 13px">{{ item.outerId }}</span>
             </el-option>
           </el-select>
         </el-form-item>
@@ -266,7 +264,7 @@ export default {
     return {
       // 分页
       pageNo: 1,
-      pageSize: 10,
+      pageSize: 5,
       userId: 1,
       userName: "管理员",
       projects: [],
@@ -430,7 +428,7 @@ export default {
         ],
         company: [
           {
-            type: 'object',
+            type: "object",
             required: true,
             message: "请选择客户",
             triggle: "blur"
@@ -477,17 +475,21 @@ export default {
   },
   mounted() {
     this.getProjects();
-    ProjectSYJ.getProjectModal(this.userId).then(res => {
-      this.projectModal = res;
-      this.projectsLength = res.length;
-    });
+    this.getProjectModals();
   },
   methods: {
-    testNotify() {
-      this.$notify({
-        title: "成功",
-        message: "这是一条成功的提示消息",
-        type: "success"
+    refresh() {
+      this.getProjects();
+      this.getProjectModals();
+      this.$refs['addForm'].resetFields();
+    },
+
+    handleDetail(index, row) {
+      this.$router.push({
+        path: "/project/basic",
+        query: {
+          projectId: row.outerId
+        }
       });
     },
 
@@ -506,18 +508,36 @@ export default {
       this.projects = res.items;
     },
 
+    async getProjectModals() {
+      this.projectModal = await ProjectSYJ.getProjectModal(this.userId);
+      this.projectsLength = this.projectModal.length;
+    },
+
     // 项目搜索框
     querySearch(queryString, cb) {
-      var projectModal = this.projectModal;
+      console.log(this.projectModal);
+      var projectModal = [];
+      // let i = 0;
+      // for (i = 0; i < this.projectModal.length; i++) {
+      //   const obj = {};
+      //   obj.id = this.projectModal[i].outerId;
+      //   obj.value = this.projectModal[i].name;
+      //   projectModal.push(obj);
+      // }
+      this.projectModal.forEach((item)=> {
+        const obj = {};
+        obj.id = item.outerId;
+        obj.value = item.name;
+        projectModal.push(obj);
+      })
       console.log(projectModal);
       console.log(queryString);
-      var results = queryString
-        ? projectModal.filter(this.createFilter(queryString))
-        : projectModal;
-      clearTimeout(this.timeout);
-      this.timeout = setTimeout(() => {
-        cb(results);
-      }, 3000 * Math.random());
+      // // const results = queryString
+      // //   ? projectModal.filter(this.createFilter(queryString))
+      // //   : projectModal;
+      // const results = [{value: '111'}];
+      // cb([{ value: "111" }]);
+      cb(projectModal);
     },
 
     createFilter(queryString) {
@@ -585,11 +605,13 @@ export default {
             para.managerId = this.userId;
             console.log(para);
             ProjectSYJ.addProject(para).then(res => {
-              this.submitLoading = false;
-              this.$message({
-                message: "提交成功！",
-                type: "success"
-              });
+                this.submitLoading = false;
+                this.addFormVisible = false;
+                this.refresh();
+                this.$message({
+                  message: "提交成功！",
+                  type: "success"
+                });
             });
           });
         }
@@ -599,6 +621,9 @@ export default {
     handleEdit(index, row) {
       this.editFormVisible = true;
       this.editForm = Object.assign({}, row);
+      const id = this.editForm.clientOuterId;
+      const name = this.editForm.company;
+      this.editForm.company = { outerId: id, company: name };
       this.getClientModal();
       this.getTechModal();
       this.getBusinessModal();
@@ -613,19 +638,22 @@ export default {
             const para = {};
             para.outerId = this.editForm.outerId;
             para.name = this.editForm.name;
-            if (typeof(this.editForm.company) === 'object') {
-              para.clientOuterId = this.editForm.company.clientOuterId;
-              para.company = this.editForm.company.company;
-            } else {
-              para.clientOuterId = this.editForm.clientOuterId;
-              para.company = this.editForm.company;
-            }
+            para.clientOuterId = this.editForm.company.outerId;
+            para.company = this.editForm.company.company;
             para.startDate = this.editForm.startDate;
             para.endDate = this.editForm.endDate;
             para.supervisorId = this.editForm.supervisorId;
             para.supervisorName = this.editForm.supervisorName;
             console.log(para);
-            // ProjectSYJ.updateProject(para);
+            ProjectSYJ.updateProject(para).then(res => {
+              this.submitLoading = false;
+              this.editFormVisible = false;
+              this.refresh();
+              this.$message({
+                message: "提交成功！",
+                type: "success"
+              });
+            });
           });
         }
       });
