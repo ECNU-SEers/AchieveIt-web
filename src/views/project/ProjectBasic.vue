@@ -80,7 +80,7 @@
             </el-form-item>
 
             <!-- 多选 -->
-            <el-form-item label="采用技术" prop="skills">
+            <el-form-item label="采用技术" prop="skillNames">
               <el-checkbox-group v-model="editForm.skillNames">
                 <el-checkbox
                   v-for="item in skills"
@@ -162,13 +162,13 @@ import Project from "@/sys/models/project_htx";
 
 export default {
   data() {
-    // let validateDate = (rule, value, callback) => {
-    //   if (this.editForm.endDete < this.editForm.startDete == true) {
-    //     callback(new Error("交付日须在预定时间之后！"));
-    //   } else {
-    //     callback();
-    //   }
-    // };
+    let validateDate = (rule, value, callback) => {
+      if (this.editForm.endDate > this.editForm.startDate == false) {
+        callback(new Error("交付日须在预定时间之后！"));
+      } else {
+        callback();
+      }
+    };
     return {
       // 修改弹框
       dialogFormVisible: false,
@@ -178,12 +178,12 @@ export default {
       tableData: [
         {
           name: "项目ID",
-          detail: "",
+          detail: "暂无数据",
           isExpend: 0
         },
         {
           name: "项目名称",
-          detail: "",
+          detail: "暂无数据",
           isExpend: 0
         },
         {
@@ -194,37 +194,37 @@ export default {
         },
         {
           name: "预定时间",
-          detail: "",
+          detail: "暂无数据",
           isExpend: 0
         },
         {
           name: "交付日",
-          detail: "2020-04-29",
+          detail: "暂无数据",
           isExpend: 0
         },
         {
           name: "项目上级",
-          detail: "小张",
+          detail: "暂无数据",
           isExpend: 0
         },
         {
           name: "主要里程碑",
-          detail: "",
+          detail: "暂无数据",
           isExpend: 0
         },
         {
           name: "采用技术",
-          detail: [],
+          detail: "暂无数据",
           isExpend: 0
         },
         {
           name: "业务领域",
-          detail: "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+          detail: "暂无数据",
           isExpend: 0
         },
         {
           name: "主要功能",
-          detail: "XXXXXXXXXXXXXXXXXXXXXXXX",
+          detail: "暂无数据",
           isExpend: 0
         }
       ],
@@ -239,7 +239,7 @@ export default {
         startDate: "",
         endDate: "",
         milestone: "",
-        skillNames: "",
+        skillNames: [],
         businessAreaName: ""
       },
       clients: [
@@ -279,12 +279,12 @@ export default {
             required: true,
             message: "请选择交付时间",
             trigger: "blur"
-          }
-          // { validator: validateDate, trigger: "blur" }
+          },
+          { validator: validateDate, trigger: "blur" }
         ],
-        milestone: [
-          { required: true, message: "请填写主要里程碑", trigger: "blur" }
-        ],
+        // milestone: [
+        //   { required: true, message: "请填写主要里程碑", trigger: "blur" }
+        // ],
         skillNames: [
           {
             type: "array",
@@ -346,7 +346,7 @@ export default {
         for (var i = 0; i < info.projectFunctions.length; ++i) {
           str = str + info.projectFunctions[i].name + " \n ";
         }
-        this.tableData[9].detail=str;
+        this.tableData[9].detail = str;
       } catch (e) {
         console.log(e);
         // this.$message.error("获取设备信息失败");
@@ -368,22 +368,30 @@ export default {
       const info = await Project.getBasic(outerId);
       this.editForm.outerId = info.project.outerId;
       this.editForm.name = info.project.name;
-      this.editForm.client.outerId = info.projectClient.outerId;
-      this.editForm.client.company = info.projectClient.company;
+      // this.editForm.client.outerId = info.projectClient.outerId;
+      // this.editForm.client.company = info.projectClient.company;
       this.editForm.startDate = info.project.startDate;
       this.editForm.endDate = info.project.endDate;
-      this.editForm.milestone = info.projectMilestones;
-      this.editForm.businessAreaName = info.projectBusinessArea;
-      this.editForm.skillNames = info.projectSkills;
+
+      var tmpStr = "";
+      // for (var i = 0; i < info.projectMilestones.length; ++i) {
+      //   tmpStr = tmpStr + info.projectMilestones[i].progress + "\n";
+      // }
+      this.editForm.milestone = tmpStr;
+
+      // this.editForm.businessAreaName = info.projectBusinessArea;
+      // this.editForm.skillNames = info.projectSkills;
       console.log(this.editForm);
     },
     // 提交表单
     submitForm(formName) {
+      console.log(formName);
       console.log(this.editForm);
       // var stones = this.editForm.milestone.split("\n");
       // console.log(stones);
       this.$refs[formName].validate(valid => {
         if (valid) {
+          console.log("valid")
           Project.updateBasic(
             this.editForm.outerId,
             this.editForm.name,
