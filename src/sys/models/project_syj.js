@@ -71,7 +71,7 @@ export default class ProjectSYJ {
   }
 
   static async approvalArchive(projectId) {
-    return await put("/project/approve/archive", {projectId});
+    return await put("/project/approve/archive", { projectId });
   }
 
   static async getAllDefectTypes() {
@@ -85,9 +85,9 @@ export default class ProjectSYJ {
       projectId
     });
   }
-  
+
   static async getDefectModal(projectId, name) {
-    return await get("/project/" + projectId + "/defects/search", {name});
+    return await get("/project/" + projectId + "/defects/search", { name });
   }
 
   static async addProjectDefect(projectId, defect) {
