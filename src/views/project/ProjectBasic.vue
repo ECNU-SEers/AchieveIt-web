@@ -57,7 +57,7 @@
                 style="width: 100%;"
               ></el-date-picker>
             </el-form-item>
-            -->
+
             <!-- 交付日 -->
             <el-form-item label="交付日" required prop="date2">
               <el-date-picker

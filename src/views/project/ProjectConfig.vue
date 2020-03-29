@@ -1,162 +1,169 @@
 <template>
-  <div class="config">
-    <sticky-top>
-      <div class="config-header">
-        <p class="title">当前项目:007</p>
-      </div>
-    </sticky-top>
-    <div class="body">
-      <div style="width:100%;hegiht:500px;backgournd-color:black;"></div>
-      <div class="config-form">
-        <el-form :model="configForm" label-width="130px">
-          <p class="title-form">项目配置信息</p>
-          <el-form-item label="Git仓库地址:">
-            <el-input
-              v-model="configForm.GitAddress"
-              placeholder="暂无数据"
-              :disabled="true"
-            ></el-input>
-          </el-form-item>
-          <el-form-item label="虚拟机空间:">
-            <el-input
-              v-model="configForm.virtualSpace"
-              placeholder="暂无数据"
-              :disabled="true"
-            ></el-input>
-          </el-form-item>
-          <el-form-item label="文件服务器目录:">
-            <el-input
-              v-model="configForm.fileCatalog"
-              placeholder="未生成"
-              :disabled="true"
-            ></el-input>
-          </el-form-item>
+  <div>
+    <el-card class="box-card">
+      <div slot="header" class="clearfix">
+        <span>当前项目:007</span>
+        <el-button
+          style="float: right; padding: 3px 0"
+          type="text"
+          @click="editFormVisible = true;edit()"
+        >编辑</el-button>
+        <!--仅配置管理员可见-->
+        <el-dialog title="项目配置信息" :visible.sync="editFormVisible">
+          <el-form
+            :model="editForm"
+            :rules="rules"
+            ref="editForm"
+            label-width="120px"
+            class="ruleForm"
+          >
+            <!-- 输入框 -->
+            <el-form-item label="Git仓库地址" prop="GitAddress">
+              <el-input v-model="editForm.GitAddress" clearable></el-input>
+            </el-form-item>
 
-          <!--------------编辑----------------->
-          <el-form-item>
-            <el-button
-              v-permission="'修改配置信息'"
-              @click="changeFormVisible = true"
-              type="primary"
-              >编辑</el-button
-            >
-            <el-dialog
-              title="项目配置信息"
-              :visible.sync="changeFormVisible"
-              :append-to-body="true"
-            >
-              <el-form :model="form">
-                <el-form-item label="Git仓库地址:">
-                  <el-input v-model="configForm.GitAddress"></el-input>
-                </el-form-item>
-                <el-form-item label="虚拟机空间:">
-                  <el-input v-model="configForm.virtualSpace"></el-input>
-                </el-form-item>
-                <el-form-item label="文件服务器目录:">
-                  <el-input v-model="configForm.fileCatalog"></el-input>
-                </el-form-item>
-                <el-form-item style="padding-left:65%;">
-                  <el-button
-                    type="primary"
-                    @click="
-                      changeFormSubmit;
-                      changeFormVisible = false;
-                    "
-                    style="margin-right:8%;"
-                    >确 定</el-button
-                  >
-                  <el-button @click="changeFormVisible = false"
-                    >取 消</el-button
-                  >
-                </el-form-item>
-              </el-form>
-            </el-dialog>
-          </el-form-item>
-        </el-form>
+            <!-- 输入框 -->
+            <el-form-item label="虚拟机空间" prop="virtualSpace">
+              <el-input v-model="editForm.virtualSpace" clearable></el-input>
+            </el-form-item>
+
+            <!-- 布尔开关 -->
+            <el-form-item label="文件服务器目录" prop="fileCatalog">
+              <el-tooltip :content="'当前情况: ' + editForm.fileAddValue" placement="top">
+                <el-switch
+                  v-model="editForm.fileAddValue"
+                  active-value=true
+                  inactive-value=false
+                ></el-switch>
+              </el-tooltip>
+            </el-form-item>
+
+             <!-- 布尔开关 -->
+            <el-form-item label="邮件" prop="email">
+              <el-tooltip :content="'当前情况: ' + editemailValue" placement="top">
+                <el-switch
+                  v-model="editForm.emailValue"
+                  active-value=true
+                  inactive-value=false
+                ></el-switch>
+              </el-tooltip>
+            </el-form-item>
+
+            <el-form-item style="padding-left:45%;">
+              <!--btn和基本信息中略不同，建议试下放右边-->
+              <el-button type="primary" @click="submitForm('ruleForm')" style="margin-right:8%;">确定</el-button>
+              <el-button @click="changeFormVisible = false">取消</el-button>
+            </el-form-item>
+          </el-form>
+        </el-dialog>
       </div>
-    </div>
+
+      <el-table :data="tableData" :show-header="hiddenTableHeader">
+        <el-table-column prop="name" label="名称" width="140"></el-table-column>
+        <el-table-column prop="detail" label="详细信息"></el-table-column>
+      </el-table>
+    </el-card>
   </div>
 </template>
 
 <script>
+import ProjectLW from "@/sys/models/project_lw";
+
 export default {
   data() {
     return {
-      configForm: {
-        GitAddress: '暂无数据',
-        virtualSpace: '暂无数据',
-        fileCatalog: '未生成',
-        unit: ''
+      editFormVisible: false,
+      formLabelWidth: "120px",
+      fileAddValue:"",
+      emailValue:"",
+      tableData: [
+        {
+          name: 'Git仓库地址',
+          detail: '暂无数据'
+        },
+        {
+          name: '虚拟机空间',
+          detail: '暂无数据'
+        },
+        {
+          name: '文件服务器目录',
+          detail: "true"
+        },
+        {
+          name: '邮件',
+          detail: "true"
+        }
+      ],
+
+      editForm: {
+        GitAddress: "",
+        virtualSpace: "",
+        fileAddValue: "",
+        emailValue:""
       },
-      changeFormVisible: false
+
+      hiddenTableHeader: false
     };
   },
+  mounted() {
+   this.getConfig();
+  },
   methods: {
-    changeFormSubmit() {
-      //修改配置信息
+   // 信息显示
+    async getConfig() {
+      const res = await ProjectLW.getConfig(this.projectId);
+      this.tableData = res.items;
+    },
+
+    submitForm(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          alert("submit!");
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
+    },
+      //编辑
+     edit(){
+    console.log(this.tableData[1].detail);
+    this.editForm={
+     GitAddress:this.tableData[0].detail,
+    virtualSpace:this.tableData[1].detail,
+    fileAddValue:this.tableData[2].detail,
+    emailValue:this.tableData[3].detail
     }
+  }
+
   }
 };
 </script>
 
-<style lang="scss" scoped>
-.config {
-  .config-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 20px;
-    margin-bottom: -24px;
+<style scoped>
+.text {
+  font-size: 14px;
+}
 
-    .title {
-      float: left;
-      height: 59px;
-      line-height: 59px;
-      color: #4c76af;
-      font-size: 16px;
-      font-weight: 500;
-    }
-  }
+.item {
+  margin-bottom: 18px;
+}
 
-  .body {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    margin-top: 50px;
-    // background-color: white;
-    .title-form {
-      margin-left: 40%;
-      height: 59px;
-      line-height: 59px;
-      color: #4c76af;
-      font-size: 16px;
-      font-weight: 500;
-    }
+.clearfix:before,
+.clearfix:after {
+  display: table;
+  content: "";
+}
+.clearfix:after {
+  clear: both;
+}
 
-    .config-form {
-      margin: 3% auto 0 auto;
-      position: relative;
-      height: 480px;
-      width: 500px;
-      padding-top: 25px;
-      background-color: white;
-      box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-    }
+.box-card {
+  /* width: 480px; */
+  margin: 20px 30px 30px 30px;
+}
 
-    .config-form label {
-      color: #99a9bf;
-    }
-    .config-form .el-form-item {
-      margin-right: 0;
-      margin-bottom: 0;
-      margin-top: 35px;
-      margin-left: 30px;
-      width: 80%;
-
-      .el-button {
-        margin-left: 25%;
-      }
-    }
-  }
+/*编辑 */
+.ruleForm {
 }
 </style>

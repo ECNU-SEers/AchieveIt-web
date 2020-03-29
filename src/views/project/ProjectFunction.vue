@@ -1,94 +1,88 @@
 <template>
   <div>
-    <!--工具条：搜索栏-->
-    <PageHeader title="项目列表">
-      <Search />
-      <!-- <el-input prefix-icon="el-icon-search" v-model="search" style="width: 200px" placeholder="输入关键字搜索"></el-input> -->
+    <div style="margin: 20px 0 20px 10px ">
+      <!-- 只能查父级的 -->
+      <el-input
+        prefix-icon="el-icon-search"
+        v-model="search"
+        style="width: 200px"
+        placeholder="输入关键字搜索"
+      ></el-input>
+
+      <!-- 导入excel -->
       <el-button
-        type="primary"
-        class="add-btn"
         @click="addExcelFormVisible = true"
+        style="margin:0 10px 0 10px"
         >导入</el-button
       >
-      <el-button type="primary" class="add-btn">下载</el-button>
-    </PageHeader>
-
-    <!-- 导入excel -->
-    <el-dialog title="导入项目成员信息" :visible.sync="addExcelFormVisible">
-      <el-upload
-        action="https://jsonplaceholder.typicode.com/posts/"
-        :file-list="fileList"
-        accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-        :on-change="handleChange"
-        :on-success="handleSuccess"
-        :on-error="handleError"
-      >
-        <el-button size="small" type="primary">点击上传excel文件</el-button>
-      </el-upload>
-
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="addExcelFormVisible = false">取消</el-button>
-        <el-button type="primary" @click="submitUpload" :loading="submitLoading"
+      <el-dialog title="导入项目成员信息" :visible.sync="addExcelFormVisible">
+        <el-upload
+          action="https://jsonplaceholder.typicode.com/posts/"
+          :file-list="fileList"
+          accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"
+          :on-change="handleChange"
+          :on-success="handleSuccess"
+          :on-error="handleError"
+        >
+          <el-button size="small" type="primary">点击上传excel文件</el-button>
+        </el-upload>
+        <el-button
+          style="margin: 20px 0 0 0;"
+          size="small"
+          @click="submitUpload"
           >提交</el-button
         >
-      </div>
-    </el-dialog>
+      </el-dialog>
+
+      <!-- 下载 -->
+      <el-button>下载</el-button>
+    </div>
 
     <!-- 功能列表 -->
-    <Pagination>
-      <el-table
-        :data="
-          tableData.filter(
-            data =>
-              !search ||
-              data.functionName.toLowerCase().includes(search.toLowerCase())
-          )
-        "
-        style="margin-bottom: 20px;"
-        row-key="id"
-        strip
-        border
-        default-expand-all
-        :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
-      >
-        <el-table-column prop="id" label="序号" width="100"></el-table-column>
-        <el-table-column
-          prop="functionId"
-          label="功能ID"
-          width="180"
-        ></el-table-column>
-        <el-table-column
-          prop="functionName"
-          label="功能名称"
-          width="180"
-        ></el-table-column>
-        <el-table-column prop="functionInfo" label="功能描述"></el-table-column>
-
-        <el-table-column fixed="right" label="操作" width="180px">
-          <template slot-scope="scope">
-            <el-button-group>
-              <el-button
-                size="medium"
-                @click="handleAdd(scope.$index, scope.row)"
-                icon="el-icon-plus"
-              ></el-button>
-              <el-button
-                size="medium"
-                type="primary"
-                @click="handleEdit(scope.$index, scope.row)"
-                icon="el-icon-edit"
-              ></el-button>
-              <el-button
-                size="medium"
-                type="danger"
-                @click="handleDelete(scope.$index, scope.row)"
-                icon="el-icon-delete"
-              ></el-button>
-            </el-button-group>
-          </template>
-        </el-table-column>
-      </el-table>
-    </Pagination>
+    <el-table
+      :data="
+        tableData.filter(
+          data =>
+            !search ||
+            data.functionName.toLowerCase().includes(search.toLowerCase())
+        )
+      "
+      style="margin-bottom: 20px;"
+      row-key="id"
+      strip
+      border
+      default-expand-all
+      :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
+    >
+      <el-table-column prop="id" label="序号" width="100"></el-table-column>
+      <el-table-column
+        prop="functionId"
+        label="功能ID"
+        width="180"
+      ></el-table-column>
+      <el-table-column
+        prop="functionName"
+        label="功能名称"
+        width="180"
+      ></el-table-column>
+      <el-table-column prop="functionInfo" label="功能描述"></el-table-column>
+      <el-table-column label="操作" width="200">
+        <template slot-scope="scope">
+          <el-button size="mini" @click="handleAdd(scope.$index, scope.row)"
+            >新增</el-button
+          >
+          <el-button size="mini" @click="handleEdit(scope.$index, scope.row)"
+            >编辑</el-button
+          >
+          <el-button
+            size="mini"
+            type="danger"
+            @click="handleDelete(scope.$index, scope.row)"
+            >移除</el-button
+          >
+        </template>
+      </el-table-column>
+    </el-table>
 
     <!-- 新增 -->
     <el-dialog title="新增项目功能" :visible.sync="addFormVisible">
@@ -111,16 +105,13 @@
             placeholder="请填写项目描述"
           ></el-input>
         </el-form-item>
+
+        <el-form-item>
+          <el-button type="primary" @click="submitAddForm('addForm')"
+            >提交</el-button
+          >
+        </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="addFormVisible = false">取消</el-button>
-        <el-button
-          type="primary"
-          @click="submitAddForm('addForm')"
-          :loading="submitLoading"
-          >提交</el-button
-        >
-      </div>
     </el-dialog>
 
     <!-- 修改 -->
@@ -144,31 +135,19 @@
             placeholder="请填写项目描述"
           ></el-input>
         </el-form-item>
+
+        <el-form-item>
+          <el-button type="primary" @click="submitEditForm('editForm')"
+            >提交</el-button
+          >
+        </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="editFormVisible = false">取消</el-button>
-        <el-button
-          type="primary"
-          @click="submitEditForm('editForm')"
-          :loading="submitLoading"
-          >提交</el-button
-        >
-      </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import PageHeader from '../../components/common/PageHeader';
-import Search from '../../components/common/Search';
-import Pagination from '../../components/common/Pagination';
-
 export default {
-  components: {
-    PageHeader,
-    Search,
-    Pagination
-  },
   data() {
     return {
       search: '',
@@ -265,11 +244,4 @@ export default {
 };
 </script>
 
-<style scoped>
-.add-btn {
-  height: 40px;
-  margin-left: 20px;
-  border-radius: 3px;
-  width: 80px;
-}
-</style>
+<style scoped></style>
