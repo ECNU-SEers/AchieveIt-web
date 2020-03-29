@@ -6,10 +6,10 @@
       <div style="width:20px;height=100%;"></div>
 
       <!--新增风险信息-->
-      <el-button size="medium" @click="addFormVisible = true" type="primary" class="top-btn">新增</el-button>
+      <el-button size="medium" @click="addFormVisible = true" type="primary" >新增</el-button>
 
       <!--导入-->
-      <el-button size="medium" @click="importFormVisible = true" type="primary" class="top-btn">导入</el-button>
+      <el-button size="medium" @click="importFormVisible = true" type="primary" >导入</el-button>
     </PageHeader>
 
     <!--列表展示-->
@@ -19,7 +19,6 @@
         stripe
         border
         highlight-current-row
-         v-loading="loading"
         style="width: 100%"
       >
        <el-table-column type="expand">
@@ -64,7 +63,7 @@
            </el-form>
          </template>
        </el-table-column>
-        <el-table-column label="序号" type="index" fixed></el-table-column>
+       <el-table-column label="序号" type="index" ></el-table-column>
         <el-table-column label="风险级别" prop="level"></el-table-column>
           <el-table-column label="风险 ID" prop="id"></el-table-column>
         <el-table-column label="风险名称" prop="name"></el-table-column>
@@ -202,6 +201,7 @@
       :before-close="handleClose"
       @open="handleForm('importForm')"
       :append-to-body="true"
+      :filter-method="importFilter"
       center
     >
       <div style="text-align:center;margin:-20px auto 0 auto;color:red;font-size:1px;">
@@ -450,7 +450,7 @@ export default {
          // console.log(res);
           this.addFormVisible=false;
        this.$message.success("添加成功");
-       getRiskList();
+        this.getRiskList();
         } else {
           this.$message.error("请填写正确信息");
           return false;
@@ -512,6 +512,7 @@ export default {
          // console.log(res);
           _this.editFormVisible = false;
           _this.$message.success("修改成功");
+          this.getRiskList();
            } else {
           this.$message.error("修改失败");
           return false;
@@ -532,6 +533,7 @@ export default {
               type: "success",
               message: "删除成功!"
             });
+            this.getRiskList();
         })
         .catch(() => {
           this.$message({
@@ -539,6 +541,12 @@ export default {
             message: "已取消删除"
           });
         });
+    },
+
+    //导入
+
+    handleChange(){
+
     }
 
   }
@@ -546,12 +554,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.top-btn {
-  height: 40px;
-  margin-left: 20px;
-  border-radius: 3px;
-  width: 80px;
-}
+
 .demo-table-expand .el-form-item{
      width:50%;
      .text{

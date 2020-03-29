@@ -18,7 +18,6 @@
         :default-sort="{ prop: 'index', order: 'ascending' }"
         highlight-current-row
         style="width:100%"
-        v-loading="loading"
         :row-key="getRowKeys"
         @expand-change="exChange"
       >
@@ -313,7 +312,7 @@ export default {
     //下拉展示设备审核
     async exChange(row, expandedRows) {
       console.log("exChange");
-      this.loading = true;
+      
       var _this = this;
       if (expandedRows.length) {
         //只展开一行
@@ -352,7 +351,7 @@ export default {
           console.log(res);
           this.addFormVisible = false;
           this.$message.success("添加成功");
-          getDeviceList();
+          this.getDeviceList();
         } else {
           this.$message.error("请填写正确信息");
           return false;
@@ -409,9 +408,10 @@ export default {
             _this.editForm.startDate,
             _this.editForm.dueDate
           );
-          console.log(res);
+         // console.log(res);
           _this.editFormVisible = false;
           _this.$message.success("修改成功");
+          this.getDeviceList();
           //前端修改当前行
           //   _this.row={
           //      outerId: _this.editForm.outerId,

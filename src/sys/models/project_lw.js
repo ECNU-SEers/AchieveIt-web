@@ -133,9 +133,9 @@ export default class ProjectLW {
    * @param {number} projectId
    */
   static async getRiskList( projectId,page, pageSize) {
-    console.log("getRiskList");
+  //  console.log("getRiskList");
     const res = await get('/project/'+projectId+'/risks?page=' + page + '&pageSize=' + pageSize );
-    console.log("getRiskList"+res);
+  //  console.log("getRiskList"+res);
     return res;
   }
   
@@ -182,9 +182,56 @@ export default class ProjectLW {
     */
    
     static async getConfig(projectId){
-          const res =await get("/project/"+projectId+"/config?projectId="+projectId);
+          const res =await get("/project/"+projectId+"/config");
           return res;
     }
+
+    /**
+     * 编辑项目配置信息
+     * @param {number} projectId
+     * @param {string} gitRepoAddress
+     * @param {number} virtualMachineSpace
+     * @param {string}  isFileServerDirConfirmed //boolean
+     * @param {string} isMailConfirmed //boolean
+     */
+
+     static  editConfig(projectId,gitRepoAddress,virtualMachineSpace,isFileServerDirConfirmed,isMailConfirmed){
+        return  put("/project/"+projectId+"/config",{
+        gitRepoAddress,
+        virtualMachineSpace,
+        isFileServerDirConfirmed,
+        isMailConfirmed
+       });
+      
+     }
+
+     /**********项目进展状态******************/
+
+     /**
+      * 进展状态 列表展示
+      * @param {string} projectOuterId
+      */
+
+      static async getState(projectOuterId){
+        const res = await get("/project/state/change?outerId="+projectOuterId);
+     //   console.log("getState="+res);
+        return res;
+      }
+
+      /**
+       * 获取备注信息
+       * @param {string} projectOuterId
+       */
+
+       static async getRemark(projectOuterId){
+         const res= await get("/project/retrieve?outerId="+projectOuterId);
+         console.log(getRemark="res");
+         return res;
+
+       }
+       
+      
+
 
 
 }
