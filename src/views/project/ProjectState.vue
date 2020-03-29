@@ -5,24 +5,24 @@
     <!--列表展示-->
     <Pagination>
       <el-table
-        :data="statusData"
+        :data="stateData"
         stripe
         border
         :default-sort="{ prop: 'id', order: 'ascending' }"
         highlight-current-row
         style="width: 100%"
       >
-        <el-table-column label="序号" prop="index" fixed></el-table-column>
+        <el-table-column label="序号" type="index" fixed></el-table-column>
 
         <el-table-column label="变更日期" prop="changeDate"></el-table-column>
 
-        <el-table-column label="变更状态" prop="status"></el-table-column>
+        <el-table-column label="变更状态" prop="latterState"></el-table-column>
 
-        <el-table-column label="触发人" prop="trigger"></el-table-column>
+        <el-table-column label="触发人" prop="operatorId"></el-table-column>
 
-        <el-table-column label="操作" width="180px" prop="action">
-          <template slot-scope="scope">
-            <el-button-group>
+        <el-table-column label="备注" width="180px" prop="operation">
+          <template  slot-scope="scope">
+            <el-button-group v-if="scope.row.latterState=== ('立项驳回'|| '结束') "> 
               <el-button
                 type="info"
                 icon="el-icon-s-comment"
@@ -36,8 +36,8 @@
     </Pagination>
 
     <!--备注-->
-    <el-dialog title="提示" :visible.sync="detailFormVisible" width="30%">
-      <span>这是一段信息</span>
+    <el-dialog title="提示" :visible.sync="detailFormVisible" @open="this.getRemark()" width="30%">
+      <span>{{this.remark}}</span>
     </el-dialog>
   </div>
 </template>
@@ -45,6 +45,7 @@
 <script>
 import PageHeader from '@/components/common/PageHeader';
 import Pagination from '@/components/common/Pagination';
+import ProjectLW from "@/sys/models/project_lw";
 
 export default {
   components: {
@@ -53,27 +54,37 @@ export default {
   },
   data() {
     return {
+
+      projectId:1,
+      projectOuterId:'P01',
+      remark:"",
       //列表
-      statusData: [
-        {
-          index: '1',
-          changeDate: '2020-3-23',
-          status: '立项驳回',
-          trigger: '孙二狗'
-          // action: "",
-        },
-        {
-          index: '1',
-          changeDate: '2020-3-23',
-          status: '立项驳回',
-          trigger: '孙二狗'
-          // action: "",
-        }
-      ],
+      stateData: [],
       detailFormVisible: false
     };
   },
-  methods: {}
+  mounted(){
+    this.getState();
+    this.getRemark();
+  },
+  methods: {
+    //列表展示
+    async getState(){
+        const res = await ProjectLW.getState(
+        this.projectOuterId
+     );
+      this.stateData = res;
+    },
+
+    //获取备注
+    async getRemark(){
+      const res = await ProjectLW.getRemark(this.projectOuterId);
+      console.log("这里的res"+res);
+      this.remark=res;
+    }
+
+  }
+
 };
 </script>
 
