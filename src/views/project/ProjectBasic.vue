@@ -3,7 +3,12 @@
     <el-card class="box-card">
       <div slot="header" class="clearfix">
         <span>AchieveIt</span>
-        <el-button style="float: right; padding: 3px 0" type="text" @click="editBasic">修改</el-button>
+        <el-button
+          style="float: right; padding: 3px 0"
+          type="text"
+          @click="editBasic"
+          >修改</el-button
+        >
 
         <el-dialog title="修改项目基本信息" :visible.sync="dialogFormVisible">
           <el-form
@@ -15,12 +20,20 @@
           >
             <!-- 不可修改 -->
             <el-form-item label="项目ID">
-              <el-input v-model="editForm.outerId" :disabled="true" placeholder></el-input>
+              <el-input
+                v-model="editForm.outerId"
+                :disabled="true"
+                placeholder
+              ></el-input>
             </el-form-item>
 
             <!-- 输入框 -->
             <el-form-item label="项目名称" prop="name">
-              <el-input v-model="editForm.name" placeholder="请输入项目名称" clearable></el-input>
+              <el-input
+                v-model="editForm.name"
+                placeholder="请输入项目名称"
+                clearable
+              ></el-input>
             </el-form-item>
 
             <!-- 下拉单选 -->
@@ -40,9 +53,7 @@
                 >
                   <span style="float: left">{{ item.company }}</span>
                   <span style="float: right; color: #8492a6; font-size: 13px">
-                    {{
-                    item.outerId
-                    }}
+                    {{ item.outerId }}
                   </span>
                 </el-option>
               </el-select>
@@ -71,7 +82,11 @@
 
             <!-- 不可修改 -->
             <el-form-item label="项目上级" prop="leader">
-              <el-input v-model="tableData[5].detail" :disabled="true" placeholder></el-input>
+              <el-input
+                v-model="tableData[5].detail"
+                :disabled="true"
+                placeholder
+              ></el-input>
             </el-form-item>
 
             <!-- 文本框 -->
@@ -109,7 +124,9 @@
             </el-form-item>-->
 
             <el-form-item>
-              <el-button type="primary" @click="submitForm('editForm')">提交</el-button>
+              <el-button type="primary" @click="submitForm('editForm')"
+                >提交</el-button
+              >
               <el-button @click="resetForm('editForm')">重置</el-button>
             </el-form-item>
           </el-form>
@@ -391,7 +408,7 @@ export default {
       // console.log(stones);
       this.$refs[formName].validate(valid => {
         if (valid) {
-          console.log("valid")
+          console.log("valid");
           Project.updateBasic(
             this.editForm.outerId,
             this.editForm.name,
