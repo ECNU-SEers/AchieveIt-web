@@ -65,6 +65,7 @@ export default {
   methods: {
     onSearch(key) {
       console.log(key);
+      this.$router.push({ path: '/project/basic', query: { id: '1' } });
     },
     onPageChange(currentPage) {
       console.log(currentPage, this.currentPage);

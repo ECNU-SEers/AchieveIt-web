@@ -70,6 +70,10 @@ export default class ProjectSYJ {
     return await put("/project/assign/epg", EPGs);
   }
 
+  static async approvalArchive(projectId) {
+    return await put("/project/approve/archive", {projectId});
+  }
+
   static async getAllDefectTypes() {
     return await get("/defect/type");
   }

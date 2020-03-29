@@ -927,7 +927,7 @@ export default {
     },
 
     handleEdit(index, row) {
-      const permission = "4";
+      const permission = "5";
       if (permission === "1") {
         this.editFormVisible = true;
         this.editForm = Object.assign({}, row);
@@ -957,9 +957,11 @@ export default {
           type: "warning"
         })
           .then(() => {
-            this.$message({
-              type: "success",
-              message: "已同意!"
+            ProjectSYJ.approvalArchive(res => {
+              this.$message({
+                type: "success",
+                message: "已同意!"
+              });
             });
           })
           .catch(() => {
