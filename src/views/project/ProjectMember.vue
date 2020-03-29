@@ -5,7 +5,8 @@
       <Search 
       placeholder="请输入功能名称"
         :query-search="querySearch"
-        @search="searchMembers"/>
+        @search="searchMembers"
+        @select-suggestion="getOne"/>
       <!-- <el-input prefix-icon="el-icon-search" v-model="search" style="width: 200px" placeholder="输入关键字搜索"></el-input> -->
       <el-button type="primary" class="add-btn" @click="addMember"
         >新增</el-button
@@ -417,6 +418,17 @@ export default {
     },
     searchMembers() {
       console.log("click");
+    },
+        async getOne(item) {
+      console.log(item);
+      try {
+        var projectId = "1";
+        const info = await Project.getOneMember(projectId, item.id);
+        this.tableData=[];
+        this.tableData.push(info);
+      } catch (e) {
+        console.log(e);
+      }
     }
   },
   mounted: function() {

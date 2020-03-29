@@ -33,10 +33,10 @@ export default {
   methods: {
     onSearch() {
       if (isEmpty(this.keyword)) return;
-
       this.$emit('search', this.keyword);
     },
     handleSelect(v) {
+      this.$emit('select-suggestion', v);
       this.keyword = v.value;
       this.onSearch();
     }

@@ -6,20 +6,14 @@
         placeholder="请输入功能名称"
         :query-search="querySearch"
         @search="searchFunctions"
+        @select-suggestion="getOne"
       >
-        <!-- <span style="float: left">{{ item.name }}</span>
-        <span style="float: right; color: #8492a6; font-size: 13px">{{item.id}}</span> -->
+        <!-- <span style="float: left">{{ item.value }}</span>
+        <span style="float: right; color: #8492a6; font-size: 13px">{{item.id}}</span>-->
       </Search>
       <!-- <el-input prefix-icon="el-icon-search" v-model="search" style="width: 200px" placeholder="输入关键字搜索"></el-input> -->
-      <el-button type="primary" class="add-btn" @click="addFirst"
-        >新增</el-button
-      >
-      <el-button
-        type="primary"
-        class="add-btn"
-        @click="addExcelFormVisible = true"
-        >导入</el-button
-      >
+      <el-button type="primary" class="add-btn" @click="addFirst">新增</el-button>
+      <el-button type="primary" class="add-btn" @click="addExcelFormVisible = true">导入</el-button>
       <el-button type="primary" class="add-btn">下载</el-button>
     </PageHeader>
 
@@ -38,9 +32,7 @@
 
       <div slot="footer" class="dialog-footer">
         <el-button @click="addExcelFormVisible = false">取消</el-button>
-        <el-button type="primary" @click="submitUpload" :loading="submitLoading"
-          >提交</el-button
-        >
+        <el-button type="primary" @click="submitUpload" :loading="submitLoading">提交</el-button>
       </div>
     </el-dialog>
 
@@ -56,17 +48,10 @@
         :load="load"
         :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
       >
-        <el-table-column
-          type="index"
-          label="序号"
-          width="100"
-        ></el-table-column>
+        <el-table-column width="50"></el-table-column>
+        <el-table-column type="index" label="序号" width="100"></el-table-column>
         <el-table-column prop="id" label="功能ID" width="180"></el-table-column>
-        <el-table-column
-          prop="name"
-          label="功能名称"
-          width="180"
-        ></el-table-column>
+        <el-table-column prop="name" label="功能名称" width="180"></el-table-column>
         <el-table-column prop="description" label="功能描述"></el-table-column>
 
         <el-table-column fixed="right" label="操作" width="180px">
@@ -103,28 +88,16 @@
         </el-form-item>-->
 
         <el-form-item label="功能名称" required>
-          <el-input
-            v-model="addForm.name"
-            placeholder="请填写项目名称"
-          ></el-input>
+          <el-input v-model="addForm.name" placeholder="请填写项目名称"></el-input>
         </el-form-item>
 
         <el-form-item label="功能描述" required>
-          <el-input
-            type="textarea"
-            v-model="addForm.description"
-            placeholder="请填写项目描述"
-          ></el-input>
+          <el-input type="textarea" v-model="addForm.description" placeholder="请填写项目描述"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="addFormVisible = false">取消</el-button>
-        <el-button
-          type="primary"
-          @click="submitAddForm"
-          :loading="submitLoading"
-          >提交</el-button
-        >
+        <el-button type="primary" @click="submitAddForm" :loading="submitLoading">提交</el-button>
       </div>
     </el-dialog>
 
@@ -136,28 +109,16 @@
         </el-form-item>-->
 
         <el-form-item label="项目名称" required>
-          <el-input
-            v-model="editForm.name"
-            placeholder="请填写项目名称"
-          ></el-input>
+          <el-input v-model="editForm.name" placeholder="请填写项目名称"></el-input>
         </el-form-item>
 
         <el-form-item label="项目描述" required>
-          <el-input
-            type="textarea"
-            v-model="editForm.description"
-            placeholder="请填写项目描述"
-          ></el-input>
+          <el-input type="textarea" v-model="editForm.description" placeholder="请填写项目描述"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="editFormVisible = false">取消</el-button>
-        <el-button
-          type="primary"
-          @click="submitEditForm"
-          :loading="submitLoading"
-          >提交</el-button
-        >
+        <el-button type="primary" @click="submitEditForm" :loading="submitLoading">提交</el-button>
       </div>
     </el-dialog>
   </div>
@@ -177,6 +138,7 @@ export default {
   data() {
     return {
       // 搜索
+      tmp: "",
       functionSearch: [],
       submitLoading: false,
 
@@ -353,8 +315,26 @@ export default {
         );
       };
     },
-    searchFunctions() {
-      console.log("click");
+    searchFunctions(item) {
+      console.log(item);
+      console.log("search or click");
+    },
+    async getOne(item) {
+      console.log(item);
+      try {
+        var projectId = "1";
+        const info = await Project.getOneFunction(projectId, item.id);
+        console.log(info);
+        // this.tableData = info;
+        // // 标记有二级功能的功能
+        // for (var i = 0; i < this.tableData.length; ++i) {
+        //   if (this.tableData[i].numSubFunctions > 0) {
+        //     this.tableData[i].hasChildren = true;
+        //   }
+        // }
+      } catch (e) {
+        console.log(e);
+      }
     }
   },
   mounted: function() {

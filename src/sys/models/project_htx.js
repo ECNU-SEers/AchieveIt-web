@@ -273,9 +273,25 @@ export default class Project {
   }
 
   /**
+   * 获取单个功能
+   * @param {*} projectId 
+   * @param {*} name 
+   */
+  static async getOneFunction(projectId,functionId){
+    return get('/project/'+projectId+'/functions/'+functionId);
+  }
+
+  /**
    * 搜索成员
    */
   static async searchMembers(projectId,name){
       return get('/project/' + projectId +'/members/search?name=' + name);
+  }
+
+  /**
+   * 获取单个成员
+   */
+  static async getOneMember(projectId,memberId){
+    return get('/project/'+projectId+'/member/'+memberId);
   }
 }
