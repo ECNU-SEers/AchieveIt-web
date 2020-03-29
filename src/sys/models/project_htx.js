@@ -267,8 +267,15 @@ export default class Project {
    * 搜索功能
    */
   static async searchFunctions(projectId, name) {
-    var info = get("/project/" + projectId + "/functions/search?name=" + name);
+    var info = get('/project/' + projectId + '/functions/search?name=' + name);
     console.log(info);
     return info;
+  }
+
+  /**
+   * 搜索成员
+   */
+  static async searchMembers(projectId,name){
+      return get('/project/' + projectId +'/members/search?name=' + name);
   }
 }

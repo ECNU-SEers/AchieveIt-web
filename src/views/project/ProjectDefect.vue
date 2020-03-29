@@ -1,10 +1,13 @@
 <template>
   <div>
     <PageHeader title="项目缺陷信息">
-      <Search placeholder="请输入缺陷名称"
+      <Search
+        placeholder="请输入缺陷名称"
         v-model="defectNameSearch"
         :query-search="querySearch"
-        @search="searchDefect"> </Search>
+        @search="searchDefect"
+      >
+      </Search>
       <el-button type="primary" class="add-btn" @click="handleAdd"
         >新增</el-button
       >
@@ -389,7 +392,7 @@ export default {
     },
 
     async getDefectModals() {
-      this.defectModal = await ProjectSYJ.getDefectModal(this.projectId, '');
+      this.defectModal = await ProjectSYJ.getDefectModal(this.projectId, "");
       this.defectsLength = this.defectModal.length;
     },
 

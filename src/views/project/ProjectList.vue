@@ -7,14 +7,13 @@
         :query-search="querySearch"
         value-key="outerId"
         @search="searchProject"
-
       >
-        <template slot-scope="{item}">
-          <div style="text-overflow: ellipsis; overflow: hidden;">{{ item.value }}</div>
+        <template slot-scope="{ item }">
+          <div style="text-overflow: ellipsis; overflow: hidden;">
+            {{ item.value }}
+          </div>
           <span style="float: right; color: #8492a6; font-size: 13px">
-            {{
-            item.outerId
-            }}
+            {{ item.outerId }}
           </span>
         </template>
       </Search>
@@ -988,7 +987,12 @@ export default {
 
     async searchProject(keyword) {
       console.log(keyword);
-      const res = await ProjectSYJ.getProjectByKeyword(this.pageNo, this.pageSize, this.userId, keyword);
+      const res = await ProjectSYJ.getProjectByKeyword(
+        this.pageNo,
+        this.pageSize,
+        this.userId,
+        keyword
+      );
       this.projects = res.item;
     },
 
