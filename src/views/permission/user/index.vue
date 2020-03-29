@@ -1,77 +1,94 @@
 <template>
-    <div>
-        <EditUserDialog :visibility.sync="showEditUserDialog" v-bind="editingUserInfo"/>
-        <PageHeader title="用户权限">
-            <Search @search="onSearch"/>
-        </PageHeader>
-        <Pagination :current-page.sync="currentPage" :total="tableData.length" @page-change="onPageChange">
-            <el-table :data="tableData" style="width:100%;">
-                <el-table-column type="index" :index="index => index+1"/>
-                <el-table-column v-for="(item,index) in tableHeader"
-                                 :key="index" :prop="item.prop"
-                                 :label="item.label"
-                />
-                <el-table-column label="操作">
-                    <template slot-scope="scope">
-                        <el-button @click="onEditUser(scope.row)" type="primary" plain size="mini">
-                            编辑
-                        </el-button>
-                    </template>
-                </el-table-column>
-            </el-table>
-        </Pagination>
-    </div>
+  <div>
+    <EditUserDialog
+      :visibility.sync="showEditUserDialog"
+      v-bind="editingUserInfo"
+    />
+    <PageHeader title="用户权限">
+      <Search @search="onSearch" />
+    </PageHeader>
+    <LPageTable
+      :table-data="tableData"
+      :table-header="tableHeader"
+      :current-page.sync="currentPage"
+      :loading="loading"
+      :total="total"
+      @page-change="onPageChange"
+    >
+      <el-table-column label="角色">
+        <span slot-scope="scope">{{
+          scope.row.roles.map(item => item.name).join(" ")
+        }}</span>
+      </el-table-column>
+      <el-table-column label="操作">
+        <template slot-scope="scope">
+          <el-button
+            @click="onEditUser(scope.row)"
+            type="primary"
+            plain
+            size="mini"
+          >
+            编辑
+          </el-button>
+        </template>
+      </el-table-column>
+    </LPageTable>
+  </div>
 </template>
 
 <script>
-  import Search from '@/components/common/Search';
-  import PageHeader from '@/components/common/PageHeader';
-  import Pagination from '@/components/common/Pagination';
-  import EditUserDialog from "@/views/permission/user/EditUserDialog";
-  import {userPermissionTableHeader} from "../const";
-  import {getUserList} from "@/api/permisssion";
+import Search from '@/components/common/Search';
+import PageHeader from '@/components/common/PageHeader';
+import Pagination from '@/components/common/Pagination';
+import EditUserDialog from '@/views/permission/user/EditUserDialog';
+import LPageTable from '../../../components/common/LPageTable';
+import { userPermissionTableHeader } from '../const';
+import { getUserList } from '@/api/permisssion';
+import { loadable, pageable } from '../../../util/mixin';
 
-  export default {
-    components: {
-      Search,
-      PageHeader,
-      Pagination,
-      EditUserDialog
+export default {
+  components: {
+    Search,
+    PageHeader,
+    Pagination,
+    EditUserDialog,
+    LPageTable
+  },
+  mixins: [pageable, loadable],
+  data() {
+    return {
+      tableHeader: Object.freeze(userPermissionTableHeader),
+      showEditUserDialog: false,
+      editingUserInfo: null
+    };
+  },
+  methods: {
+    onSearch(key) {
+      console.log(key);
     },
-    data() {
-      return {
-        tableData: [],
-        currentPage: 1,
-        total: 100,
-        tableHeader: Object.freeze(userPermissionTableHeader),
-        showEditUserDialog: false,
-        editingUserInfo: null
-      };
+    onPageChange(nextPage) {
+      this.getUserListFromServe(nextPage);
     },
-    methods: {
-      onSearch(key) {
-        console.log(key);
-      },
-      onPageChange(currentPage) {
-        console.log(currentPage, this.currentPage);
-      },
-      onEditUser(row) {
-        this.editingUserInfo = row;
-        this.showEditUserDialog = true;
-      },
-      getUserListFromServe() {
-        getUserList().then(res => this.tableData = res);
-      }
+    onEditUser(row) {
+      this.editingUserInfo = row;
+      this.showEditUserDialog = true;
     },
-    created() {
-      this.getUserListFromServe();
-    },
-    watch: {
-      currentPage: nextPage => {
-        //TODO 向后端请求单页数据
-      }
+    getUserListFromServe(page) {
+      this.loading = true;
+      getUserList(page, this.pageSize)
+        .then(res => {
+          this.loading = false;
+          const { items, total } = res;
+          this.total = total;
+          this.tableData = items;
+        })
+        .catch(() => (this.loading = false));
     }
-  };
+  },
+  created() {
+    this.getUserListFromServe(this.currentPage);
+  }
+};
 </script>
 
 <style lang="scss" scoped></style>

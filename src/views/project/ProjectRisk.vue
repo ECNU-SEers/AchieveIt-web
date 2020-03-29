@@ -2,7 +2,11 @@
   <div>
     <PageHeader title="风险信息">
       <!--工具条：搜索栏-->
-      <Search />
+      <Search 
+      v-model="riskSearch"
+    
+      >
+      </Search>
       <div style="width:20px;height=100%;"></div>
 
       <!--新增风险信息-->
@@ -344,6 +348,7 @@ export default {
       projectId: 1,
       pageNo: 1,
       pageSize: 10,
+      riskSearch:"",
       riskData: [],
       users: [],
        owner:[],
@@ -448,9 +453,10 @@ export default {
             this.addForm.relatedPersons
           );
          // console.log(res);
+          this.getRiskList();
           this.addFormVisible=false;
        this.$message.success("添加成功");
-        this.getRiskList();
+       
         } else {
           this.$message.error("请填写正确信息");
           return false;
@@ -543,11 +549,11 @@ export default {
         });
     },
 
-    //导入
-
-    handleChange(){
-
-    }
+    //   //搜索
+    //   async handleSelect(){
+    //     const res = await ProjectLW.getRisk(projectId,riskSearch);
+    //     this.riskData = res.items;
+    // }
 
   }
 };
