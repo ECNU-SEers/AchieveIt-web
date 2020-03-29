@@ -1,32 +1,27 @@
-import {get, post, put} from '@/sys/plugins/axios';
-import {userPermissionTableHeader} from "@/views/permission/const";
-import {generateEmptyArrayByLength} from "@/util/array";
+import { get, post, put } from '@/sys/plugins/axios';
+import { userPermissionTableHeader } from '@/views/permission/const';
+import { generateEmptyArrayByLength } from '@/util/array';
 
-const OPEN_DEVELOP_MOCK = true;
+const OPEN_DEVELOP_MOCK = false;
 const MOCK = process.env.NODE_ENV === 'production' ? false : OPEN_DEVELOP_MOCK;
 
+export const getUserList = (page = 1, pageSize = 10) =>
+  MOCK
+    ? Promise.resolve(
+        generateEmptyArrayByLength(10).map(() => {
+          let listItem = {};
+          userPermissionTableHeader.forEach(
+            ({ prop }) => (listItem[prop] = 'xxx')
+          );
+          return listItem;
+        })
+      )
+    : get('/users/view/permissions', { page, pageSize });
 
-export const getUserList = () => MOCK
-    ? Promise.resolve(generateEmptyArrayByLength(10).map(() => {
-      let listItem = {};
-      userPermissionTableHeader.forEach(({prop}) => listItem[prop] = 'xxx');
-      return listItem;
-    }))
-    : get('');
+export const getRoleList = () => get('/view/roles');
 
-export const getRoleList = () => MOCK
-    ? Promise.resolve(generateEmptyArrayByLength(10).map(() => ({
-      name: 'xx',
-      permission: 'xxx',
-      creator: 'xxx'
-    })))
-    : get('');
+export const addNewRole = (name, permissions) =>
+  MOCK ? Promise.resolve() : post('/view/role', { name, permissions });
 
-
-export const addNewRole = () => MOCK
-    ? Promise.resolve()
-    : post('');
-
-export const editUserRole = () => MOCK
-    ? Promise.resolve()
-    : put('');
+export const editUserRole = (id, name, permissions) =>
+  MOCK ? Promise.resolve() : put(`/view/role/${id}`, { name, permissions });
