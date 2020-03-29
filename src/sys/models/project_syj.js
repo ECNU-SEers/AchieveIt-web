@@ -50,6 +50,26 @@ export default class ProjectSYJ {
     return await put("/project/update/less", project);
   }
 
+  static async acceptProject(result) {
+    return await put("/project/accept", result);
+  }
+
+  static async rejectProject(result) {
+    return await put("/project/reject", result);
+  }
+
+  static async getAllUser() {
+    return await get("/employees");
+  }
+
+  static async assignQAs(QAs) {
+    return await put("/project/assign/qa", QAs);
+  }
+
+  static async assignEPGs(EPGs) {
+    return await put("/project/assign/epg", EPGs);
+  }
+
   static async getAllDefectTypes() {
     return await get("/defect/type");
   }
@@ -61,9 +81,13 @@ export default class ProjectSYJ {
       projectId
     });
   }
+  
+  static async getDefectModal(projectId, name) {
+    return await get("/project/" + projectId + "/defects/search", {name});
+  }
 
   static async addProjectDefect(projectId, defect) {
-    return await post("/project/" + projectId + "/defect",  defect);
+    return await post("/project/" + projectId + "/defect", defect);
   }
 
   static async updateProjectDefect(projectId, defectId, defect) {

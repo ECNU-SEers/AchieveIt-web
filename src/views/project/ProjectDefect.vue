@@ -1,19 +1,35 @@
 <template>
   <div>
     <PageHeader title="项目缺陷信息">
-      <Search />
-      <el-button type="primary" class="add-btn" @click="handleAdd">新增</el-button>
+      <Search placeholder="请输入缺陷名称"
+        v-model="defectNameSearch"
+        :query-search="querySearch"
+        @search="searchDefect"> </Search>
+      <el-button type="primary" class="add-btn" @click="handleAdd"
+        >新增</el-button
+      >
     </PageHeader>
     <!-- <p v-permission="{name:'查看系统消息',type:'disabled'}">Hello word</p>
         <p v-permission="'查看日志'">Hello word</p>
     <button v-permission="['修改信息','修改密码']">编辑</button>-->
     <!--工具条：搜索栏-->
-    <Pagination :current-page.sync="page"
+    <Pagination
+      :current-page.sync="page"
       :page-size="pageSize"
       :total="defectsLength"
-      @page-change="handlePageChange">
-      <el-table :data="defects" highlight-current-row border style="width: 100%">
-        <el-table-column type="index" label="序号" width="70px"></el-table-column>
+      @page-change="handlePageChange"
+    >
+      <el-table
+        :data="defects"
+        highlight-current-row
+        border
+        style="width: 100%"
+      >
+        <el-table-column
+          type="index"
+          label="序号"
+          width="70px"
+        ></el-table-column>
         <el-table-column label="缺陷ID" prop="id"></el-table-column>
         <el-table-column label="缺陷名称" prop="name"></el-table-column>
         <el-table-column label="缺陷描述" prop="description"></el-table-column>
@@ -39,7 +55,11 @@
     </Pagination>
 
     <!-- 新建缺陷 -->
-    <el-dialog title="新增缺陷" :visible.sync="addFormVisible" :close-on-click-modal="false">
+    <el-dialog
+      title="新增缺陷"
+      :visible.sync="addFormVisible"
+      :close-on-click-modal="false"
+    >
       <el-form
         @submit.native.prevent
         ref="addForm"
@@ -49,16 +69,29 @@
         class="demo-ruleForm"
       >
         <el-form-item label="缺陷名称" prop="name">
-          <el-input v-model="addForm.name" placeholder="请填写缺陷名称"></el-input>
+          <el-input
+            v-model="addForm.name"
+            placeholder="请填写缺陷名称"
+          ></el-input>
         </el-form-item>
         <el-form-item label="缺陷类型" prop="type">
           <el-select v-model="addForm.type" placeholder="请选择缺陷类型">
-            <el-option v-for="item in type" :key="item.name" :label="item.name" :value="item.id"></el-option>
+            <el-option
+              v-for="item in type"
+              :key="item.name"
+              :label="item.name"
+              :value="item.id"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="缺陷等级" prop="level">
           <el-select v-model="addForm.level" placeholder="请选择缺陷等级">
-            <el-option v-for="item in levelDB" :key="item.name" :label="item.name" :value="item.id"></el-option>
+            <el-option
+              v-for="item in levelDB"
+              :key="item.name"
+              :label="item.name"
+              :value="item.id"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="提交人" prop="creatorName">
@@ -75,17 +108,30 @@
           ></el-date-picker>
         </el-form-item>
         <el-form-item label="缺陷描述" prop="description">
-          <el-input type="textarea" v-model="addForm.description" placeholder></el-input>
+          <el-input
+            type="textarea"
+            v-model="addForm.description"
+            placeholder
+          ></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click.native="addFormVisible = false">取消</el-button>
-        <el-button type="primary" @click.native="addDefectSubmit" :loading="submitLoading">提交</el-button>
+        <el-button
+          type="primary"
+          @click.native="addDefectSubmit"
+          :loading="submitLoading"
+          >提交</el-button
+        >
       </div>
     </el-dialog>
 
     <!-- 编辑缺陷 -->
-    <el-dialog title="编辑缺陷" :visible.sync="editFormVisible" :close-on-click-modal="false">
+    <el-dialog
+      title="编辑缺陷"
+      :visible.sync="editFormVisible"
+      :close-on-click-modal="false"
+    >
       <el-form
         @submit.native.prevent
         ref="editForm"
@@ -95,25 +141,47 @@
         class="demo-ruleForm"
       >
         <el-form-item label="缺陷名称" prop="name">
-          <el-input v-model="editForm.name" placeholder="请填写缺陷名称"></el-input>
+          <el-input
+            v-model="editForm.name"
+            placeholder="请填写缺陷名称"
+          ></el-input>
         </el-form-item>
         <el-form-item label="缺陷类型" prop="type">
           <el-select v-model="editForm.type" placeholder="请选择缺陷类型">
-            <el-option v-for="item in type" :key="item.name" :label="item.name" :value="item.id"></el-option>
+            <el-option
+              v-for="item in type"
+              :key="item.name"
+              :label="item.name"
+              :value="item.id"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="缺陷等级" prop="level">
           <el-select v-model="editForm.level" placeholder="请选择缺陷等级">
-            <el-option v-for="item in levelDB" :key="item.name" :label="item.name" :value="item.id"></el-option>
+            <el-option
+              v-for="item in levelDB"
+              :key="item.name"
+              :label="item.name"
+              :value="item.id"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="缺陷描述" prop="description">
-          <el-input type="textarea" v-model="editForm.description" placeholder></el-input>
+          <el-input
+            type="textarea"
+            v-model="editForm.description"
+            placeholder
+          ></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click.native="editFormVisible = false">取消</el-button>
-        <el-button type="primary" @click.native="editDefectSubmit" :loading="submitLoading">提交</el-button>
+        <el-button
+          type="primary"
+          @click.native="editDefectSubmit"
+          :loading="submitLoading"
+          >提交</el-button
+        >
       </div>
     </el-dialog>
   </div>
@@ -141,8 +209,11 @@ export default {
       userName: "管理员",
       userId: 1,
       defects: [],
-      defectsLength: 100,
+      defectsLength: 0,
       type: [],
+
+      defectModal: [],
+
       stateDB: [
         {
           id: 1,
@@ -317,6 +388,50 @@ export default {
       this.getAllDefects();
     },
 
+    async getDefectModals() {
+      this.defectModal = await ProjectSYJ.getDefectModal(this.projectId, '');
+      this.defectsLength = this.defectModal.length;
+    },
+
+    // 项目搜索框
+    querySearch(queryString, cb) {
+      console.log(this.defectModal);
+      var defectModal = [];
+      // let i = 0;
+      // for (i = 0; i < this.projectModal.length; i++) {
+      //   const obj = {};
+      //   obj.id = this.projectModal[i].outerId;
+      //   obj.value = this.projectModal[i].name;
+      //   projectModal.push(obj);
+      // }
+      this.defectModal.forEach(item => {
+        const obj = {};
+        obj.id = item.outerId;
+        obj.value = item.name;
+        defectModal.push(obj);
+      });
+      console.log(defectModal);
+      console.log(queryString);
+      const results = queryString
+        ? defectModal.filter(this.createFilter(queryString))
+        : defectModal;
+      // const results = [{value: '111'}];
+      // cb([{ value: "111" }]);
+      cb(results);
+    },
+
+    createFilter(queryString) {
+      return defectNameSearch => {
+        return (
+          defectNameSearch.value
+            .toLowerCase()
+            .indexOf(queryString.toLowerCase()) === 0
+        );
+      };
+    },
+
+    searchDefect(defect) {},
+
     getNowFormatDate() {
       var date = new Date();
       var seperator1 = "-";
@@ -334,15 +449,15 @@ export default {
     },
 
     matchLevel(levelId) {
-      return this.levelDB[levelId-1].name;
+      return this.levelDB[levelId - 1].name;
     },
 
     matchState(stateId) {
-      return this.stateDB[stateId-1].name;
+      return this.stateDB[stateId - 1].name;
     },
 
     matchType(typeId) {
-      return this.type[typeId-1].name;
+      return this.type[typeId - 1].name;
     },
 
     async getAllDefects() {
@@ -366,7 +481,6 @@ export default {
         this.defects[i].level = this.matchLevel(this.defects[i].level);
         this.defects[i].state = this.matchState(this.defects[i].state);
         this.defects[i].type = this.matchType(this.defects[i].type);
-        
       }
     },
 
@@ -446,6 +560,7 @@ export default {
   },
   mounted() {
     this.getAllDefects();
+    this.getDefectModals();
   }
 };
 </script>
