@@ -5,16 +5,18 @@
       <Search
         placeholder="请输入项目名称"
         :query-search="querySearch"
+        value-key="outerId"
         @search="searchProject"
+
       >
-        <!-- <template slot-scope="item">
-          <div style="text-overflow: ellipsis; overflow: hidden;">{{ item.name }}</div>
+        <template slot-scope="{item}">
+          <div style="text-overflow: ellipsis; overflow: hidden;">{{ item.value }}</div>
           <span style="float: right; color: #8492a6; font-size: 13px">
             {{
             item.outerId
             }}
           </span>
-        </template>-->
+        </template>
       </Search>
       <el-button type="primary" class="add-btn" @click="handleAdd"
         >新增</el-button
@@ -976,27 +978,19 @@ export default {
         obj.value = item.name;
         projectModal.push(obj);
       });
-      console.log(projectModal);
-      console.log(queryString);
-      // // const results = queryString
-      // //   ? projectModal.filter(this.createFilter(queryString))
-      // //   : projectModal;
+      const results = queryString
+        ? projectModal.filter(item => item.value.includes(queryString))
+        : projectModal;
       // const results = [{value: '111'}];
       // cb([{ value: "111" }]);
-      cb(projectModal);
+      cb(results);
     },
 
-    createFilter(queryString) {
-      return projectNameSearch => {
-        return (
-          projectNameSearch.name
-            .toLowerCase()
-            .indexOf(queryString.toLowerCase()) === 0
-        );
-      };
+    async searchProject(keyword) {
+      console.log(keyword);
+      const res = await ProjectSYJ.getProjectByKeyword(this.pageNo, this.pageSize, this.userId, keyword);
+      this.projects = res.item;
     },
-
-    searchProject(project) {},
 
     // 获取客户模态框
     async getClientModal() {

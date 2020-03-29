@@ -559,6 +559,8 @@ export default {
     }
   },
   mounted() {
+    this.projectId = this.$route.query.projectId;
+    console.log(this.projectId);
     this.getAllDefects();
     this.getDefectModals();
   }

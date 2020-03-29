@@ -74,6 +74,10 @@ export default class ProjectSYJ {
     return await put("/project/approve/archive", { projectId });
   }
 
+  static async getProjectByKeyword(pageNo, pageSize, userId, keyword) {
+    return await get("/project/retrieve/all/keyword", {pageNo, pageSize, userId, keyword});
+  }
+
   static async getAllDefectTypes() {
     return await get("/defect/type");
   }
