@@ -168,7 +168,6 @@ import PageHeader from "../../components/common/PageHeader";
 import Search from "../../components/common/Search";
 import Pagination from "../../components/common/Pagination";
 import Project from "@/sys/models/project_htx";
-
 export default {
   components: {
     PageHeader,
@@ -179,9 +178,8 @@ export default {
     return {
       // 搜索
       functionSearch: [],
-
       submitLoading: false,
-      search: "",
+
       addExcelFormVisible: false,
       fileList: [],
       functionId: 0,
@@ -220,7 +218,6 @@ export default {
         // this.$message.error("获取功能列表失败");
       }
     },
-
     // 二级功能懒加载
     async load(tree, treeNode, resolve) {
       // 当前节点的id
@@ -240,19 +237,16 @@ export default {
         resolve(info);
       }, 500);
     },
-
     // 新增一级弹框
     addFirst() {
       this.addFormVisible = true;
       this.parentId = -1;
     },
-
     // 新增子功能弹框
     addSubFunction(index, row) {
       this.addFormVisible = true;
       this.parentId = row.id;
     },
-
     // 提交新增功能
     async submitAddForm() {
       try {
@@ -270,7 +264,6 @@ export default {
         console.log(e);
       }
     },
-
     // 删除功能
     async deleteFunction(index, row) {
       var functionId = "1";
@@ -291,7 +284,6 @@ export default {
             console.log(e);
           }
         })
-
         .catch(() => {
           this.$message({
             type: "info",
@@ -299,7 +291,6 @@ export default {
           });
         });
     },
-
     // 修改弹窗
     editFunction(index, row) {
       this.editForm.name = row.name;
@@ -307,7 +298,6 @@ export default {
       this.editForm.id = row.id;
       this.editFormVisible = true;
     },
-
     // 修改提交
     async submitEditForm() {
       try {
@@ -324,7 +314,6 @@ export default {
         console.log(e);
       }
     },
-
     // 上传excel
     submitUpload() {},
     handleChange(file, fileList) {
@@ -335,7 +324,6 @@ export default {
     },
     handleSuccess() {},
     handleError() {},
-
     // 搜索
     async querySearch(queryString, cb) {
       var projectId = "1";

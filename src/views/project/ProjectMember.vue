@@ -2,7 +2,10 @@
   <div>
     <!--工具条：搜索栏-->
     <PageHeader title="项目列表">
-      <Search />
+      <Search 
+      placeholder="请输入功能名称"
+        :query-search="querySearch"
+        @search="searchMembers"/>
       <!-- <el-input prefix-icon="el-icon-search" v-model="search" style="width: 200px" placeholder="输入关键字搜索"></el-input> -->
       <el-button type="primary" class="add-btn" @click="addMember"
         >新增</el-button
@@ -234,6 +237,7 @@ export default {
   },
   data() {
     return {
+      memberSearch:"",
       users: [],
       members: [],
       roles: [],
@@ -381,6 +385,38 @@ export default {
       } catch (e) {
         console.log(e);
       }
+    },
+    // 搜索
+    async querySearch(queryString, cb) {
+      var projectId = "1";
+      console.log(queryString);
+      var tmp = [];
+      this.memberSearch = await Project.searchMembers(
+        projectId,
+        queryString
+      );
+      console.log(this.memberSearch);
+      // 下拉显示的数据
+      this.memberSearch.forEach(item => {
+        const obj = {};
+        obj.id = item.id;
+        obj.value = item.name;
+        tmp.push(obj);
+      });
+      this.memberSearch = tmp;
+      cb(tmp);
+    },
+    createFilter(queryString) {
+      return memberSearch => {
+        return (
+          memberSearch.name
+            .toLowerCase()
+            .indexOf(queryString.toLowerCase()) === 0
+        );
+      };
+    },
+    searchMembers() {
+      console.log("click");
     }
   },
   mounted: function() {

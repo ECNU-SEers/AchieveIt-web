@@ -3,12 +3,7 @@
     <el-card class="box-card">
       <div slot="header" class="clearfix">
         <span>AchieveIt</span>
-        <el-button
-          style="float: right; padding: 3px 0"
-          type="text"
-          @click="editBasic"
-          >修改</el-button
-        >
+        <el-button style="float: right; padding: 3px 0" type="text" @click="editBasic">修改</el-button>
 
         <el-dialog title="修改项目基本信息" :visible.sync="dialogFormVisible">
           <el-form
@@ -20,24 +15,16 @@
           >
             <!-- 不可修改 -->
             <el-form-item label="项目ID">
-              <el-input
-                v-model="editForm.outerId"
-                :disabled="true"
-                placeholder
-              ></el-input>
+              <el-input v-model="editForm.outerId" :disabled="true" placeholder></el-input>
             </el-form-item>
 
             <!-- 输入框 -->
             <el-form-item label="项目名称" prop="name">
-              <el-input
-                v-model="editForm.name"
-                placeholder="请输入项目名称"
-                clearable
-              ></el-input>
+              <el-input v-model="editForm.name" placeholder="请输入项目名称" clearable></el-input>
             </el-form-item>
 
             <!-- 下拉单选 -->
-            <el-form-item label="客户名称" prop="userName">
+            <el-form-item label="客户名称" prop="company">
               <el-select
                 v-model="editForm.client"
                 value-key="outerId"
@@ -52,9 +39,11 @@
                   :value="item"
                 >
                   <span style="float: left">{{ item.company }}</span>
-                  <span style="float: right; color: #8492a6; font-size: 13px">{{
+                  <span style="float: right; color: #8492a6; font-size: 13px">
+                    {{
                     item.outerId
-                  }}</span>
+                    }}
+                  </span>
                 </el-option>
               </el-select>
             </el-form-item>
@@ -67,8 +56,8 @@
                 v-model="editForm.startDate"
                 style="width: 30%;"
                 value-format="yyyy-MM-dd"
-              ></el-date-picker> </el-form-item
-            >-->
+              ></el-date-picker>
+            </el-form-item>
             <!-- 交付日 -->
             <el-form-item label="交付日" required prop="endDate">
               <el-date-picker
@@ -82,11 +71,7 @@
 
             <!-- 不可修改 -->
             <el-form-item label="项目上级" prop="leader">
-              <el-input
-                v-model="tableData[5].detail"
-                :disabled="true"
-                placeholder
-              ></el-input>
+              <el-input v-model="tableData[5].detail" :disabled="true" placeholder></el-input>
             </el-form-item>
 
             <!-- 文本框 -->
@@ -121,12 +106,12 @@
             <!-- 文本框 -->
             <!-- <el-form-item label="主要功能" prop="function">
               <el-input type="textarea" v-model="editForm.function"></el-input>
-            </el-form-item>
+            </el-form-item>-->
 
             <el-form-item>
               <el-button type="primary" @click="submitForm('editForm')">提交</el-button>
               <el-button @click="resetForm('editForm')">重置</el-button>
-            </el-form-item> -->
+            </el-form-item>
           </el-form>
         </el-dialog>
       </div>
@@ -177,13 +162,13 @@ import Project from "@/sys/models/project_htx";
 
 export default {
   data() {
-    let validateDate = (rule, value, callback) => {
-      if (this.editForm.endDete > this.editForm.startDete == false) {
-        callback(new Error("交付日须在预定时间之后！"));
-      } else {
-        callback();
-      }
-    };
+    // let validateDate = (rule, value, callback) => {
+    //   if (this.editForm.endDete < this.editForm.startDete == true) {
+    //     callback(new Error("交付日须在预定时间之后！"));
+    //   } else {
+    //     callback();
+    //   }
+    // };
     return {
       // 修改弹框
       dialogFormVisible: false,
@@ -224,12 +209,12 @@ export default {
         },
         {
           name: "主要里程碑",
-          detail: "主要里程碑主要里程碑主要里程碑主要里程碑",
+          detail: "",
           isExpend: 0
         },
         {
           name: "采用技术",
-          detail: ["技术1", "技术2"],
+          detail: [],
           isExpend: 0
         },
         {
@@ -253,8 +238,8 @@ export default {
         },
         startDate: "",
         endDate: "",
-        milestone: [],
-        skillNames: [],
+        milestone: "",
+        skillNames: "",
         businessAreaName: ""
       },
       clients: [
@@ -277,8 +262,8 @@ export default {
           { required: true, message: "请输入项目名称", trigger: "blur" }
           // { min: 3, max: 30, message: "长度在 3 到 30 个字符", trigger: "blur" }
         ],
-        company: [
-          { required: true, message: "请选择客户姓名", trigger: "change" }
+        client: [
+          { required: true, message: "请选择客户姓名", trigger: "blur" }
         ],
         startDate: [
           {
@@ -294,8 +279,8 @@ export default {
             required: true,
             message: "请选择交付时间",
             trigger: "blur"
-          },
-          { validator: validateDate, trigger: "blur" }
+          }
+          // { validator: validateDate, trigger: "blur" }
         ],
         milestone: [
           { required: true, message: "请填写主要里程碑", trigger: "blur" }
@@ -320,25 +305,7 @@ export default {
         return "row-expand-cover";
       }
     },
-    // 提交表单
-    submitForm(formName) {
-      this.$refs[formName].validate(valid => {
-        if (valid) {
-          // let {} = this.ruleForm;
-          // updateBasic({}).then(()=>{
 
-          alert("submit!");
-          // })
-        } else {
-          console.log("error submit!!");
-          return false;
-        }
-      });
-    },
-    // 重置表单
-    resetForm(formName) {
-      this.$refs[formName].resetFields();
-    },
     // 获取项目详细信息
     async getBasic() {
       console.log("try to get basic info");
@@ -354,9 +321,23 @@ export default {
         this.tableData[3].detail = info.project.startDate;
         this.tableData[4].detail = info.project.endDate;
         this.tableData[5].detail = info.project.supervisorName;
-        this.tableData[6].detail = info.project.projectMilestones;
-        this.tableData[7].detail = info.project.projectSkills;
-        this.tableData[8].detail = info.project.projectFunctions;
+        this.tableData[8].detail = info.projectBusinessArea.businessAreaName;
+        this.tableData[9].detail = info.project.projectFunctions;
+        // 技术
+        var skillStr="";
+        for(var i=0;i<info.projectSkills.length;++i){
+          skillStr = skillStr+info.projectSkills[i].skillName+" ";
+        }
+        this.tableData[7].detail = skillStr;
+        // 切割里程碑
+        var str = "";
+        for (var i = 0; i < info.projectMilestones.length; ++i) {
+          str = str + info.projectMilestones[i].progress+" "+info.projectMilestones[i].recordDate;
+          if(i!=info.projectMilestones.length-1){
+            str = str + "\n";
+          }
+        }
+        this.tableData[6].detail = str;
       } catch (e) {
         console.log(e);
         // this.$message.error("获取设备信息失败");
@@ -381,11 +362,41 @@ export default {
       this.editForm.client.outerId = info.projectClient.outerId;
       this.editForm.client.company = info.projectClient.company;
       this.editForm.startDate = info.project.startDate;
-      this.editForm.endDate = info.project.endtDate;
+      this.editForm.endDate = info.project.endDate;
       this.editForm.milestone = info.projectMilestones;
       this.editForm.businessAreaName = info.projectBusinessArea;
       this.editForm.skillNames = info.projectSkills;
-      console.log(this.editForm.endDate);
+      console.log(this.editForm);
+    },
+    // 提交表单
+    submitForm(formName) {
+      console.log(this.editForm);
+      // var stones = this.editForm.milestone.split("\n");
+      // console.log(stones);
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          Project.updateBasic(
+            this.editForm.outerId,
+            this.editForm.name,
+            this.editForm.client.outerId,
+            this.editForm.client.company,
+            this.editForm.startDate,
+            this.editForm.endDate,
+            this.editForm.milestone,
+            this.editForm.skillNames,
+            this.editForm.businessAreaName
+          ).then(() => {
+            alert("submit!");
+          });
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
+    },
+    // 重置表单
+    resetForm(formName) {
+      this.$refs[formName].resetFields();
     }
   },
   mounted: function() {
