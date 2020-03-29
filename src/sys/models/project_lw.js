@@ -1,117 +1,190 @@
 import { post, get, put, _delete } from "@/sys/plugins/axios";
 
 export default class ProjectLW {
-  constructor() {}
+  constructor(projectId=1) {
+    this.projectId=projectId;
+   }
 
+/************设备***************/
   /**
    * 获取当前项目所有设备信息
    * @param {number} pageNo
-   * @param {number} nppageSize
+   * @param {number} pageSize
    * @param {number} projectId
    */
 
   static async getDeviceList(pageNo, pageSize, projectId) {
-    // return await get('/device/show/all/details?pageNo=pageNo&pageSize=pageSize&projectId=projectId');
-    const res = {
-      code: 1000,
-      message: "Success",
-      data: {
-        page: 1,
-        pageSize: 1,
-        total: 1,
-        items: [
-          {
-            outerId: "01",
-            type: "ipad",
-            managerId: 1,
-            managerName: "admin",
-            startDate: "2020-02-02",
-            dueDate: "2020-02-28",
-            state: "已归还",
-            returnDate: "2020-02-21"
-          }
-        ]
-      }
-    };
+   // console.log("getDeviceList");
+    const res = await get('/device/show/all/details?pageNo=' + pageNo + '&pageSize=' + pageSize + '&projectId=' + projectId);
     return res;
   }
 
   /**
-   * 获取平台用户作为可选管理员
+   * 展开设备检查信息
+   * @param {string} deviceId
+   * @param {number} projectId
    */
-  static async getAllUsers() {
-    //  return await get('/api/employees');
-    const users = {
-      code: 1000,
-      message: "Success",
-      data: [
-        {
-          userId: 3,
-          username: "小张"
-        },
-        {
-          userId: 4,
-          username: "小力"
-        }
-      ]
-    };
-    return users;
+  static async getDeviceDetail(projectId,deviceId) {
+    console.log("getDeviceDetail");
+    const res = await get('device/inspect?deviceOuterId=' + deviceId+'&projectId='+projectId);
+    return res;
   }
 
   /**
-   * 编辑设备信息
-   * @param {string} outerId
-   * @param {string} type
-   * @param {number} projectId
-   * @param {number} managerId
-   * @param {string} managerName
-   * @param {日期}  startDate
-   * @param {日期} dueDate
-   *
+   * 新增设备信息
+   * @param {string} outerId;
+   * @param {string} type;
+   * @param {number} projectId;
+   * @param {number}  managerId;
+   * @param {string} startDate;
+   * @param {string} dueDate;
    */
-  static updateDeviceDetail({
-    outerId,
-    type,
-    projectId,
-    managerId,
-    managerName,
-    startDate,
-    dueDate
-  }) {
-    return put("api/device/update", {
+  static addDevice(outerId,type,projectId,managerId,startDate,dueDate){
+
+    return   post("device/create", {
       outerId,
       type,
       projectId,
       managerId,
-      managerName,
       startDate,
       dueDate
     });
   }
 
   /**
-   * 获取当前项目所有设备信息
-   * @param {当前页码} pageNo
-   * @param {页面大小} pageSize
-   * @param {设备id} deviceId
+   * 更新设备信息
+   * @param {string} outerId;
+   * @param {string} type;
+   * @param {number} projectId;
+   * @param {number}  managerId;
+   * @param {string} startDate;
+   * @param {string} dueDate;
    */
-  static async getDeviceInspection(pageNo, pageSize, deviceId) {
-    const res = {
-      code: 1000,
-      message: "Success",
-      data: {
-        page: 1,
-        pageSize: 1,
-        total: 1,
-        items: [
-          {
-            inspectDate: "2020-02-02",
-            intact: "损坏",
-            remark: "设备完好"
-          }
-        ]
-      }
-    };
+  static updateDevice(outerId,type,projectId,managerId,startDate,dueDate){
+
+    return   put("device/update", {
+      outerId,
+      type,
+      projectId,
+      managerId,
+      startDate,
+      dueDate
+    });
+  }
+
+  /**
+   * 可选设备管理员
+   */
+  static async getAllMembers(projectId){
+    const res = await get('/project/'+projectId+'/members/simple');
     return res;
   }
+
+
+  /***********风险***************/
+  /**
+   * 新增风险信息
+   * @param {number} projectId
+   * @param {string}  name;
+   * @param {string}  type;
+   * @param {number} level; 
+   * @param {number} impact;
+   * @param {string} strategy;
+   * @param {number} ownerId;
+   * @param {string}  ownerName;
+   * @param {number} trackingFreq;
+   * @param {string}  source;
+   * @param {string}  description;
+   * @param {number} relatedPersons; //List<Integer> 
+   */
+  static  addRisk(
+      projectId,
+      name,
+      type,
+      level,
+      impact,
+      strategy,
+      ownerId,
+      ownerName,
+      trackingFreq,
+      description,
+      relatedPersons)
+
+      {
+        console.log("addRisk");
+        return   post("/project/"+projectId+"/risk", {    // “/project/"+this.projectId+"/risk"
+            name,
+            type,
+            level,
+            impact,
+            strategy,
+            ownerId,
+            ownerName,
+            trackingFreq,
+            description,
+            relatedPersons
+        }); 
+  }
+
+  /**
+   * 获取当前项目所有风险信息
+   * @param {number} page
+   * @param {number} pageSize
+   * @param {number} projectId
+   */
+  static async getRiskList( projectId,page, pageSize) {
+    console.log("getRiskList");
+    const res = await get('/project/'+projectId+'/risks?page=' + page + '&pageSize=' + pageSize );
+    console.log("getRiskList"+res);
+    return res;
+  }
+  
+
+    /**
+   * 更新风险信息
+   * @param {string}  name;
+   * @param {string}  type;
+   * @param {number} level; 
+   * @param {number} impact;
+   * @param {string} strategy;
+   * @param {number} state;    //！！！！check一下
+   * @param {number} ownerId;
+   * @param {number} trackingFreq;
+   * @param {string}  source;
+   * @param {string}  description;
+   * @param {number} relatedPersons; //List<Integer> 
+   */
+  static updateRisk(projectId,riskId,{name,type,level,impact,strategy,state,ownerId,trackingFreq,source,description,relatedPersons}){
+       console.log("owner"+ownerId);
+       console.log("riskId"+riskId);
+    return   put("/project/"+projectId+"/risk/"+riskId, {
+      name,type,level,impact,strategy,ownerId,trackingFreq,source,description,relatedPersons,state
+    });
+  }
+
+  /**
+   * 删除某条风险信息
+   * @param {number} projectId
+   * @param {number} riskId
+   */
+
+   static deleteRisk(projectId,riskId){
+     console.log("riskId"+riskId);
+     return _delete("/project/"+projectId+"/risk/"+riskId);
+
+   }
+
+
+   /************项目配置信息**************/
+   /**
+    * 显示项目配置信息
+    * @param {number} projectId
+    */
+   
+    static async getConfig(projectId){
+          const res =await get("/project/"+projectId+"/config?projectId="+projectId);
+          return res;
+    }
+
+
 }

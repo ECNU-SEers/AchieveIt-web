@@ -2,17 +2,11 @@
   <div>
     <PageHeader title="设备信息">
       <!--工具条：搜索栏-->
-      <Search placeholder="请输入设备ID" :query-search="searchDevice">
-        <template slot-scope="{ item }">
-          <span>{{ item.outerId }}</span>
-        </template>
-      </Search>
+      <Search />
       <div style="width:20px;height=100%;"></div>
 
       <!--新增-->
-      <el-button size="medium" @click="addFormVisible = true" type="primary"
-        >新增</el-button
-      >
+      <el-button size="medium" @click="addFormVisible = true;" type="primary">新增</el-button>
     </PageHeader>
 
     <!--列表展示-->
@@ -24,9 +18,12 @@
         :default-sort="{ prop: 'index', order: 'ascending' }"
         highlight-current-row
         style="width:100%"
+        v-loading="loading"
+        :row-key="getRowKeys"
+        @expand-change="exChange"
       >
         <!--下拉展示-->
-        <el-table-column type="expand">
+        <!-- <el-table-column type="expand">
           <template slot-scope="props">
             <el-form
               inline="true"
@@ -44,6 +41,17 @@
                 <span>{{ props.row.remark }}</span>
               </el-form-item>
             </el-form>
+          </template>
+        </el-table-column>-->
+
+        <!--下拉展示-->
+        <el-table-column type="expand">
+          <template slot-scope="scope">
+            <el-table :data="inspectData" row-key="getRowKeys" style="width: 100%">
+              <el-table-column prop="inspectDate" label="检查日期" width="300"></el-table-column>
+              <el-table-column prop="intact" label="设备状态" width="300"></el-table-column>
+              <el-table-column prop="remark" label="备注" width="300"></el-table-column>
+            </el-table>
           </template>
         </el-table-column>
 
@@ -65,21 +73,16 @@
 
         <!---编辑和删除-->
         <el-table-column label="操作" width="180px" prop="action">
-          <template slot-scope="scope">
+          <template slot-scope="{row,$index}">
             <el-button-group>
               <el-button
                 type="primary"
                 icon="el-icon-edit"
                 size="medium"
-                @click="editFormVisible = true"
+                @click="editFormVisible = true;updateDevice(row)"
               ></el-button>
 
-              <el-button
-                type="danger"
-                size="medium"
-                icon="el-icon-delete"
-                @click="deleteSubmit"
-              ></el-button>
+            <!-- <el-button type="danger" size="medium" icon="el-icon-delete" @click="deleteSubmit"></el-button> -->
             </el-button-group>
           </template>
         </el-table-column>
@@ -91,7 +94,7 @@
       title="资产信息"
       :visible.sync="addFormVisible"
       :before-close="handleClose"
-      @open="handleForm"
+      @open="handleForm('addForm')"
       :append-to-body="true"
     >
       <el-form
@@ -99,9 +102,10 @@
         :rules="rules"
         ref="addForm"
         label-width="120px"
+        @submit.native.prevent
       >
         <!--文本框-->
-        <el-form-item label="资产ID:" prop="id">
+        <el-form-item label="资产ID:" prop="outerId">
           <el-input v-model="addForm.outerId"></el-input>
         </el-form-item>
 
@@ -116,15 +120,16 @@
         </el-form-item>
 
         <!--带搜索的下拉选择-->
-        <el-form-item label="资产管理者:" prop="monitor">
+        <el-form-item label="资产管理者:" prop="managerId">
           <el-select
-            v-model="addForm.managerName"
+            v-model="addForm.managerId"
+            @visible-change="getAllMembers($event)"
             filterable
             placeholder="请选择资产管理者"
           >
             <el-option
-              v-for="item in users"
-              :key="item.userId"
+              v-for="(item,index) in users"
+              :key="index+'1'"
               :label="item.username"
               :value="item.userId"
             ></el-option>
@@ -132,37 +137,20 @@
         </el-form-item>
 
         <!--日期段-->
-        <el-form-item label="资产使用期限:" prop="date">
-          <el-date-picker
-            v-model="addForm.startDate"
-            type="date"
-            placeholder="开始日期"
-          >
-          </el-date-picker>
-          <span>&nbsp;至&nbsp;</span>
-          <el-date-picker
-            v-model="addForm.dueDate"
-            type="date"
-            placeholder="结束日期"
-          ></el-date-picker>
+        <el-form-item label="开始使用时间:" prop="startDate">
+          <el-date-picker v-model="addForm.startDate" type="date" placeholder="开始日期"></el-date-picker>
+        </el-form-item>
+        <el-form-item label="到期时间:" prop="dueDate">
+          <el-date-picker v-model="addForm.dueDate" type="date" placeholder="结束日期"></el-date-picker>
         </el-form-item>
 
         <!--不可更改-->
         <el-form-item label="资产状态:">
-          <el-input
-            placeholder="已领取"
-            v-model="addForm.state"
-            :disabled="true"
-          ></el-input>
+          <el-input placeholder="已领取" v-model="addForm.state" :disabled="true"></el-input>
         </el-form-item>
 
         <el-form-item>
-          <el-button
-            type="primary"
-            @click="addSubmit('addForm')"
-            style="margin-right:8%;"
-            >添加</el-button
-          >
+          <el-button type="primary" @click="addSubmit('addForm')" style="margin-right:8%;">添加</el-button>
           <el-button @click="addFormVisible = false">取消</el-button>
         </el-form-item>
       </el-form>
@@ -173,18 +161,13 @@
       title="资产信息"
       :visible.sync="editFormVisible"
       :before-close="handleClose"
-      @open="handleForm"
+      @open="handleForm(editForm)"
       :append-to-body="true"
     >
-      <el-form
-        :model="editForm"
-        :rules="rules"
-        ref="editForm"
-        label-width="120px"
-      >
+      <el-form :model="editForm" :rules="rules" ref="editForm" label-width="120px">
         <!--文本框-->
-        <el-form-item label="资产ID:" prop="id">
-          <el-input v-model="editForm.outerId"></el-input>
+        <el-form-item label="资产ID:" prop="outerId" >
+          <el-input v-model="editForm.outerId" disabled></el-input>
         </el-form-item>
 
         <!--单选-->
@@ -198,15 +181,11 @@
         </el-form-item>
 
         <!--带搜索的下拉选择-->
-        <el-form-item label="资产管理者:" prop="monitor">
-          <el-select
-            v-model="editForm.managerName"
-            filterable
-            placeholder="请选择资产管理者"
-          >
+        <el-form-item label="资产管理者:" prop="managerId">
+          <el-select v-model="editForm.managerId" filterable placeholder="请选择资产管理者">
             <el-option
-              v-for="item in users"
-              :key="item.userId"
+              v-for="(item,index) in users" 
+              :key="index"
               :label="item.username"
               :value="item.userId"
             ></el-option>
@@ -214,38 +193,21 @@
         </el-form-item>
 
         <!--日期段-->
-        <el-form-item label="资产使用期限:" prop="date">
-          <el-date-picker
-            v-model="editForm.startDate"
-            type="date"
-            placeholder="开始日期"
-          >
-          </el-date-picker>
-          <span>至</span>
-          <el-date-picker
-            v-model="editForm.dueDate"
-            type="date"
-            placeholder="结束日期"
-          ></el-date-picker>
+        <el-form-item label="资产开始使用时间:" prop="startDate">
+          <el-date-picker v-model="editForm.startDate" type="date" placeholder="开始日期"></el-date-picker>
+        </el-form-item>
+        <el-form-item label="资产到期时间:" prop="dueDate">
+          <el-date-picker v-model="editForm.dueDate" type="date" placeholder="结束日期"></el-date-picker>
         </el-form-item>
 
         <!--不可更改-->
         <el-form-item label="资产状态:">
-          <el-input
-            placeholder="已领取"
-            v-model="editForm.state"
-            :disabled="true"
-          ></el-input>
+          <el-input placeholder="已领取" :disabled="true"></el-input>
         </el-form-item>
 
         <el-form-item>
-          <el-button
-            type="primary"
-            @click="editSubmit('editForm')"
-            style="margin-right:8%;"
-            >修改</el-button
-          >
-          <el-button @click="addFormVisible = false">取消</el-button>
+          <el-button type="primary" @click="editSubmit('editForm')" style="margin-right:8%;">修改</el-button>
+          <el-button @click="editFormVisible = false">取消</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -268,11 +230,26 @@ export default {
     return {
       //分页
       pageNo: 1,
-      pageSize: 1,
+      pageSize: 10,
       projectId: 1,
 
       //列表
       deviceData: [],
+
+      //下拉展示设备审核
+
+      getRowKeys: row => {
+        console.log(row);
+        return row.outerId;
+      },
+      inspectData: [
+        // {
+        //   inspectDate:"2020-02-02",
+        //   state:"完好",
+        //   remark:""v1
+        // }
+      ],
+
       //下拉管理员名单
       users: [],
 
@@ -281,10 +258,10 @@ export default {
       editForm: {
         outerId: "",
         type: "",
-        managerName: "",
+        managerId: "",
         startDate: "",
         dueDate: "",
-        sate: ""
+        state: ""
       },
 
       //新增
@@ -292,46 +269,36 @@ export default {
       addForm: {
         outerId: "",
         type: "",
-        managerName: "",
+        managerId: "",
         startDate: "",
         dueDate: "",
         state: ""
       },
       rules: {
-        id: [{ required: true, message: "请输入资产ID", trigger: "blur" }],
+        outerId: [{ required: true, message: "请输入资产ID", trigger: "blur" }],
         type: [
           { required: true, message: "请选择资产类型", trigger: "change" }
         ],
-        monitor: [
+        managerId: [
           { required: true, message: "请选择资产管理者", trigger: "change" }
         ],
-        date: [
-          { required: true, message: "请选择资产使用期限", trigger: "change" }
+        startDate: [
+          {
+            required: true,
+            message: "请选择资产开始使用时间",
+            trigger: "change"
+          }
+        ],
+        dueDate: [
+          { required: true, message: "请选择资产到期时间", trigger: "change" }
         ]
       }
     };
   },
   mounted() {
     this.getDeviceList();
-    this.getUserModal();
   },
   methods: {
-    //搜索
-    searchDevice(queryString, cb) {
-      var deviceData = this.deviceData;
-      var results = queryString
-        ? deviceData.filter(this.createFilter(queryString))
-        : deviceData;
-      cb(results);
-    },
-    createFilter(queryString) {
-      return device => {
-        return (
-          device.outerId.toLowerCase().indexOf(queryString.toLowerCase()) === 0
-        );
-      };
-    },
-
     //列表展示
     async getDeviceList() {
       const res = await ProjectLW.getDeviceList(
@@ -339,25 +306,68 @@ export default {
         this.pageSize,
         this.projectId
       );
+      console.log(res.items);
+      this.deviceData = res.items;
+    },
 
-      if (res.code === 1000) {
-        this.deviceData = res.data.items;
+    //下拉展示设备审核
+    async exChange(row, expandedRows) {
+      console.log("exChange");
+      this.loading = true;
+      var _this = this;
+      if (expandedRows.length) {
+        //只展开一行
+        _this.expands = [];
+        if (row) {
+          const res = await ProjectLW.getDeviceDetail(this.projectId,row.outerId);
+          console.log(res);
+          _this.inspectData = res;
+        }
       } else {
-        this.$message.error("获取设备信息失败");
+        _this.expands = []; //收起
       }
     },
+
     //新增
-    addSubmit(formName) {
-      this.$refs[formName].validate(valid => {
+    async addSubmit(formName) {
+      // var _id =
+      //   Math.max.apply(
+      //     null,
+      //     this.deviceData.map(function(item) {
+      //       return item.id;
+      //     })
+      //   ) + 1;
+      // id: _id;
+      this.$refs[formName].validate(async valid => {
         if (valid) {
-          alert("提交成功");
+          var _this = this;
+          const res = await ProjectLW.addDevice(
+            _this.addForm.outerId,
+            _this.addForm.type,
+            _this.projectId,
+            _this.addForm.managerId,
+            _this.addForm.startDate,
+            _this.addForm.dueDate
+          );
+          console.log(res);
+          this.addFormVisible = false;
+          this.$message.success("添加成功");
+          getDeviceList();
         } else {
-          alert("提交失败");
+          this.$message.error("请填写正确信息");
           return false;
         }
       });
     },
-
+    //下拉，可选设备管理员
+    async getAllMembers(callback) {
+      console.log("回调参数" + callback);
+      if (callback) {
+        const res = await ProjectLW.getAllMembers(this.projectId);
+        console.log(res);
+        this.users = res;
+      } else;
+    },
     handleClose(done) {
       this.$confirm("确认关闭？")
         .then(_ => {
@@ -373,33 +383,75 @@ export default {
       }
     },
 
-    //编辑
-    //获取备选管理员
-    async getUserModal() {
-      const res = await ProjectLW.getAllUser();
-      if (res.code === 1000) {
-        this.users = res.data;
-      } else {
-        this.$message.error("获取管理者名单失败");
-      }
+    //点击“编辑” 深拷贝原信息
+    updateDevice(row) {
+      console.log(row.type);
+      this.editForm = {
+        outerId: row.outerId,
+        type: row.type,
+        managerId: row.managerId,
+        startDate: row.startDate,
+        dueDate: row.dueDate,
+        state: row.state
+      };
     },
+
+    //确认编辑
     editSubmit(formName) {
-      this.$refs[formName].validate(valid => {
+      this.$refs[formName].validate(async valid => {
+        var _this = this;
         if (valid) {
-          const res = ProjectLW.updateDeviceDetail(this.form);
+          const res = await ProjectLW.updateDevice(
+            _this.editForm.outerId,
+            _this.editForm.type,
+            _this.projectId,
+            _this.editForm.managerId,
+            _this.editForm.startDate,
+            _this.editForm.dueDate
+          );
+          console.log(res);
+          _this.editFormVisible = false;
+          _this.$message.success("修改成功");
+          //前端修改当前行
+          //   _this.row={
+          //      outerId: _this.editForm.outerId,
+          //         type:_this.editForm.type,
+          //  managerName:  _this.editForm.managerId,
+          //    startDate:  _this.editForm.startDate,
+          //      dueDate: _this.editForm.dueDate,
+          //        state: row.state
+          //   };
         } else {
-          console.log("error submit!");
-          this.$message.error("信息错误");
+          this.$message.error("修改失败");
           return false;
         }
       });
-      addFormVisible = false;
     },
 
-    //删除
-    deleteSubmit() {
-      alert("删除成功");
-    }
+    // //删除
+    // deleteSubmit(row) {
+    //   this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
+    //     confirmButtonText: "确定",
+    //     cancelButtonText: "取消",
+    //     type: "warning"
+    //   })
+    //     .then(() => {
+    //       if (row.state === "已归还") {
+    //         this.$message({
+    //           type: "success",
+    //           message: "删除成功!"
+    //         });
+    //       }else {
+    //         this.$message.error("设备未归还，不能删除");
+    //       }
+    //     })
+    //     .catch(() => {
+    //       this.$message({
+    //         type: "info",
+    //         message: "已取消删除"
+    //       });
+    //     });
+    // }
   }
 };
 </script>
