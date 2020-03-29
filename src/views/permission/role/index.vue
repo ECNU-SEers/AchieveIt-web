@@ -85,7 +85,9 @@ export default {
       this.editingRoleInfo = row;
       this.showEditRoleDialog = true;
     },
-    onDeleteRole(row) {},
+    onDeleteRole(row) {
+      console.log(row);
+    },
     getRoleListFromServe() {
       this.loading = true;
       getRoleList()

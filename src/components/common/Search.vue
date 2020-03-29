@@ -36,7 +36,7 @@ export default {
       this.$emit('search', this.keyword);
     },
     handleSelect(v) {
-      this.$emit('selectSuggestion', v);
+      this.$emit('select-suggestion', v);
       this.keyword = v.value;
       this.onSearch();
     }
