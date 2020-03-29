@@ -322,22 +322,31 @@ export default {
         this.tableData[4].detail = info.project.endDate;
         this.tableData[5].detail = info.project.supervisorName;
         this.tableData[8].detail = info.projectBusinessArea.businessAreaName;
-        this.tableData[9].detail = info.project.projectFunctions;
         // 技术
-        var skillStr="";
-        for(var i=0;i<info.projectSkills.length;++i){
-          skillStr = skillStr+info.projectSkills[i].skillName+" ";
+        var skillStr = "";
+        for (var i = 0; i < info.projectSkills.length; ++i) {
+          skillStr = skillStr + info.projectSkills[i].skillName + " ";
         }
         this.tableData[7].detail = skillStr;
         // 切割里程碑
         var str = "";
         for (var i = 0; i < info.projectMilestones.length; ++i) {
-          str = str + info.projectMilestones[i].progress+" "+info.projectMilestones[i].recordDate;
-          if(i!=info.projectMilestones.length-1){
-            str = str + "\n";
+          str =
+            str +
+            info.projectMilestones[i].progress +
+            " " +
+            info.projectMilestones[i].recordDate;
+          if (i != info.projectMilestones.length - 1) {
+            str = str + " \n ";
           }
         }
         this.tableData[6].detail = str;
+        // 功能
+        str = "";
+        for (var i = 0; i < info.projectFunctions.length; ++i) {
+          str = str + info.projectFunctions[i].name + " \n ";
+        }
+        this.tableData[9].detail=str;
       } catch (e) {
         console.log(e);
         // this.$message.error("获取设备信息失败");
