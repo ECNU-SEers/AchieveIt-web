@@ -174,6 +174,17 @@ export default class ProjectLW {
 
    }
 
+   /**
+    * 模糊查询risk
+    * @param {number} projectId 
+    *  @param {string} riskName
+    */
+   static async searchRisk(projectId,riskName){
+     const res = await get("/project/"+projectId+"/risks/search?name="+riskName);
+   console.log("searchRisk="+res);
+     return res;
+   }
+
 
    /************项目配置信息**************/
    /**
@@ -225,7 +236,7 @@ export default class ProjectLW {
 
        static async getRemark(projectOuterId){
          const res= await get("/project/retrieve?outerId="+projectOuterId);
-         console.log(getRemark="res");
+        // console.log("getRemark="+res);
          return res;
 
        }

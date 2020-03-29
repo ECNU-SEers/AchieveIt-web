@@ -4,7 +4,8 @@
       <!--工具条：搜索栏-->
       <Search 
       v-model="riskSearch"
-    
+      :query-search="querySearch"
+      value-key="name"
       >
       </Search>
       <div style="width:20px;height=100%;"></div>
@@ -98,7 +99,7 @@
           </template>
         </el-table-column>
       </el-table>
-    </Pagination>
+    </Pagination>     
 
     <!--新增-->
     <el-dialog
@@ -350,6 +351,7 @@ export default {
       pageSize: 10,
       riskSearch:"",
       riskData: [],
+      results:[],
       users: [],
        owner:[],
        relatedPersons:[],
@@ -554,6 +556,14 @@ export default {
     //     const res = await ProjectLW.getRisk(projectId,riskSearch);
     //     this.riskData = res.items;
     // }
+    async querySearch(queryString, cb) {
+    
+       this.results  = await ProjectLW.searchRisk(this.projectId,queryString);
+        // 调用 callback 返回建议列表的数据
+      
+        cb(this.results);
+        
+      }
 
   }
 };

@@ -192,7 +192,7 @@
         </el-form-item>
 
         <!--日期段-->
-        <el-form-item label="资产开始使用时间:" prop="startDate">
+        <el-form-item label="开始使用时间:" prop="startDate">
           <el-date-picker v-model="editForm.startDate" type="date" placeholder="开始日期"></el-date-picker>
         </el-form-item>
         <el-form-item label="资产到期时间:" prop="dueDate">

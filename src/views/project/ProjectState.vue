@@ -79,8 +79,7 @@ export default {
     //获取备注
     async getRemark(){
       const res = await ProjectLW.getRemark(this.projectOuterId);
-      console.log("这里的res"+res);
-      this.remark=res;
+      this.remark=res.project.remark;
     }
 
   }
