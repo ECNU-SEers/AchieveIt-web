@@ -5,6 +5,7 @@
         <span>AchieveIt</span>
         <el-button style="float: right; padding: 3px 0" type="text" @click="editBasic">修改</el-button>
 
+        <!-- 修改项目信息 -->
         <el-dialog title="修改项目基本信息" :visible.sync="dialogFormVisible">
           <el-form
             :model="editForm"
@@ -76,7 +77,13 @@
 
             <!-- 文本框 -->
             <el-form-item label="主要里程碑" prop="milestone">
-              <el-input type="textarea" v-model="editForm.milestone"></el-input>
+              <el-input
+                type="textarea"
+                autosize
+                :disabled="true"
+                v-model="this.stones"
+              ></el-input>
+              <el-input type="textarea" autosize v-model="editForm.milestone"></el-input>
             </el-form-item>
 
             <!-- 多选 -->
@@ -122,30 +129,16 @@
         :show-header="hiddenTableHeader"
         :row-class-name="getRowClassName"
       >
-        <!-- 展开内容 -->
+        <!-- 展开客户内容 -->
         <el-table-column type="expand">
           <template slot-scope="props">
             <el-form label-position="left" inline class="demo-table-expand">
-              <el-form-item label="客户ID">
-                <span>{{ props.row.moreDetail.outerId }}</span>
-              </el-form-item>
-              <el-form-item label="接口人">
-                <span>{{ props.row.moreDetail.innerPerson }}</span>
-              </el-form-item>
-              <el-form-item label="公司名称">
-                <span>{{ props.row.moreDetail.company }}</span>
-              </el-form-item>
-              <el-form-item label="客户等级">
-                <span>{{ props.row.moreDetail.level }}</span>
-              </el-form-item>
-              <el-form-item label="电子邮件">
-                <span>{{ props.row.moreDetail.email }}</span>
-              </el-form-item>
-              <el-form-item label="电话">
-                <span>{{ props.row.moreDetail.phone }}</span>
-              </el-form-item>
-              <el-form-item label="地址">
-                <span>{{ props.row.moreDetail.address }}</span>
+              <el-form-item
+                v-for="item in props.row.moreDetail"
+                :key="item.name"
+                :label="item.name"
+              >
+                <span>{{ item.detail }}</span>
               </el-form-item>
             </el-form>
           </template>
@@ -170,6 +163,7 @@ export default {
       }
     };
     return {
+      projectId: "",
       // 修改弹框
       dialogFormVisible: false,
       formLabelWidth: "120px",
@@ -210,7 +204,8 @@ export default {
         {
           name: "主要里程碑",
           detail: "暂无数据",
-          isExpend: 0
+          moreDetail: {},
+          isExpend: 1
         },
         {
           name: "采用技术",
@@ -229,6 +224,7 @@ export default {
         }
       ],
 
+      // 修改框
       editForm: {
         outerId: "",
         name: "",
@@ -242,6 +238,7 @@ export default {
         skillNames: [],
         businessAreaName: ""
       },
+      // 修改框中可选项
       clients: [
         {
           outerId: "",
@@ -257,6 +254,7 @@ export default {
       ],
       areas: [],
       skills: [],
+      stones:"",
       rules: {
         name: [
           { required: true, message: "请输入项目名称", trigger: "blur" }
@@ -307,46 +305,104 @@ export default {
     },
 
     // 获取项目详细信息
-    async getBasic() {
+    async getBasic(projectId) {
       console.log("try to get basic info");
       try {
         // 尝试获取项目详细信息
-        var outerId = "P01";
-        const info = await Project.getBasic(outerId);
+        const info = await Project.getBasic(projectId);
         console.log("get basic success!");
+
+        // 表格取值
         this.tableData[0].detail = info.project.outerId;
         this.tableData[1].detail = info.project.name;
         this.tableData[2].detail = info.projectClient.company;
-        this.tableData[2].moreDetail = info.projectClient;
+        // 客户信息展开内容
+        this.tableData[2].moreDetail = [
+          {
+            name: "客户ID",
+            detail: info.projectClient.outerId
+          },
+          {
+            name: "接口人",
+            detail: info.projectClient.innerPerson
+          },
+          {
+            name: "公司名称",
+            detail: info.projectClient.company
+          },
+          {
+            name: "客户等级",
+            detail: info.projectClient.level
+          },
+          {
+            name: "电子邮件",
+            detail: info.projectClient.email
+          },
+          {
+            name: "电话",
+            detail: info.projectClient.phone
+          },
+          {
+            name: "地址",
+            detail: info.projectClient.address
+          }
+        ];
         this.tableData[3].detail = info.project.startDate;
         this.tableData[4].detail = info.project.endDate;
         this.tableData[5].detail = info.project.supervisorName;
+        // 里程碑展开内容
+        if (info.projectMilestones.length == 0) {
+          this.tableData[6].detail = "暂无数据";
+        } else {
+          this.tableData[6].detail = info.projectMilestones[0].recordDate+" "+info.projectMilestones[0].progress;
+          this.tableData[6].moreDetail = [];
+          for (var i = 0; i < info.projectMilestones.length; ++i) {
+            const obj = {};
+            obj.name = info.projectMilestones[i].recordDate;
+            obj.detail = info.projectMilestones[i].progress;
+            this.tableData[6].moreDetail.push(obj);
+          }
+        }
         this.tableData[8].detail = info.projectBusinessArea.businessAreaName;
         // 技术
         var skillStr = "";
         for (var i = 0; i < info.projectSkills.length; ++i) {
-          skillStr = skillStr + info.projectSkills[i].skillName + " ";
-        }
-        this.tableData[7].detail = skillStr;
-        // 切割里程碑
-        var str = "";
-        for (var i = 0; i < info.projectMilestones.length; ++i) {
-          str =
-            str +
-            info.projectMilestones[i].progress +
-            " " +
-            info.projectMilestones[i].recordDate;
-          if (i != info.projectMilestones.length - 1) {
-            str = str + " \n ";
+          skillStr = skillStr + info.projectSkills[i].skillName;
+          if(i!=info.projectSkills.length-1){
+             skillStr +=  "、 "
           }
         }
-        this.tableData[6].detail = str;
+        this.tableData[7].detail = skillStr;
         // 功能
-        str = "";
+        var str = "";
         for (var i = 0; i < info.projectFunctions.length; ++i) {
           str = str + info.projectFunctions[i].name + " \n ";
         }
         this.tableData[9].detail = str;
+
+
+        // 获取修改框中的预设值（下拉选项和不可修改的显示）
+        // 客户
+        this.clients = await Project.getClients();
+        // 业务领域
+        this.areas = await Project.getAreas();
+        // 采用技术
+        this.skills = await Project.getSkills();
+        // 切割里程碑
+        this.stones = "";
+        for (var i = 0; i < info.projectMilestones.length; ++i) {
+          this.stones =
+            this.stones +
+            info.projectMilestones[i].recordDate +
+            " " +
+            info.projectMilestones[i].progress;
+          if (i != info.projectMilestones.length - 1) {
+            this.stones = this.stones + "\n";
+          }
+        }
+        console.log(this.stones);
+
+        console.log(this.tableData);
       } catch (e) {
         console.log(e);
         // this.$message.error("获取设备信息失败");
@@ -356,27 +412,26 @@ export default {
     // 修改弹框
     async editBasic() {
       this.dialogFormVisible = true;
-      // 客户
-      this.clients = await Project.getClients();
-      // 项目上级
-      // this.supervisors = await Project.getSupervisors();
-      // 业务领域
-      this.areas = await Project.getAreas();
-      // 采用技术
-      this.skills = await Project.getSkills();
+
       var outerId = "P01";
       const info = await Project.getBasic(outerId);
-      this.editForm.outerId = info.project.outerId;
-      this.editForm.name = info.project.name;
-      // this.editForm.client.outerId = info.projectClient.outerId;
-      // this.editForm.client.company = info.projectClient.company;
-      this.editForm.startDate = info.project.startDate;
-      this.editForm.endDate = info.project.endDate;
+      this.editForm = {
+        outerId: info.project.outerId,
+        name: info.project.name,
+        client: {
+          outerId: info.projectClient.outerId,
+          company: info.projectClient.company
+        },
+        startDate: info.project.startDate,
+        endDate: info.project.endDate,
+        milestone: "",
+        skillNames: [],
+        businessAreaName: ""
+      };
+      for(var i=0;i<info.projectSkills.length;++i){
+        this.editForm.skillNames.push(info.projectSkills[i].skillName);
+      }
 
-      var tmpStr = "";
-      // for (var i = 0; i < info.projectMilestones.length; ++i) {
-      //   tmpStr = tmpStr + info.projectMilestones[i].progress + "\n";
-      // }
       this.editForm.milestone = tmpStr;
 
       // this.editForm.businessAreaName = info.projectBusinessArea;
@@ -391,7 +446,7 @@ export default {
       // console.log(stones);
       this.$refs[formName].validate(valid => {
         if (valid) {
-          console.log("valid")
+          console.log("valid");
           Project.updateBasic(
             this.editForm.outerId,
             this.editForm.name,
@@ -418,7 +473,12 @@ export default {
   },
   mounted: function() {
     console.log("in mounted");
-    this.getBasic();
+    // 获取projectId
+    this.projectId = this.$route.query.projectId;
+    console.log(this.projectId);
+
+    // 获取项目基本信息
+    this.getBasic(this.projectId);
   }
 };
 </script>
