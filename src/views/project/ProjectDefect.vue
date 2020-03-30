@@ -1,28 +1,34 @@
 <template>
   <div>
     <PageHeader title="项目缺陷信息">
-      <Search
+      <Search v-if="this.projectId !== undefined"
         placeholder="请输入缺陷名称"
-        v-model="defectNameSearch"
         :query-search="querySearch"
         @search="searchDefect"
+        @select-suggestion="selectSearch"
       >
       </Search>
-      <el-button type="primary" class="add-btn" @click="handleAdd"
+      <el-button v-if="this.projectId !== undefined" type="primary" class="add-btn" @click="handleAdd"
         >新增</el-button
       >
     </PageHeader>
+
+    <el-row v-if="this.projectId === undefined">
+      <el-col :span="24">
+        <el-tag type="success" effect="dark">请选择项目</el-tag>
+      </el-col>
+    </el-row>
     <!-- <p v-permission="{name:'查看系统消息',type:'disabled'}">Hello word</p>
         <p v-permission="'查看日志'">Hello word</p>
     <button v-permission="['修改信息','修改密码']">编辑</button>-->
     <!--工具条：搜索栏-->
-    <Pagination
+    <Pagination v-if="this.projectId !== undefined"
       :current-page.sync="page"
       :page-size="pageSize"
       :total="defectsLength"
       @page-change="handlePageChange"
     >
-      <el-table
+      <el-table v-if="this.projectId !== undefined"
         :data="defects"
         highlight-current-row
         border
@@ -214,6 +220,7 @@ export default {
       defects: [],
       defectsLength: 0,
       type: [],
+      selectedDefect: "",
 
       defectModal: [],
 
@@ -400,13 +407,6 @@ export default {
     querySearch(queryString, cb) {
       console.log(this.defectModal);
       var defectModal = [];
-      // let i = 0;
-      // for (i = 0; i < this.projectModal.length; i++) {
-      //   const obj = {};
-      //   obj.id = this.projectModal[i].outerId;
-      //   obj.value = this.projectModal[i].name;
-      //   projectModal.push(obj);
-      // }
       this.defectModal.forEach(item => {
         const obj = {};
         obj.id = item.outerId;
@@ -416,24 +416,35 @@ export default {
       console.log(defectModal);
       console.log(queryString);
       const results = queryString
-        ? defectModal.filter(this.createFilter(queryString))
+        ? defectModal.filter(item => item.value.includes(queryString))
         : defectModal;
       // const results = [{value: '111'}];
       // cb([{ value: "111" }]);
       cb(results);
     },
 
-    createFilter(queryString) {
-      return defectNameSearch => {
-        return (
-          defectNameSearch.value
-            .toLowerCase()
-            .indexOf(queryString.toLowerCase()) === 0
-        );
-      };
+    async selectSearch(item) {
+      console.log("select search item-------");
+      console.log(item);
+      this.selectedDefect = item.id;
+      // this.projects = await ProjectSYJ.searchOneProject(item.id);
+      // console.log(this.projects);
     },
 
-    searchDefect(defect) {},
+    async searchDefect(keyword) {
+      this.defects = await ProjectSYJ.getProjectDefects(this.page, this.pageSize, this.projectId, keyword);
+      // if(this.selectedProject !== "") {
+      //   console.log("selected search");
+      //   const res = await ProjectSYJ.searchOneProject(this.selectedProject);
+      //   const tmplist = [];
+      //   tmplist.push(res);
+      //   this.projects = tmplist;
+      // } else {
+      //   console.log("keyword search");
+      //   this.projects = await ProjectSYJ.getProjectList(this.pageNo, this.pageSize, this.userId, keyword);
+      // }
+      
+    },
 
     getNowFormatDate() {
       var date = new Date();
@@ -465,10 +476,12 @@ export default {
 
     async getAllDefects() {
       this.getDefectTypeModal();
+      const keyword = "";
       const res = await ProjectSYJ.getProjectDefects(
         this.page,
         this.pageSize,
-        this.projectId
+        this.projectId,
+        keyword
       );
 
       this.defects = res.items;
@@ -563,9 +576,15 @@ export default {
   },
   mounted() {
     this.projectId = this.$route.query.projectId;
-    console.log(this.projectId);
-    this.getAllDefects();
+    if (this.projectId === undefined) {
+      this.$message({
+        message: "请先选择项目！",
+        type: "warning"
+      });
+    } else {
+      this.getAllDefects();
     this.getDefectModals();
+    }
   }
 };
 </script>
@@ -578,6 +597,7 @@ export default {
   margin-top: 30px;
 }
 .add-btn {
+  height: 32px;
   margin-left: 20px;
   border-radius: 3px;
   width: 80px;

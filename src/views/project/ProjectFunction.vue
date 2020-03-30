@@ -3,6 +3,7 @@
     <!--工具条：搜索栏-->
     <PageHeader title="功能列表">
       <Search
+        v-if="this.projectId !== undefined"
         placeholder="请输入功能名称"
         :query-search="querySearch"
         @search="searchFunctions"
@@ -12,10 +13,23 @@
         <span style="float: right; color: #8492a6; font-size: 13px">{{item.id}}</span>-->
       </Search>
       <!-- <el-input prefix-icon="el-icon-search" v-model="search" style="width: 200px" placeholder="输入关键字搜索"></el-input> -->
-      <el-button type="primary" class="add-btn" @click="addFirst">新增</el-button>
-      <el-button type="primary" class="add-btn" @click="addExcelFormVisible = true">导入</el-button>
-      <el-button type="primary" class="add-btn">下载</el-button>
+      <el-button type="primary" class="add-btn" @click="addFirst" v-if="this.projectId !== undefined"
+        >新增</el-button
+      >
+      <el-button
+        type="primary"
+        class="add-btn"
+        @click="addExcelFormVisible = true" v-if="this.projectId !== undefined"
+        >导入</el-button
+      >
+      <el-button type="primary" class="add-btn" v-if="this.projectId !== undefined">下载</el-button>
     </PageHeader>
+
+    <el-row v-if="this.projectId === undefined">
+      <el-col :span="24">
+        <el-tag type="success" effect="dark">请选择项目</el-tag>
+      </el-col>
+    </el-row>
 
     <!-- 导入excel -->
     <el-dialog title="导入项目成员信息" :visible.sync="addExcelFormVisible">
@@ -32,13 +46,15 @@
 
       <div slot="footer" class="dialog-footer">
         <el-button @click="addExcelFormVisible = false">取消</el-button>
-        <el-button type="primary" @click="submitUpload" :loading="submitLoading">提交</el-button>
+        <el-button type="primary" @click="submitUpload" :loading="submitLoading"
+          >提交</el-button
+        >
       </div>
     </el-dialog>
 
     <!-- 功能列表 -->
-    <Pagination>
-      <el-table
+    <Pagination v-if="this.projectId !== undefined">
+      <el-table v-if="this.projectId !== undefined"
         :data="tableData"
         style="margin-bottom: 20px;"
         row-key="id"
@@ -49,9 +65,17 @@
         :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
       >
         <el-table-column width="50"></el-table-column>
-        <el-table-column type="index" label="序号" width="100"></el-table-column>
+        <el-table-column
+          type="index"
+          label="序号"
+          width="100"
+        ></el-table-column>
         <el-table-column prop="id" label="功能ID" width="180"></el-table-column>
-        <el-table-column prop="name" label="功能名称" width="180"></el-table-column>
+        <el-table-column
+          prop="name"
+          label="功能名称"
+          width="180"
+        ></el-table-column>
         <el-table-column prop="description" label="功能描述"></el-table-column>
 
         <el-table-column fixed="right" label="操作" width="180px">
@@ -88,16 +112,28 @@
         </el-form-item>-->
 
         <el-form-item label="功能名称" required>
-          <el-input v-model="addForm.name" placeholder="请填写项目名称"></el-input>
+          <el-input
+            v-model="addForm.name"
+            placeholder="请填写项目名称"
+          ></el-input>
         </el-form-item>
 
         <el-form-item label="功能描述" required>
-          <el-input type="textarea" v-model="addForm.description" placeholder="请填写项目描述"></el-input>
+          <el-input
+            type="textarea"
+            v-model="addForm.description"
+            placeholder="请填写项目描述"
+          ></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="addFormVisible = false">取消</el-button>
-        <el-button type="primary" @click="submitAddForm" :loading="submitLoading">提交</el-button>
+        <el-button
+          type="primary"
+          @click="submitAddForm"
+          :loading="submitLoading"
+          >提交</el-button
+        >
       </div>
     </el-dialog>
 
@@ -109,16 +145,28 @@
         </el-form-item>-->
 
         <el-form-item label="项目名称" required>
-          <el-input v-model="editForm.name" placeholder="请填写项目名称"></el-input>
+          <el-input
+            v-model="editForm.name"
+            placeholder="请填写项目名称"
+          ></el-input>
         </el-form-item>
 
         <el-form-item label="项目描述" required>
-          <el-input type="textarea" v-model="editForm.description" placeholder="请填写项目描述"></el-input>
+          <el-input
+            type="textarea"
+            v-model="editForm.description"
+            placeholder="请填写项目描述"
+          ></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="editFormVisible = false">取消</el-button>
-        <el-button type="primary" @click="submitEditForm" :loading="submitLoading">提交</el-button>
+        <el-button
+          type="primary"
+          @click="submitEditForm"
+          :loading="submitLoading"
+          >提交</el-button
+        >
       </div>
     </el-dialog>
   </div>
@@ -141,6 +189,7 @@ export default {
       keyword: "",
       functionSearch: [],
       submitLoading: false,
+      projectId: "",
 
       addExcelFormVisible: false,
       fileList: [],
@@ -165,8 +214,7 @@ export default {
     // 获取一级功能列表并展示
     async getFunctionList(keyword) {
       try {
-        var projectId = "1";
-        const info = await Project.getFirstFunctionList(projectId,keyword);
+        const info = await Project.getFirstFunctionList(this.projectId, keyword);
         console.log("get function list success!");
         this.tableData = info;
         // 标记有二级功能的功能
@@ -183,10 +231,9 @@ export default {
     // 二级功能懒加载
     async load(tree, treeNode, resolve) {
       // 当前节点的id
-      var projectId = "1";
       console.log("tree.id");
       console.log(tree.id);
-      var info = await Project.getSubFunctionList(projectId, tree.id);
+      var info = await Project.getSubFunctionList(this.projectId, tree.id);
       console.log("sub function:");
       console.log(info);
       // 标记有二级功能的功能
@@ -212,9 +259,8 @@ export default {
     // 提交新增功能
     async submitAddForm() {
       try {
-        var projectId = "1";
         const info = await Project.addFunction(
-          projectId,
+          this.projectId,
           this.addForm.name,
           this.addForm.description,
           this.parentId
@@ -263,9 +309,8 @@ export default {
     // 修改提交
     async submitEditForm() {
       try {
-        var projectId = "1";
         const info = await Project.editFunction(
-          projectId,
+          this.projectId,
           this.editForm.id,
           this.editForm.name,
           this.editForm.description
@@ -286,14 +331,13 @@ export default {
     },
     handleSuccess() {},
     handleError() {},
-    
+
     // 搜索
     async querySearch(queryString, cb) {
-      var projectId = "1";
       console.log(queryString);
       var tmp = [];
       this.functionSearch = await Project.searchFunctions(
-        projectId,
+        this.projectId,
         queryString
       );
       console.log(this.functionSearch);
@@ -325,13 +369,12 @@ export default {
     async getOne(item) {
       console.log(item);
       try {
-        var projectId = "1";
-        const info = await Project.getOneFunction(projectId, item.id);
+        const info = await Project.getOneFunction(this.projectId, item.id);
         console.log(info);
         // 标记有二级功能的功能
-        if(info.subFunctions.length>0){
+        if (info.subFunctions.length > 0) {
           info.hasChildren = true;
-        }else{
+        } else {
           info.hasChildren = false;
         }
         this.tableData = [];
@@ -342,17 +385,26 @@ export default {
     }
   },
   mounted: function() {
-    this.keyword=""
+    this.projectId = this.$route.query.projectId;
+    if (this.projectId === undefined) {
+      this.$message({
+        message: "请先选择项目！",
+        type: "warning"
+      });
+    } else {
+      this.keyword = "";
     this.getFunctionList(this.keyword);
+    }
+    
   }
 };
 </script>
 
 <style scoped>
 .add-btn {
-        height: 40px;
-        margin-left: 20px;
-        border-radius: 3px;
-        width: 80px;
-    }
+  height: 32px;
+  margin-left: 20px;
+  border-radius: 3px;
+  width: 80px;
+}
 </style>

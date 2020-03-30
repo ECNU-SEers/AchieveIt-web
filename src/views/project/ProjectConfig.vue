@@ -1,6 +1,12 @@
 <template>
   <div>
-    <el-card class="box-card">
+    <PageHeader title="配置信息"></PageHeader>
+    <el-row v-if="this.projectId === undefined">
+      <el-col :span="24">
+        <el-tag type="success" effect="dark">请选择项目</el-tag>
+      </el-col>
+    </el-row>
+    <el-card class="box-card" v-if="this.projectId !== undefined">
       <div slot="header" class="clearfix">
         <span>当前项目ID: {{ this.projectId }}</span>
         <el-button
@@ -92,7 +98,7 @@ export default {
     return {
       editFormVisible: false,
       formLabelWidth: "120px",
-      projectId: 1,
+      projectId: "",
       fileTrigger: "true",
       emailTrigger: "true",
       git: "true",
@@ -129,8 +135,16 @@ export default {
   },
   mounted() {
     this.projectId = this.$route.query.projectId;
-    //console.log(this.projectId);
+    if (this.projectId === undefined) {
+      this.$message({
+        message: "请先选择项目！",
+        type: "warning"
+      });
+    } else {
+      //console.log(this.projectId);
     this.getConfig();
+    }
+    
   },
   methods: {
     // 信息显示

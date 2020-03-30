@@ -2,19 +2,25 @@
   <div>
     <PageHeader title="风险信息">
       <!--工具条：搜索栏-->
-      <Search v-model="riskSearch" :query-search="querySearch" @select-suggestion="getRisk" value-key="name"></Search>
+      <Search v-model="riskSearch" :query-search="querySearch" @select-suggestion="getRisk" value-key="name" v-if="this.projectId !== undefined"></Search>
       <div style="width:20px;height=100%;"></div>
 
       <!--新增风险信息-->
-      <el-button size="medium" @click="addFormVisible = true" type="primary">新增</el-button>
+      <el-button class="add-btn" v-if="this.projectId !== undefined"  @click="addFormVisible = true" type="primary">新增</el-button>
 
       <!--导入-->
-      <el-button size="medium" @click="importFormVisible = true" type="primary">导入</el-button>
+      <el-button class="add-btn" v-if="this.projectId !== undefined"  @click="importFormVisible = true" type="primary">导入</el-button>
     </PageHeader>
 
+    <el-row v-if="this.projectId === undefined">
+      <el-col :span="24">
+        <el-tag type="success" effect="dark">请选择项目</el-tag>
+      </el-col>
+    </el-row>
+
     <!--列表展示-->
-    <Pagination>
-      <el-table :data="riskData" stripe border highlight-current-row style="width: 100%">
+    <Pagination v-if="this.projectId !== undefined">
+      <el-table :data="riskData" stripe border highlight-current-row style="width: 100%" v-if="this.projectId !== undefined">
         <el-table-column type="expand">
           <template slot-scope="props">
             <el-form label-position="left" class="demo-table-expand">
@@ -81,7 +87,7 @@
 
         <!---编辑和移除-->
         <el-table-column label="操作" width="180px" prop="action">
-          <template slot-scope="{ row, $index }">
+          <template slot-scope="{ row }">
             <el-button-group>
               <el-button
                 type="primary"
@@ -412,7 +418,7 @@ export default {
   },
   data() {
     return {
-      projectId: 1,
+      projectId: "",
       pageNo: 1,
       pageSize: 10,
       riskSearch: "",
@@ -489,8 +495,16 @@ export default {
   },
   mounted() {
     this.projectId = this.$route.query.projectId;
+    if (this.projectId === undefined) {
+      this.$message({
+        message: "请先选择项目！",
+        type: "warning"
+      });
+    } else {
     //console.log(this.projectId);
     this.getRiskList();
+    }
+    
   },
   methods: {
     //列表展示
@@ -643,13 +657,19 @@ export default {
       console.log("返回查询结果="+res);
     }
 
-      cb(this.results);
+      // cb(this.results);
     }
-  }
+  
 };
 </script>
 
 <style lang="scss" scoped>
+.add-btn {
+  height: 32px;
+  margin-left: 20px;
+  border-radius: 3px;
+  width: 80px;
+}
 .demo-table-expand .el-form-item {
   width: 50%;
   .text {

@@ -1,17 +1,23 @@
 <template>
   <div>
     <!--工具条：搜索栏-->
-    <PageHeader title="项目列表">
+    <PageHeader title="项目成员信息">
       <Search
+        v-if="this.projectId !== undefined"
         placeholder="请输入功能名称"
         :query-search="querySearch"
         @search="searchMembers"
-        @select-suggestion="getOne"
+        @select-suggestion="selectSearch"
       />
       <!-- <el-input prefix-icon="el-icon-search" v-model="search" style="width: 200px" placeholder="输入关键字搜索"></el-input> -->
-      <el-button type="primary" class="add-btn" @click="addMember">新增</el-button>
-      <el-button type="primary" class="add-btn" @click="addExcelFormVisible = true">导入</el-button>
+      <el-button v-if="this.projectId !== undefined" type="primary" class="add-btn" @click="addMember">新增</el-button>
+      <el-button v-if="this.projectId !== undefined" type="primary" class="add-btn" @click="addExcelFormVisible = true">导入</el-button>
     </PageHeader>
+    <el-row v-if="this.projectId === undefined">
+      <el-col :span="24">
+        <el-tag type="success" effect="dark">请选择项目</el-tag>
+      </el-col>
+    </el-row>
 
     <!-- 新增项目成员 -->
     <el-dialog title="新增项目成员" :visible.sync="addFormVisible">
@@ -26,11 +32,7 @@
               :value="item"
             >
               <span style="float: left">{{ item.username }}</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">
-                {{
-                item.userId
-                }}
-              </span>
+              <span style="float: right; color: #8492a6; font-size: 13px">{{ item.userId }}</span>
             </el-option>
           </el-select>
         </el-form-item>
@@ -52,11 +54,7 @@
               :value="item"
             >
               <span style="float: left">{{ item.username }}</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">
-                {{
-                item.userId
-                }}
-              </span>
+              <span style="float: right; color: #8492a6; font-size: 13px">{{ item.userId }}</span>
             </el-option>
           </el-select>
         </el-form-item>
@@ -87,8 +85,8 @@
     </el-dialog>
 
     <!--项目成员列表-->
-    <Pagination>
-      <el-table
+    <Pagination v-if="this.projectId !== undefined">
+      <el-table v-if="this.projectId !== undefined"
         :data="
           tableData.filter(
             data =>
@@ -154,11 +152,7 @@
               :value="item"
             >
               <span style="float: left">{{ item.username }}</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">
-                {{
-                item.userId
-                }}
-              </span>
+              <span style="float: right; color: #8492a6; font-size: 13px">{{ item.userId }}</span>
             </el-option>
           </el-select>
         </el-form-item>
@@ -189,8 +183,10 @@ export default {
       // 分页
       page: 1,
       pageSize: 10,
-      keyword:"",
-
+      keyword: "",
+      projectId: "",
+      
+      selectedMember: "",
       memberSearch: "",
       users: [],
       members: [],
@@ -243,9 +239,8 @@ export default {
     // 新增项目成员
     async addMember() {
       this.addFormVisible = true;
-      var projectId = "1";
       this.users = await Project.getUsers();
-      this.members = await Project.getMembers(projectId);
+      this.members = await Project.getMembers(this.projectId);
       this.roles = await Project.getRoles();
       console.log("add:");
       console.log(this.users);
@@ -254,10 +249,9 @@ export default {
     // 提交新增成员
     async submitAddForm(form) {
       console.log(this.addForm);
-      var projectId = "1";
 
       var info = await Project.addMember(
-        projectId,
+        this.projectId,
         this.addForm.user.userId,
         this.addForm.user.username,
         this.addForm.leader.userId,
@@ -273,10 +267,9 @@ export default {
 
     // 编辑项目成员信息
     async handleEdit(index, row) {
-      var projectId = "1";
       console.log(row);
       this.editFormVisible = true;
-      this.members = await Project.getMembers(projectId);
+      this.members = await Project.getMembers(this.projectId);
       this.roles = await Project.getRoles();
       this.editForm.userId = row.userId;
       this.editForm.username = row.username;
@@ -284,9 +277,8 @@ export default {
       this.editForm.leader = row.leaderName;
     },
     async submitEditForm(form) {
-      var projectId = "1";
       var info = await Project.editMember(
-        projectId,
+        this.projectId,
         this.editForm.userId,
         this.editForm.leader.userId,
         this.editForm.leader.username,
@@ -323,19 +315,23 @@ export default {
         });
     },
     // 将数组用\n拼接以便展示时换行
-    showRoles(){
+    showRoles() {
       for (var i = 0; i < this.tableData.length; ++i) {
-        this.tableData[i].rolesStr="";
-          this.tableData[i].rolesStr = this.tableData[i].roles.join("\n");
-        }
+        this.tableData[i].rolesStr = "";
+        this.tableData[i].rolesStr = this.tableData[i].roles.join("\n");
+      }
     },
     // 获取成员列表
     async getMemberList(keyword) {
       try {
         // 尝试获取成员列表
-        var projectId = "1";
         console.log(keyword);
-        const info = await Project.getMemberList(projectId, this.page, this.pageSize,keyword);
+        const info = await Project.getMemberList(
+          this.projectId,
+          this.page,
+          this.pageSize,
+          keyword
+        );
         console.log("get member list success!");
         this.tableData = info.items;
         this.showRoles();
@@ -346,10 +342,12 @@ export default {
     },
     // 搜索
     async querySearch(queryString, cb) {
-      var projectId = "1";
       console.log(queryString);
       var tmp = [];
-      this.memberSearch = await Project.searchMembers(projectId, queryString);
+      this.memberSearch = await Project.searchMembers(
+        this.projectId,
+        queryString
+      );
       console.log(this.memberSearch);
       // 下拉显示的数据
       this.memberSearch.forEach(item => {
@@ -358,25 +356,35 @@ export default {
         obj.value = item.name;
         tmp.push(obj);
       });
-      this.memberSearch = tmp;
-      cb(tmp);
+      const results = queryString
+        ? tmp.filter(item => item.value.includes(queryString))
+        : tmp;
+      cb(results);
     },
-    createFilter(queryString) {
-      return memberSearch => {
-        return (
-          memberSearch.name.toLowerCase().indexOf(queryString.toLowerCase()) ===
-          0
-        );
-      };
+    async selectSearch(item) {
+      console.log("select search item-------");
+      console.log(item);
+      this.selectedMember = item.id;
+      // this.projects = await ProjectSYJ.searchOneProject(item.id);
+      // console.log(this.projects);
     },
-    searchMembers() {
-      console.log("click");
+    searchMembers(keyword) {
+      this.getMemberList(this.keyword);
+      // if(this.selectedMember !== "") {
+        // console.log("selected search");
+        // const res = await ProjectSYJ.searchOneProject(this.selectedProject);
+        // const tmplist = [];
+        // tmplist.push(res);
+        // this.projects = tmplist;
+      // } else {
+      //   console.log("keyword search");
+        // this.projects = await ProjectSYJ.getProjectList(this.pageNo, this.pageSize, this.userId, keyword);
+      // }
     },
     async getOne(item) {
       console.log(item);
       try {
-        var projectId = "1";
-        const info = await Project.getOneMember(projectId, item.id);
+        const info = await Project.getOneMember(this.projectId, item.id);
         this.tableData = [];
         this.showRoles();
         this.tableData.push(info);
@@ -388,15 +396,23 @@ export default {
     }
   },
   mounted: function() {
-    this.keyword="";
-    this.getMemberList(this.keyword);
+    this.projectId = this.$route.query.projectId;
+    if (this.projectId === undefined) {
+      this.$message({
+        message: "请先选择项目！",
+        type: "warning"
+      });
+    } else {
+      this.keyword = "";
+      this.getMemberList(this.keyword);
+    }
   }
 };
 </script>
 
 <style>
 .add-btn {
-  height: 40px;
+  height: 32px;
   margin-left: 20px;
   border-radius: 3px;
   width: 80px;

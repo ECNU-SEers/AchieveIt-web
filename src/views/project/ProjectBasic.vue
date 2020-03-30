@@ -1,14 +1,15 @@
 <template>
   <div>
-    <el-card class="box-card">
+    <PageHeader title="基本信息"></PageHeader>
+    <el-row v-if="this.projectId === undefined">
+      <el-col :span="24">
+        <el-tag type="success" effect="dark">请选择项目</el-tag>
+      </el-col>
+    </el-row>
+    <el-card v-if="this.projectId !== undefined" class="box-card">
       <div slot="header" class="clearfix">
         <span>AchieveIt</span>
-        <el-button
-          style="float: right; padding: 3px 0"
-          type="text"
-          @click="editBasic"
-          >修改</el-button
-        >
+        <el-button style="float: right; padding: 3px 0" type="text" @click="editBasic">修改</el-button>
 
         <!-- 修改项目信息 -->
         <el-dialog title="修改项目基本信息" :visible.sync="dialogFormVisible">
@@ -21,20 +22,12 @@
           >
             <!-- 不可修改 -->
             <el-form-item label="项目ID">
-              <el-input
-                v-model="editForm.outerId"
-                :disabled="true"
-                placeholder
-              ></el-input>
+              <el-input v-model="editForm.outerId" :disabled="true" placeholder></el-input>
             </el-form-item>
 
             <!-- 输入框 -->
             <el-form-item label="项目名称" prop="name">
-              <el-input
-                v-model="editForm.name"
-                placeholder="请输入项目名称"
-                clearable
-              ></el-input>
+              <el-input v-model="editForm.name" placeholder="请输入项目名称" clearable></el-input>
             </el-form-item>
 
             <!-- 下拉单选 -->
@@ -53,9 +46,7 @@
                   :value="item"
                 >
                   <span style="float: left">{{ item.company }}</span>
-                  <span style="float: right; color: #8492a6; font-size: 13px">
-                    {{ item.outerId }}
-                  </span>
+                  <span style="float: right; color: #8492a6; font-size: 13px">{{ item.outerId }}</span>
                 </el-option>
               </el-select>
             </el-form-item>
@@ -83,21 +74,12 @@
 
             <!-- 不可修改 -->
             <el-form-item label="项目上级" prop="leader">
-              <el-input
-                v-model="tableData[5].detail"
-                :disabled="true"
-                placeholder
-              ></el-input>
+              <el-input v-model="tableData[5].detail" :disabled="true" placeholder></el-input>
             </el-form-item>
 
             <!-- 文本框 -->
             <el-form-item label="主要里程碑" prop="milestone">
-              <el-input
-                type="textarea"
-                autosize
-                :disabled="true"
-                v-model="this.stones"
-              ></el-input>
+              <el-input type="textarea" autosize :disabled="true" v-model="this.stones"></el-input>
               <el-input type="textarea" autosize v-model="editForm.milestone"></el-input>
             </el-form-item>
 
@@ -131,9 +113,7 @@
             </el-form-item>-->
 
             <el-form-item>
-              <el-button type="primary" @click="submitForm('editForm')"
-                >提交</el-button
-              >
+              <el-button type="primary" @click="submitForm('editForm')">提交</el-button>
               <el-button @click="resetForm('editForm')">重置</el-button>
             </el-form-item>
           </el-form>
@@ -169,8 +149,13 @@
 
 <script>
 import Project from "@/sys/models/project_htx";
+import PageHeader from "../../components/common/PageHeader";
 
 export default {
+  components: {
+    PageHeader
+  },
+
   data() {
     let validateDate = (rule, value, callback) => {
       if (this.editForm.endDate > this.editForm.startDate == false) {
@@ -271,7 +256,7 @@ export default {
       ],
       areas: [],
       skills: [],
-      stones:"",
+      stones: "",
       rules: {
         name: [
           { required: true, message: "请输入项目名称", trigger: "blur" }
@@ -371,7 +356,10 @@ export default {
         if (info.projectMilestones.length == 0) {
           this.tableData[6].detail = "暂无数据";
         } else {
-          this.tableData[6].detail = info.projectMilestones[0].recordDate+" "+info.projectMilestones[0].progress;
+          this.tableData[6].detail =
+            info.projectMilestones[0].recordDate +
+            " " +
+            info.projectMilestones[0].progress;
           this.tableData[6].moreDetail = [];
           for (var i = 0; i < info.projectMilestones.length; ++i) {
             const obj = {};
@@ -385,8 +373,8 @@ export default {
         var skillStr = "";
         for (var i = 0; i < info.projectSkills.length; ++i) {
           skillStr = skillStr + info.projectSkills[i].skillName;
-          if(i!=info.projectSkills.length-1){
-             skillStr +=  "、 "
+          if (i != info.projectSkills.length - 1) {
+            skillStr += "、 ";
           }
         }
         this.tableData[7].detail = skillStr;
@@ -396,7 +384,6 @@ export default {
           str = str + info.projectFunctions[i].name + " \n ";
         }
         this.tableData[9].detail = str;
-
 
         // 获取修改框中的预设值（下拉选项和不可修改的显示）
         // 客户
@@ -445,7 +432,7 @@ export default {
         skillNames: [],
         businessAreaName: ""
       };
-      for(var i=0;i<info.projectSkills.length;++i){
+      for (var i = 0; i < info.projectSkills.length; ++i) {
         this.editForm.skillNames.push(info.projectSkills[i].skillName);
       }
 
@@ -491,11 +478,17 @@ export default {
   mounted: function() {
     console.log("in mounted");
     // 获取projectId
-    this.projectId = this.$route.query.projectId;
+    this.projectId = this.$route.query.outerId;
     console.log(this.projectId);
-
-    // 获取项目基本信息
-    this.getBasic(this.projectId);
+    if (this.projectId === undefined) {
+      this.$message({
+        message: "请先选择项目！",
+        type: "warning"
+      });
+    } else {
+      // 获取项目基本信息
+      this.getBasic(this.projectId);
+    }
   }
 };
 </script>

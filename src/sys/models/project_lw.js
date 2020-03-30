@@ -13,7 +13,7 @@ export default class ProjectLW {
    * @param {number} projectId
    */
 
-  static async getDeviceList(pageNo, pageSize, projectId) {
+  static async getDeviceList(pageNo, pageSize, projectId, keyword) {
     // console.log("getDeviceList");
     const res = await get(
       "/device/show/all/details?pageNo=" +
@@ -21,7 +21,9 @@ export default class ProjectLW {
         "&pageSize=" +
         pageSize +
         "&projectId=" +
-        projectId
+        projectId + 
+        "&keyword=" +
+        keyword
     );
     return res;
   }

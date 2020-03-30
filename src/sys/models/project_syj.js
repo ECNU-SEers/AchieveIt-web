@@ -9,12 +9,17 @@ export default class ProjectSYJ {
    * @param {页面大小} pageSize
    * @param {用户id} userId
    */
-  static async getProjectList(pageNo, pageSize, userId) {
+  static async getProjectList(pageNo, pageSize, userId, keyword) {
     return await get("/project/show/all/projects", {
       pageNo,
       pageSize,
-      userId
+      userId,
+      keyword
     });
+  }
+
+  static async searchOneProject(outerId) {
+    return await get("/project/show/list", {outerId}); 
   }
 
   static async getAllClients() {
@@ -87,11 +92,12 @@ export default class ProjectSYJ {
     return await get("/defect/type");
   }
 
-  static async getProjectDefects(page, pageSize, projectId) {
+  static async getProjectDefects(page, pageSize, projectId, keyword) {
     return await get("/defects", {
       page,
       pageSize,
-      projectId
+      projectId,
+      keyword
     });
   }
 

@@ -5,7 +5,6 @@
       <Search
         placeholder="请输入项目名称"
         :query-search="querySearch"
-        value-key="outerId"
         @search="searchProject"
         @select-suggestion="selectSearch"
       >
@@ -507,6 +506,8 @@ export default {
       userName: "管理员",
       projects: [],
       projectsLength: 0,
+      keyword: '',
+      selectedProject: "",
 
       // 模态框
       clients: [],
@@ -805,10 +806,12 @@ export default {
     },
 
     handleDetail(index, row) {
+      console.log(row.id);
       this.$router.push({
         path: "/project/basic",
         query: {
-          projectId: row.outerId
+          projectId: row.id,
+          outerId: row.outerId
         }
       });
     },
@@ -823,7 +826,8 @@ export default {
       const res = await ProjectSYJ.getProjectList(
         this.pageNo,
         this.pageSize,
-        this.userId
+        this.userId,
+        this.keyword
       );
       this.projects = res.items;
     },
@@ -835,7 +839,6 @@ export default {
 
     // 项目搜索框
     querySearch(queryString, cb) {
-      console.log(this.projectModal);
       var projectModal = [];
       this.projectModal.forEach(item => {
         const obj = {};
@@ -851,19 +854,27 @@ export default {
       cb(results);
     },
 
-    selectSearch(item) {
+    async selectSearch(item) {
+      console.log("select search item-------");
       console.log(item);
+      this.selectedProject = item.id;
+      // this.projects = await ProjectSYJ.searchOneProject(item.id);
+      // console.log(this.projects);
     },
 
     async searchProject(keyword) {
-      console.log(keyword);
-      const res = await ProjectSYJ.getProjectByKeyword(
-        this.pageNo,
-        this.pageSize,
-        this.userId,
-        keyword
-      );
-      this.projects = res.item;
+      
+      if(this.selectedProject !== "") {
+        console.log("selected search");
+        const res = await ProjectSYJ.searchOneProject(this.selectedProject);
+        const tmplist = [];
+        tmplist.push(res);
+        this.projects = tmplist;
+      } else {
+        console.log("keyword search");
+        this.projects = await ProjectSYJ.getProjectList(this.pageNo, this.pageSize, this.userId, keyword);
+      }
+      
     },
 
     // 获取客户模态框
@@ -1133,7 +1144,7 @@ export default {
 
 <style lang="scss" scoped>
 .add-btn {
-  height: 40px;
+  height: 32px;
   margin-left: 20px;
   border-radius: 3px;
   width: 80px;

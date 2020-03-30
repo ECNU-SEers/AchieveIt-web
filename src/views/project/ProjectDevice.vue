@@ -2,7 +2,7 @@
   <div>
     <PageHeader title="设备信息">
       <!--工具条：搜索栏-->
-      <Search 
+      <Search  v-if="this.projectId !== undefined"
       :query-search="querySearch" 
       @select-suggestion="getDevice"
       >
@@ -10,14 +10,20 @@
       <div style="width:20px;height=100%;"></div>
 
       <!--新增-->
-      <el-button size="medium" @click="addFormVisible = true" type="primary"
+      <el-button class="add-btn" @click="addFormVisible = true" type="primary" v-if="this.projectId !== undefined"
         >新增</el-button
       >
     </PageHeader>
 
+    <el-row v-if="this.projectId === undefined">
+      <el-col :span="24">
+        <el-tag type="success" effect="dark">请选择项目</el-tag>
+      </el-col>
+    </el-row>
+
     <!--列表展示-->
-    <Pagination>
-      <el-table
+    <Pagination v-if="this.projectId !== undefined">
+      <el-table v-if="this.projectId !== undefined"
         :data="deviceData"
         stripe
         border
@@ -94,7 +100,7 @@
 
         <!---编辑和删除-->
         <el-table-column label="操作" width="180px" prop="action">
-          <template slot-scope="{ row, $index }">
+          <template slot-scope="{ row }">
             <el-button-group>
               <el-button
                 type="primary"
@@ -360,16 +366,24 @@ export default {
   },
   mounted() {
     this.projectId = this.$route.query.projectId;
-    //console.log(this.projectId);
-    this.getDeviceList();
+    if (this.projectId === undefined) {
+      this.$message({
+        message: "请先选择项目！",
+        type: "warning"
+      });
+    } else {
+      this.getDeviceList("");
+    }
+    
   },
   methods: {
     //列表展示
-    async getDeviceList() {
+    async getDeviceList(keyword) {
       const res = await ProjectLW.getDeviceList(
         this.pageNo,
         this.pageSize,
-        this.projectId
+        this.projectId,
+        keyword
       );
       console.log(res.items);
       this.deviceData = res.items;
@@ -420,7 +434,7 @@ export default {
           console.log(res);
           this.addFormVisible = false;
           this.$message.success("添加成功");
-          this.getDeviceList();
+          this.getDeviceList("");
         } else {
           this.$message.error("请填写正确信息");
           return false;
@@ -480,7 +494,7 @@ export default {
           // console.log(res);
           _this.editFormVisible = false;
           _this.$message.success("修改成功");
-          this.getDeviceList();
+          this.getDeviceList("");
           //前端修改当前行
           //   _this.row={
           //      outerId: _this.editForm.outerId,
@@ -495,7 +509,7 @@ export default {
           return false;
         }
       });
-    }
+    },
 
      //搜索
     async querySearch(queryString, cb) {
@@ -551,6 +565,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.add-btn {
+  height: 32px;
+  margin-left: 20px;
+  border-radius: 3px;
+  width: 80px;
+}
 .top-btn {
   height: 40px;
   margin-left: 20px;
