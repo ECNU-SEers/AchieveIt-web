@@ -2,77 +2,64 @@
   <div>
     <PageHeader title="风险信息">
       <!--工具条：搜索栏-->
-      <Search v-model="riskSearch" :query-search="querySearch" value-key="name">
-      </Search>
+      <Search v-model="riskSearch" :query-search="querySearch" @select-suggestion="getRisk" value-key="name"></Search>
       <div style="width:20px;height=100%;"></div>
 
       <!--新增风险信息-->
-      <el-button size="medium" @click="addFormVisible = true" type="primary"
-        >新增</el-button
-      >
+      <el-button size="medium" @click="addFormVisible = true" type="primary">新增</el-button>
 
       <!--导入-->
-      <el-button size="medium" @click="importFormVisible = true" type="primary"
-        >导入</el-button
-      >
+      <el-button size="medium" @click="importFormVisible = true" type="primary">导入</el-button>
     </PageHeader>
 
     <!--列表展示-->
     <Pagination>
-      <el-table
-        :data="riskData"
-        stripe
-        border
-        highlight-current-row
-        style="width: 100%"
-      >
+      <el-table :data="riskData" stripe border highlight-current-row style="width: 100%">
         <el-table-column type="expand">
           <template slot-scope="props">
             <el-form label-position="left" class="demo-table-expand">
               <el-form-item label="风险 ID">
-                <span>{{ props.row.id }}</span>
+                <span>{{props.row.id}}</span>
               </el-form-item>
               <el-form-item label="风险名称">
-                <span>{{ props.row.name }}</span>
+                <span>{{props.row.name}}</span>
               </el-form-item>
               <el-form-item label="风险类型">
-                <span>{{ props.row.type }}</span>
+                <span>{{props.row.type}}</span>
               </el-form-item>
               <el-form-item label="风险级别">
-                <span>{{ props.row.level }}</span>
+                <span>{{props.row.level}}</span>
               </el-form-item>
               <el-form-item label="风险描述">
                 <div class="text">
-                  <span>{{ props.row.description }}</span>
+                  <span>{{props.row.description}}</span>
                 </div>
               </el-form-item>
               <el-form-item label="影响程度">
-                <span>{{ props.row.impact }}</span>
+                <span>{{props.row.impact}}</span>
               </el-form-item>
               <el-form-item label="应对策略">
                 <div class="text">
-                  <span>{{ props.row.strategy }}</span>
+                  <span>{{props.row.strategy}}</span>
                 </div>
               </el-form-item>
               <el-form-item label="风险状态">
-                <span>{{ props.row.state }}</span>
+                <span>{{props.row.state}}</span>
               </el-form-item>
               <el-form-item label="责任人">
-                <span>{{ props.row.ownerName }}</span>
+                <span>{{props.row.ownerName}}</span>
               </el-form-item>
               <el-form-item label="跟踪频度">
-                <span>{{ props.row.trackingFreq }}</span>
+                <span>{{props.row.trackingFreq}}</span>
               </el-form-item>
               <el-form-item label="相关者">
                 <span
                   v-for="person in props.row.riskRelatedPeople"
                   :key="person.id"
-                >
-                  {{ person.username }}
-                </span>
+                >{{person.username}}</span>
               </el-form-item>
               <el-form-item label="风险来源">
-                <span>{{ props.row.source }}</span>
+                <span>{{props.row.source}}</span>
               </el-form-item>
             </el-form>
           </template>
@@ -90,7 +77,7 @@
         <el-table-column label="责任人" prop="ownerId"></el-table-column>
         <el-table-column label="跟踪频度" prop="trackingFreq"></el-table-column>
         <el-table-column label="相关者" prop="relatedPersons"></el-table-column>
-        <el-table-column label="风险来源" prop="source"></el-table-column> -->
+        <el-table-column label="风险来源" prop="source"></el-table-column>-->
 
         <!---编辑和移除-->
         <el-table-column label="操作" width="180px" prop="action">
@@ -501,6 +488,8 @@ export default {
     };
   },
   mounted() {
+    this.projectId = this.$route.query.projectId;
+    //console.log(this.projectId);
     this.getRiskList();
   },
   methods: {
@@ -629,14 +618,30 @@ export default {
         });
     },
 
-    //   //搜索
-    //   async handleSelect(){
-    //     const res = await ProjectLW.getRisk(projectId,riskSearch);
-    //     this.riskData = res.items;
-    // }
+     //搜索
     async querySearch(queryString, cb) {
-      this.results = await ProjectLW.searchRisk(this.projectId, queryString);
+      var tmp=[];
+      const results = await ProjectLW.searchRisk(
+        this.projectId, 
+        queryString
+        );
+        results.forEach(item=>{
+          const obj ={};
+          obj.id =item.id;
+          obj.value=item.name;
+          tmp.push(obj);
+        })
       // 调用 callback 返回建议列表的数据
+      console.log("tmp=" + tmp);
+      cb(tmp);
+    },
+
+    //查询
+    async getRisk(item){
+      console.log("item="+item);
+      const res =await ProjectLW.getRisk(this.projectId,item.id);
+      console.log("返回查询结果="+res);
+    }
 
       cb(this.results);
     }

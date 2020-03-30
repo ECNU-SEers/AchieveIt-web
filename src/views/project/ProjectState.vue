@@ -1,6 +1,8 @@
 <template>
   <div>
-    <PageHeader title="项目进展状态" style="height:40px;"> </PageHeader>
+    <PageHeader title="项目进展状态" style="height:40px;"> 
+      <!-- <div style="float:left;"> <span >当前项目ID: {{this.projectId}}</span> </div> -->
+       </PageHeader>
 
     <!--列表展示-->
     <Pagination>
@@ -69,9 +71,14 @@ export default {
       detailFormVisible: false
     };
   },
-  mounted() {
+  mounted(){
+    
+    this.projectId = this.$route.query.projectId;
+   // this.projectOuterId = this.getProjectOuterId(); 
+   // console.log(this.projectId);
     this.getState();
     this.getRemark();
+
   },
   methods: {
     //列表展示
@@ -79,6 +86,12 @@ export default {
       const res = await ProjectLW.getState(this.projectOuterId);
       this.stateData = res;
     },
+
+    // //获取项目OuterId
+    // async getProjectOuterId(){
+    //   const res = await ProjectLW.getRemark(this.projectOuterId);
+    //   this.remark=res.project.remark;
+    // }
 
     //获取备注
     async getRemark() {

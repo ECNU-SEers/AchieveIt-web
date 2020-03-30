@@ -86,6 +86,25 @@ export default class ProjectLW {
     const res = await get("/project/" + projectId + "/members/simple");
     return res;
   }
+  
+  /**
+   * 模糊查询设备信息
+   * 
+   */
+  static async searchDevice(projectId,DeviceId){
+    const res = await get("/device/search?keyword="+DeviceId+"&projectId="+projectId);
+    return res;
+  }
+
+    /**
+    * 返回查询的设备信息
+    * @param {number} projectId 
+    * @param {number} deviceId
+    */
+   static async getDevice(projectId,deviceId){
+    const res =await get("/show/detail?projectId="+projectId+"&outerId="+deviceId);
+    return res;
+  }
 
   /***********风险***************/
   /**
@@ -201,10 +220,43 @@ export default class ProjectLW {
    * @param {number} riskId
    */
 
-  static deleteRisk(projectId, riskId) {
-    console.log("riskId" + riskId);
-    return _delete("/project/" + projectId + "/risk/" + riskId);
+   static deleteRisk(projectId,riskId){
+     console.log("riskId"+riskId);
+     return _delete("/project/"+projectId+"/risk/"+riskId);
+
+   }
+
+   /**
+    * 模糊查询risk
+    * @param {number} projectId 
+    *  @param {string} riskName
+    */
+   static async searchRisk(projectId,riskName){
+     const res = await get("/project/"+projectId+"/risks/search?name="+riskName);
+     return res;
+   }
+
+   /**
+    * 返回查询的风险
+    * @param {*} projectId 
+    */
+   static async getRisk(projectId,riskId){
+    const res =await get("/project/"+projectId+"/risk/"+riskId);
+    return res;
   }
+
+
+   /************项目配置信息**************/
+   /**
+    * 显示项目配置信息
+    * @param {number} projectId
+    * @param {number} riskId
+    */
+   
+    static async getConfig(projectId){
+          const res =await get("/project/"+projectId+"/config");
+          return res;
+    }
 
   /**
    * 模糊查询risk
