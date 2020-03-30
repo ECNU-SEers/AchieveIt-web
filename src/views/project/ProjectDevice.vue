@@ -63,7 +63,7 @@
 
         <!--下拉展示-->
         <el-table-column type="expand">
-          <template slot-scope="scope">
+          <template>
             <el-table
               :data="inspectData"
               row-key="getRowKeys"
