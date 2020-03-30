@@ -1,12 +1,16 @@
 <template>
   <div>
-    <AddRoleDialog :visibility.sync="showAddRoleDialog" />
+    <AddRoleDialog
+      @success="getRoleListFromServe"
+      :visibility.sync="showAddRoleDialog"
+    />
     <EditRoleDialog
+      v-if="showEditRoleDialog"
       :visibility.sync="showEditRoleDialog"
       v-bind="editingRoleInfo"
     />
     <PageHeader title="角色设置">
-      <Search :query-search="querySearch" />
+      <Search :query-search="querySearch" @search="onSearch" />
       <el-button @click="onAddRole" type="primary" class="add-btn">
         新增
       </el-button>
@@ -57,6 +61,8 @@ import RolePermissions from '../../admin/role/RolePermissions';
 import { loadable, pageable } from '../../../util/mixin';
 import { roleListTableHeader } from '../const';
 import { getRoleList } from '@/api/permisssion';
+import { deleteRole } from '../../../api/permisssion';
+import { isEmpty } from 'lodash';
 
 export default {
   components: {
@@ -78,6 +84,10 @@ export default {
     };
   },
   methods: {
+    onSearch(key) {
+      if (isEmpty(key)) return this.getRoleListFromServe();
+      this.tableData = this.tableData.filter(item => item.name.includes(key));
+    },
     onAddRole() {
       this.showAddRoleDialog = true;
     },
@@ -86,7 +96,14 @@ export default {
       this.showEditRoleDialog = true;
     },
     onDeleteRole(row) {
-      console.log(row);
+      this.$confirm('删除后不可恢复，确认删除该角色吗?')
+        .then(() => {
+          return deleteRole(row.id);
+        })
+        .then(() => {
+          this.$message.success('删除成功');
+          this.getRoleListFromServe();
+        });
     },
     getRoleListFromServe() {
       this.loading = true;
@@ -98,7 +115,10 @@ export default {
         .catch(() => (this.loading = false));
     },
     querySearch(queryString, cb) {
-      cb([{ value: '111' }]);
+      const results = this.tableData
+        .filter(item => item.name.includes(queryString))
+        .map(item => ({ value: item.name }));
+      cb(results);
     }
   },
   created() {

@@ -6,12 +6,6 @@ export const pageable = {
       total: 0,
       tableData: []
     };
-  },
-  method: {
-    refreshTable(firstPageTableData) {
-      this.currentPage = 1;
-      this.tableData = firstPageTableData;
-    }
   }
 };
 
@@ -20,5 +14,8 @@ export const loadable = {
     return {
       loading: false
     };
+  },
+  showLoading(promise) {
+    this.loading = true;
   }
 };

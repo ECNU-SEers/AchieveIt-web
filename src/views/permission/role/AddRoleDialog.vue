@@ -52,6 +52,7 @@ export default {
       addNewRole(roleName, permissions).then(() => {
         this.close();
         this.$message.success('新增角色成功');
+        this.$emit('success');
       });
     },
     close() {

@@ -17,8 +17,6 @@
 </template>
 
 <script>
-import { isEmpty } from 'lodash';
-
 export default {
   props: {
     placeholder: String,
@@ -32,7 +30,6 @@ export default {
   },
   methods: {
     onSearch() {
-      if (isEmpty(this.keyword)) return;
       this.$emit('search', this.keyword);
     },
     handleSelect(v) {
