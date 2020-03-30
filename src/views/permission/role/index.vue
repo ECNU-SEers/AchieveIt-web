@@ -8,6 +8,7 @@
       v-if="showEditRoleDialog"
       :visibility.sync="showEditRoleDialog"
       v-bind="editingRoleInfo"
+      @success="getRoleListFromServe"
     />
     <PageHeader title="角色设置">
       <Search :query-search="querySearch" @search="onSearch" />
@@ -97,9 +98,7 @@ export default {
     },
     onDeleteRole(row) {
       this.$confirm('删除后不可恢复，确认删除该角色吗?')
-        .then(() => {
-          return deleteRole(row.id);
-        })
+        .then(() => deleteRole(row.id))
         .then(() => {
           this.$message.success('删除成功');
           this.getRoleListFromServe();

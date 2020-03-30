@@ -28,13 +28,13 @@
 import RolePermissions from '@/views/admin/role/RolePermissions';
 import { editUserRole } from '@/api/permisssion';
 import { permissions } from '../../../store/getters';
+import { dialogMixin } from '../../../util/mixin';
 
 export default {
   components: {
     RolePermissions
   },
   props: {
-    visibility: Boolean,
     id: Number,
     name: String,
     creator: String,
@@ -43,6 +43,7 @@ export default {
       default: () => []
     }
   },
+  mixins: [dialogMixin],
   data() {
     return {
       allPermissions: [], // 所有权限
@@ -62,12 +63,10 @@ export default {
     onEditRole() {
       const { name, permissions } = this.form;
       editUserRole(this.id, name, permissions).then(() => {
-        this.close();
         this.$message.success('更新角色成功');
+        this.$emit('success');
+        this.close();
       });
-    },
-    close() {
-      this.$emit('update:visibility', false);
     }
   }
 };

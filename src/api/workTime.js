@@ -41,3 +41,7 @@ export const searchWorkTimeSubmitList = (
 export const submitWorkTime = row => post(`${NODULE_NAME}/create`, row);
 
 export const updateWorkTimeSubmit = row => put(`${NODULE_NAME}/update`, row);
+
+export const getAllFeatures = () => get('/functions/me');
+
+export const getAllActivities = () => get('/activity/all');

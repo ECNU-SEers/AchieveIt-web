@@ -1,12 +1,20 @@
 <template>
   <div>
-    <AddWorkTimeDialog :visibility.sync="showAddWorkTimeDialog" />
-    <EditWorkTimeDialog :visibility.sync="showEditWorkTimeDialog" />
+    <AddWorkTimeDialog
+      :visibility.sync="showAddWorkTimeDialog"
+      @success="_getWorkTimeSubmitList"
+    />
+    <EditWorkTimeDialog
+      v-if="showEditWorkTimeDialog"
+      :visibility.sync="showEditWorkTimeDialog"
+      v-bind="editingWorkTime"
+      @success="_getWorkTimeSubmitList"
+    />
     <PageHeader title="工时提交">
       <lin-date-picker class="date" v-model="searchDateRange" />
-      <el-button @click="onSearch(1)" type="primary" class="btn"
-        >查询</el-button
-      >
+      <el-button @click="onSearch(1)" type="primary" class="btn">
+        查询
+      </el-button>
       <el-button @click="onAdd" type="primary" class="btn">新增</el-button>
     </PageHeader>
     <LPageTable
@@ -57,6 +65,7 @@ import {
   searchWorkTimeSubmitList
 } from '../../../api/workTime';
 import { isEmpty } from 'lodash';
+import { formCheckMixin } from './mixin';
 
 export default {
   components: {
@@ -73,26 +82,27 @@ export default {
       tableHeader: Object.freeze(workTimeSubmitTableHeader),
       searchDateRange: [],
       showAddWorkTimeDialog: false,
-      showEditWorkTimeDialog: false
+      showEditWorkTimeDialog: false,
+      editingWorkTime: null
     };
   },
   methods: {
     onSearch(page) {
       if (isEmpty(this.searchDateRange)) return this._getWorkTimeSubmitList(1);
       const [start, end] = this.searchDateRange;
-      searchWorkTimeSubmitList(start, end, page, this.pageSize)
-        .then(res => {
-          this.loading = false;
-          const { items, total } = res;
-          this.tableData = items;
-          this.total = total;
-        })
-        .catch(() => (this.loading = false));
+      this.applyLoading(
+        searchWorkTimeSubmitList(start, end, page, this.pageSize)
+      ).then(res => {
+        const { items, total } = res;
+        this.tableData = items;
+        this.total = total;
+      });
     },
     onAdd() {
       this.showAddWorkTimeDialog = true;
     },
     onEdit(row) {
+      this.editingWorkTime = row;
       this.showEditWorkTimeDialog = true;
     },
     onPageChange(nextPage) {
@@ -101,15 +111,13 @@ export default {
         : this.onSearch(nextPage);
     },
     _getWorkTimeSubmitList(page) {
-      this.loading = true;
-      getWorkTimeSubmitList(page, this.pageSize)
-        .then(res => {
-          this.loading = false;
+      this.applyLoading(getWorkTimeSubmitList(page, this.pageSize)).then(
+        res => {
           const { items, total } = res;
           this.total = total;
           this.tableData = items;
-        })
-        .catch(() => (this.loading = false));
+        }
+      );
     }
   },
   created() {

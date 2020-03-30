@@ -15,7 +15,34 @@ export const loadable = {
       loading: false
     };
   },
-  showLoading(promise) {
-    this.loading = true;
+  methods: {
+    applyLoading(promise) {
+      return new Promise((resolve, reject) => {
+        this.loading = true;
+        promise
+          .then(res => {
+            this.loading = false;
+            resolve(res);
+          })
+          .catch(e => {
+            this.loading = false;
+            reject(e);
+          });
+      });
+    }
+  }
+};
+
+export const dialogMixin = {
+  props: {
+    visibility: {
+      type: Boolean,
+      default: false
+    }
+  },
+  methods: {
+    close() {
+      this.$emit('update:visibility', false);
+    }
   }
 };

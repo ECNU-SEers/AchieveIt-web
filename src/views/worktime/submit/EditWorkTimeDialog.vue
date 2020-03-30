@@ -1,49 +1,72 @@
 <template>
   <el-dialog title="编辑工时" :visible="visibility" :before-close="close">
-    <el-form>
-      <el-form-item label="角色名称">
-        <el-input v-model="name" />
-      </el-form-item>
-      <el-form-item label="创建人">
-        <el-input readonly disabled :value="creator" />
-      </el-form-item>
-    </el-form>
+    <WorkTimeForm
+      @data-change="updateWorkTimeInfo"
+      :feature-options="featureOptions"
+      :activity-options="activityOptions"
+      v-bind="editingWorkTimeInfo"
+    />
     <span slot="footer" class="dialog-footer">
       <el-button @click="close">取 消</el-button>
-      <el-button type="primary" @click="onAddRole">确 定</el-button>
+      <el-button type="primary" @click="onEditWorkTime">确 定</el-button>
     </span>
   </el-dialog>
 </template>
 
 <script>
-import RolePermissions from '@/views/admin/role/RolePermissions';
-import { editUserRole } from '@/api/permisssion';
+import WorkTimeForm from './WorkTimeForm';
+import { workTimeFormCheckMixin } from './mixin';
+import { submitWorkTime, updateWorkTimeSubmit } from '../../../api/workTime';
+import { dialogMixin } from '../../../util/mixin';
 
 export default {
   components: {
-    RolePermissions
+    WorkTimeForm
   },
   props: {
-    visibility: Boolean,
-    name: String,
-    creator: String
+    id: Number,
+    date: String,
+    functionId: Number,
+    functionName: String,
+    subfunctionId: Number,
+    subfunctionName: String,
+    activityId: Number,
+    activityName: String,
+    subactivityId: Number,
+    subactivityName: String,
+    startTime: String,
+    endTime: String
   },
+  mixins: [workTimeFormCheckMixin, dialogMixin],
   data() {
-    return {};
+    return {
+      editingWorkTimeInfo: {
+        id: this.id,
+        date: this.data,
+        functionId: this.functionId,
+        functionName: this.functionName,
+        subfunctionId: this.subfunctionId,
+        subfunctionName: this.subfunctionName,
+        activityId: this.activityId,
+        activityName: this.activityName,
+        subactivityId: this.subactivityId,
+        subactivityName: this.subactivityName,
+        startTime: this.startTime,
+        endTime: this.endTime
+      }
+    };
   },
   methods: {
-    onAddRole() {
-      //TODO 向后端发送更改角色信息请求
-      editUserRole().then(() => {
-        this.close();
-        this.$message.success('新增角色成功');
-      });
-    },
-    close() {
-      this.$emit('update:visibility', false);
+    onEditWorkTime() {
+      const params = this.getParamsForRemote(this.workTimeInfo);
+      if (params) {
+        updateWorkTimeSubmit(params).then(() => {
+          this.close();
+          this.$message.success('更新工时成功');
+          this.$emit('success', 1);
+        });
+      }
     }
   }
 };
 </script>
-
-<style lang="scss" scoped></style>
