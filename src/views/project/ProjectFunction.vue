@@ -138,7 +138,7 @@ export default {
   data() {
     return {
       // 搜索
-      tmp: "",
+      keyword: "",
       functionSearch: [],
       submitLoading: false,
 
@@ -163,10 +163,10 @@ export default {
   },
   methods: {
     // 获取一级功能列表并展示
-    async getFunctionList() {
+    async getFunctionList(keyword) {
       try {
         var projectId = "1";
-        const info = await Project.getFirstFunctionList(projectId);
+        const info = await Project.getFirstFunctionList(projectId,keyword);
         console.log("get function list success!");
         this.tableData = info;
         // 标记有二级功能的功能
@@ -286,6 +286,7 @@ export default {
     },
     handleSuccess() {},
     handleError() {},
+    
     // 搜索
     async querySearch(queryString, cb) {
       var projectId = "1";
@@ -319,35 +320,39 @@ export default {
       console.log(item);
       console.log("search or click");
     },
+
+    // 点击下拉中的一条获取一条功能信息
     async getOne(item) {
       console.log(item);
       try {
         var projectId = "1";
         const info = await Project.getOneFunction(projectId, item.id);
         console.log(info);
-        // this.tableData = info;
-        // // 标记有二级功能的功能
-        // for (var i = 0; i < this.tableData.length; ++i) {
-        //   if (this.tableData[i].numSubFunctions > 0) {
-        //     this.tableData[i].hasChildren = true;
-        //   }
-        // }
+        // 标记有二级功能的功能
+        if(info.subFunctions.length>0){
+          info.hasChildren = true;
+        }else{
+          info.hasChildren = false;
+        }
+        this.tableData = [];
+        this.tableData.push(info);
       } catch (e) {
         console.log(e);
       }
     }
   },
   mounted: function() {
-    this.getFunctionList();
+    this.keyword=""
+    this.getFunctionList(this.keyword);
   }
 };
 </script>
 
 <style scoped>
 .add-btn {
-  height: 40px;
-  margin-left: 20px;
-  border-radius: 3px;
-  width: 80px;
-}
+        height: 40px;
+        margin-left: 20px;
+        border-radius: 3px;
+        width: 80px;
+    }
 </style>

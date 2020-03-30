@@ -2,21 +2,15 @@
   <div>
     <!--工具条：搜索栏-->
     <PageHeader title="项目列表">
-      <Search 
-      placeholder="请输入功能名称"
+      <Search
+        placeholder="请输入功能名称"
         :query-search="querySearch"
         @search="searchMembers"
-        @select-suggestion="getOne"/>
+        @select-suggestion="getOne"
+      />
       <!-- <el-input prefix-icon="el-icon-search" v-model="search" style="width: 200px" placeholder="输入关键字搜索"></el-input> -->
-      <el-button type="primary" class="add-btn" @click="addMember"
-        >新增</el-button
-      >
-      <el-button
-        type="primary"
-        class="add-btn"
-        @click="addExcelFormVisible = true"
-        >导入</el-button
-      >
+      <el-button type="primary" class="add-btn" @click="addMember">新增</el-button>
+      <el-button type="primary" class="add-btn" @click="addExcelFormVisible = true">导入</el-button>
     </PageHeader>
 
     <!-- 新增项目成员 -->
@@ -24,12 +18,7 @@
       <el-form label-width="150px" class="demo-ruleForm">
         <!-- 单选 -->
         <el-form-item label="用户姓名" required>
-          <el-select
-            v-model="addForm.user"
-            value-key="userId"
-            placeholder="请选择成员"
-            filterable
-          >
+          <el-select v-model="addForm.user" value-key="userId" placeholder="请选择成员" filterable>
             <el-option
               v-for="item in users"
               :key="item.userId"
@@ -37,9 +26,11 @@
               :value="item"
             >
               <span style="float: left">{{ item.username }}</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">{{
+              <span style="float: right; color: #8492a6; font-size: 13px">
+                {{
                 item.userId
-              }}</span>
+                }}
+              </span>
             </el-option>
           </el-select>
         </el-form-item>
@@ -47,23 +38,13 @@
         <!-- 多选 -->
         <el-form-item label="角色" prop="roles">
           <el-checkbox-group v-model="addForm.roles">
-            <el-checkbox
-              v-for="item in roles"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
-            ></el-checkbox>
+            <el-checkbox v-for="item in roles" :key="item.id" :label="item.name" :value="item.id"></el-checkbox>
           </el-checkbox-group>
         </el-form-item>
 
         <!-- 单选 -->
         <el-form-item label="项目中的上级">
-          <el-select
-            v-model="addForm.leader"
-            value-key="userId"
-            filterable
-            placeholder="请选择项目中的上级"
-          >
+          <el-select v-model="addForm.leader" value-key="userId" filterable placeholder="请选择项目中的上级">
             <el-option
               v-for="item in members"
               :key="item.userId"
@@ -71,21 +52,18 @@
               :value="item"
             >
               <span style="float: left">{{ item.username }}</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">{{
+              <span style="float: right; color: #8492a6; font-size: 13px">
+                {{
                 item.userId
-              }}</span>
+                }}
+              </span>
             </el-option>
           </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="addFormVisible = false">取消</el-button>
-        <el-button
-          type="primary"
-          @click="submitAddForm('addForm')"
-          :loading="submitLoading"
-          >提交</el-button
-        >
+        <el-button type="primary" @click="submitAddForm('addForm')" :loading="submitLoading">提交</el-button>
       </div>
     </el-dialog>
 
@@ -104,9 +82,7 @@
 
       <div slot="footer" class="dialog-footer">
         <el-button @click="addExcelFormVisible = false">取消</el-button>
-        <el-button type="primary" @click="submitUpload" :loading="submitLoading"
-          >提交</el-button
-        >
+        <el-button type="primary" @click="submitUpload" :loading="submitLoading">提交</el-button>
       </div>
     </el-dialog>
 
@@ -123,25 +99,13 @@
         stripe
         border
       >
-        <el-table-column
-          fixed
-          prop="userId"
-          label="序号"
-          width="50"
-        ></el-table-column>
+        <el-table-column fixed prop="userId" label="序号" width="50" type="index"></el-table-column>
         <el-table-column prop="userId" label="员工ID"></el-table-column>
         <el-table-column prop="username" label="姓名"></el-table-column>
         <el-table-column prop="rolesStr" label="角色"></el-table-column>
-        <el-table-column
-          prop="email"
-          label="邮件地址"
-          show-overflow-tooltip
-        ></el-table-column>
+        <el-table-column prop="email" label="邮件地址" show-overflow-tooltip></el-table-column>
         <el-table-column prop="department" label="所属部门"></el-table-column>
-        <el-table-column
-          prop="leaderName"
-          label="项目中的上级"
-        ></el-table-column>
+        <el-table-column prop="leaderName" label="项目中的上级"></el-table-column>
         <el-table-column prop="phoneNumber" label="电话"></el-table-column>
         <el-table-column prop="workingHours" label="总工时"></el-table-column>
         <el-table-column label="操作" width="120px">
@@ -170,32 +134,19 @@
       <el-form label-width="150px" class="demo-ruleForm">
         <!-- 不可修改 -->
         <el-form-item label="用户姓名" required>
-          <el-input
-            v-model="editForm.username"
-            :disabled="true"
-            placeholder
-          ></el-input>
+          <el-input v-model="editForm.username" :disabled="true" placeholder></el-input>
         </el-form-item>
 
         <!-- 多选 -->
         <el-form-item label="角色" prop="roles">
           <el-checkbox-group v-model="editForm.roles">
-            <el-checkbox
-              v-for="item in roles"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
-            ></el-checkbox>
+            <el-checkbox v-for="item in roles" :key="item.id" :label="item.name" :value="item.id"></el-checkbox>
           </el-checkbox-group>
         </el-form-item>
 
         <!-- 单选 -->
         <el-form-item label="项目中的上级">
-          <el-select
-            v-model="editForm.leader"
-            value-key="userId"
-            placeholder="请选择项目中的上级"
-          >
+          <el-select v-model="editForm.leader" value-key="userId" placeholder="请选择项目中的上级">
             <el-option
               v-for="item in tableData"
               :key="item.userId"
@@ -203,9 +154,11 @@
               :value="item"
             >
               <span style="float: left">{{ item.username }}</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">{{
+              <span style="float: right; color: #8492a6; font-size: 13px">
+                {{
                 item.userId
-              }}</span>
+                }}
+              </span>
             </el-option>
           </el-select>
         </el-form-item>
@@ -213,12 +166,7 @@
 
       <div slot="footer" class="dialog-footer">
         <el-button @click="editFormVisible = false">取消</el-button>
-        <el-button
-          type="primary"
-          @click="submitEditForm('editForm')"
-          :loading="submitLoading"
-          >提交</el-button
-        >
+        <el-button type="primary" @click="submitEditForm('editForm')" :loading="submitLoading">提交</el-button>
       </div>
     </el-dialog>
   </div>
@@ -238,7 +186,12 @@ export default {
   },
   data() {
     return {
-      memberSearch:"",
+      // 分页
+      page: 1,
+      pageSize: 10,
+      keyword:"",
+
+      memberSearch: "",
       users: [],
       members: [],
       roles: [],
@@ -369,20 +322,24 @@ export default {
           });
         });
     },
+    // 将数组用\n拼接以便展示时换行
+    showRoles(){
+      for (var i = 0; i < this.tableData.length; ++i) {
+        this.tableData[i].rolesStr="";
+          this.tableData[i].rolesStr = this.tableData[i].roles.join("\n");
+        }
+    },
     // 获取成员列表
-    async getMemberList() {
+    async getMemberList(keyword) {
       try {
         // 尝试获取成员列表
         var projectId = "1";
-        var page = "1";
-        var pageSize = "10";
-        const info = await Project.getMemberList(projectId, page, pageSize);
+        console.log(keyword);
+        const info = await Project.getMemberList(projectId, this.page, this.pageSize,keyword);
         console.log("get member list success!");
         this.tableData = info.items;
-        // 将数组用\n拼接以便展示时换行
-        for (var i = 0; i < this.tableData.length; ++i) {
-          this.tableData[i].rolesStr = this.tableData[i].roles.join("\n");
-        }
+        this.showRoles();
+        console.log(this.tableData);
       } catch (e) {
         console.log(e);
       }
@@ -392,10 +349,7 @@ export default {
       var projectId = "1";
       console.log(queryString);
       var tmp = [];
-      this.memberSearch = await Project.searchMembers(
-        projectId,
-        queryString
-      );
+      this.memberSearch = await Project.searchMembers(projectId, queryString);
       console.log(this.memberSearch);
       // 下拉显示的数据
       this.memberSearch.forEach(item => {
@@ -410,29 +364,32 @@ export default {
     createFilter(queryString) {
       return memberSearch => {
         return (
-          memberSearch.name
-            .toLowerCase()
-            .indexOf(queryString.toLowerCase()) === 0
+          memberSearch.name.toLowerCase().indexOf(queryString.toLowerCase()) ===
+          0
         );
       };
     },
     searchMembers() {
       console.log("click");
     },
-        async getOne(item) {
+    async getOne(item) {
       console.log(item);
       try {
         var projectId = "1";
         const info = await Project.getOneMember(projectId, item.id);
-        this.tableData=[];
+        this.tableData = [];
+        this.showRoles();
         this.tableData.push(info);
+        console.log(this.tableData);
+        console.log(this.tableData[0].userId);
       } catch (e) {
         console.log(e);
       }
     }
   },
   mounted: function() {
-    this.getMemberList();
+    this.keyword="";
+    this.getMemberList(this.keyword);
   }
 };
 </script>
