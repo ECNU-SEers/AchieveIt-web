@@ -47,16 +47,16 @@
 </template>
 
 <script>
-import Search from "@/components/common/Search";
-import PageHeader from "@/components/common/PageHeader";
-import Pagination from "@/components/common/Pagination";
-import LPageTable from "../../../components/common/LPageTable";
-import AddRoleDialog from "@/views/permission/role/AddRoleDialog";
-import EditRoleDialog from "@/views/permission/role/EditRoleDialog";
-import RolePermissions from "../../admin/role/RolePermissions";
-import { loadable, pageable } from "../../../util/mixin";
-import { roleListTableHeader } from "../const";
-import { getRoleList } from "@/api/permisssion";
+import Search from '@/components/common/Search';
+import PageHeader from '@/components/common/PageHeader';
+import Pagination from '@/components/common/Pagination';
+import LPageTable from '../../../components/common/LPageTable';
+import AddRoleDialog from '@/views/permission/role/AddRoleDialog';
+import EditRoleDialog from '@/views/permission/role/EditRoleDialog';
+import RolePermissions from '../../admin/role/RolePermissions';
+import { loadable, pageable } from '../../../util/mixin';
+import { roleListTableHeader } from '../const';
+import { getRoleList } from '@/api/permisssion';
 
 export default {
   components: {
@@ -98,7 +98,7 @@ export default {
         .catch(() => (this.loading = false));
     },
     querySearch(queryString, cb) {
-      cb([{ value: "111" }]);
+      cb([{ value: '111' }]);
     }
   },
   created() {

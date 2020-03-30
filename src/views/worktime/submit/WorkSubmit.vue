@@ -44,19 +44,19 @@
 </template>
 
 <script>
-import Search from "../../../components/common/Search";
-import PageHeader from "../../../components/common/PageHeader";
-import LPageTable from "../../../components/common/LPageTable";
-import EditWorkTimeDialog from "./EditWorkTimeDialog";
-import AddWorkTimeDialog from "./AddWorkTimeDialog";
-import { loadable, pageable } from "../../../util/mixin";
-import LinDatePicker from "@/components/base/date-picker/lin-date-picker";
-import { workTimeSubmitTableHeader } from "../const";
+import Search from '../../../components/common/Search';
+import PageHeader from '../../../components/common/PageHeader';
+import LPageTable from '../../../components/common/LPageTable';
+import EditWorkTimeDialog from './EditWorkTimeDialog';
+import AddWorkTimeDialog from './AddWorkTimeDialog';
+import { loadable, pageable } from '../../../util/mixin';
+import LinDatePicker from '@/components/base/date-picker/lin-date-picker';
+import { workTimeSubmitTableHeader } from '../const';
 import {
   getWorkTimeSubmitList,
   searchWorkTimeSubmitList
-} from "../../../api/workTime";
-import { isEmpty } from "lodash";
+} from '../../../api/workTime';
+import { isEmpty } from 'lodash';
 
 export default {
   components: {

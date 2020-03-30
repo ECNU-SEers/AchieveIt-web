@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import Pagination from "./Pagination";
+import Pagination from './Pagination';
 
 export default {
   components: {
@@ -51,8 +51,8 @@ export default {
   },
   methods: {
     handleCurrentChange(currentPage) {
-      this.$emit("update:currentPage", currentPage);
-      this.$emit("page-change", currentPage);
+      this.$emit('update:currentPage', currentPage);
+      this.$emit('page-change', currentPage);
     }
   }
 };

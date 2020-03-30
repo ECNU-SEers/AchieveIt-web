@@ -37,14 +37,14 @@
 </template>
 
 <script>
-import Search from "@/components/common/Search";
-import PageHeader from "@/components/common/PageHeader";
-import Pagination from "@/components/common/Pagination";
-import EditUserDialog from "@/views/permission/user/EditUserDialog";
-import LPageTable from "../../../components/common/LPageTable";
-import { userPermissionTableHeader } from "../const";
-import { getUserList } from "@/api/permisssion";
-import { loadable, pageable } from "../../../util/mixin";
+import Search from '@/components/common/Search';
+import PageHeader from '@/components/common/PageHeader';
+import Pagination from '@/components/common/Pagination';
+import EditUserDialog from '@/views/permission/user/EditUserDialog';
+import LPageTable from '../../../components/common/LPageTable';
+import { userPermissionTableHeader } from '../const';
+import { getUserList } from '@/api/permisssion';
+import { loadable, pageable } from '../../../util/mixin';
 
 export default {
   components: {

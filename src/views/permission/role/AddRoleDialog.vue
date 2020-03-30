@@ -21,8 +21,8 @@
 </template>
 
 <script>
-import RolePermissions from "@/views/admin/role/RolePermissions";
-import { addNewRole } from "@/api/permisssion";
+import RolePermissions from '@/views/admin/role/RolePermissions';
+import { addNewRole } from '@/api/permisssion';
 
 export default {
   components: {
@@ -35,7 +35,7 @@ export default {
     return {
       allPermissions: [], // 所有权限
       form: {
-        roleName: "",
+        roleName: '',
         permissions: [] // 最终选择的权限
       }
     };
@@ -51,11 +51,11 @@ export default {
       const { roleName, permissions } = this.form;
       addNewRole(roleName, permissions).then(() => {
         this.close();
-        this.$message.success("新增角色成功");
+        this.$message.success('新增角色成功');
       });
     },
     close() {
-      this.$emit("update:visibility", false);
+      this.$emit('update:visibility', false);
     }
   }
 };

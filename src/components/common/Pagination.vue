@@ -38,8 +38,8 @@ export default {
   },
   methods: {
     defaultPageChangeHandler(currentPage) {
-      this.$emit("update:currentPage", currentPage);
-      this.$emit("page-change", currentPage);
+      this.$emit('update:currentPage', currentPage);
+      this.$emit('page-change', currentPage);
     }
   },
   created() {

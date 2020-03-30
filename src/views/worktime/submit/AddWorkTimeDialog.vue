@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import { addNewRole } from "@/api/permisssion";
+import { addNewRole } from '@/api/permisssion';
 
 export default {
   components: {},
@@ -60,17 +60,17 @@ export default {
         date: new Date(),
         startTime: new Date(2020, 1, 1, 9),
         endTime: new Date(2020, 1, 1, 17),
-        activityName: "",
-        featureName: ""
+        activityName: '',
+        featureName: ''
       },
       options: [
         {
-          value: "zhinan",
-          label: "指南",
+          value: 'zhinan',
+          label: '指南',
           children: [
             {
-              value: "shejiyuanze",
-              label: "设计原则"
+              value: 'shejiyuanze',
+              label: '设计原则'
             }
           ]
         }
@@ -81,13 +81,13 @@ export default {
     onAddWorkTime() {
       addNewRole().then(() => {
         this.close();
-        this.$message.success("新增工时成功");
+        this.$message.success('新增工时成功');
       });
     },
     onFeatureChange() {},
     onActivityChange() {},
     close() {
-      this.$emit("update:visibility", false);
+      this.$emit('update:visibility', false);
     }
   }
 };

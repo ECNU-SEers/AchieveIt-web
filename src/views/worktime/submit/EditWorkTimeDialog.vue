@@ -16,8 +16,8 @@
 </template>
 
 <script>
-import RolePermissions from "@/views/admin/role/RolePermissions";
-import { editUserRole } from "@/api/permisssion";
+import RolePermissions from '@/views/admin/role/RolePermissions';
+import { editUserRole } from '@/api/permisssion';
 
 export default {
   components: {
@@ -36,11 +36,11 @@ export default {
       //TODO 向后端发送更改角色信息请求
       editUserRole().then(() => {
         this.close();
-        this.$message.success("新增角色成功");
+        this.$message.success('新增角色成功');
       });
     },
     close() {
-      this.$emit("update:visibility", false);
+      this.$emit('update:visibility', false);
     }
   }
 };

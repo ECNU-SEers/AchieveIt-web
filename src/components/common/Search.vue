@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { isEmpty } from "lodash";
+import { isEmpty } from 'lodash';
 
 export default {
   props: {
@@ -26,17 +26,17 @@ export default {
   },
   data() {
     return {
-      keyword: "",
+      keyword: '',
       timeout: null
     };
   },
   methods: {
     onSearch() {
       if (isEmpty(this.keyword)) return;
-      this.$emit("search", this.keyword);
+      this.$emit('search', this.keyword);
     },
     handleSelect(v) {
-      this.$emit("select-suggestion", v);
+      this.$emit('select-suggestion', v);
       this.keyword = v.value;
       this.onSearch();
     }

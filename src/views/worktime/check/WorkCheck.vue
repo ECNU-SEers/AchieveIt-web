@@ -48,19 +48,19 @@
 </template>
 
 <script>
-import Search from "../../../components/common/Search";
-import PageHeader from "../../../components/common/PageHeader";
-import LPageTable from "../../../components/common/LPageTable";
-import { loadable, pageable } from "../../../util/mixin";
-import LinDatePicker from "@/components/base/date-picker/lin-date-picker";
-import { workTimeCheckTableHeader } from "../const";
+import Search from '../../../components/common/Search';
+import PageHeader from '../../../components/common/PageHeader';
+import LPageTable from '../../../components/common/LPageTable';
+import { loadable, pageable } from '../../../util/mixin';
+import LinDatePicker from '@/components/base/date-picker/lin-date-picker';
+import { workTimeCheckTableHeader } from '../const';
 import {
   acceptWorkTime,
   getWorkTimeCheckList,
   refuseWorkTime,
   searchWorkTimeCheckList
-} from "../../../api/workTime";
-import { isEmpty } from "lodash";
+} from '../../../api/workTime';
+import { isEmpty } from 'lodash';
 
 export default {
   components: {
@@ -108,13 +108,13 @@ export default {
     },
     onAccept(row) {
       acceptWorkTime(row).then(() => {
-        this.$message.success("通过成功");
+        this.$message.success('通过成功');
         this.getCheckList(this.currentPage);
       });
     },
     onRefuse(row) {
       refuseWorkTime(row).then(() => {
-        this.$message.success("退回成功");
+        this.$message.success('退回成功');
         this.getCheckList(this.currentPage);
       });
     }

@@ -1,6 +1,6 @@
-import { get, post, put } from "@/sys/plugins/axios";
+import { get, post, put } from '@/sys/plugins/axios';
 
-const NODULE_NAME = "/laborhour";
+const NODULE_NAME = '/laborhour';
 
 export const getWorkTimeCheckList = (pageNo, pageSize = 10) =>
   get(`${NODULE_NAME}/show/subordinate/list`, { pageNo, pageSize });
