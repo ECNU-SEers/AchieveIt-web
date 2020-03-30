@@ -8,7 +8,7 @@
         <RolePermissions
           @updatePermissions="updatePermissions"
           @updateAllPermissions="updateAllPermissions"
-          ref="groupPermissions"
+          title="分配权限"
         >
         </RolePermissions>
       </el-form-item>
@@ -21,8 +21,8 @@
 </template>
 
 <script>
-import RolePermissions from '@/views/admin/role/RolePermissions';
-import { addNewRole } from '@/api/permisssion';
+import RolePermissions from "@/views/admin/role/RolePermissions";
+import { addNewRole } from "@/api/permisssion";
 
 export default {
   components: {
@@ -34,30 +34,28 @@ export default {
   data() {
     return {
       allPermissions: [], // 所有权限
-      permissions: [], // 最终选择的权限
       form: {
-        roleName: '',
-        permissions: []
+        roleName: "",
+        permissions: [] // 最终选择的权限
       }
     };
   },
   methods: {
     updatePermissions(permissions) {
-      this.permissions = permissions;
+      this.form.permissions = permissions;
     },
     updateAllPermissions(allPermissions) {
       this.allPermissions = allPermissions;
     },
     onAddRole() {
-      console.log(JSON.stringify(this.permissions));
-      //TODO 向后端发送新建角色请求
-      addNewRole().then(() => {
+      const { roleName, permissions } = this.form;
+      addNewRole(roleName, permissions).then(() => {
         this.close();
-        this.$message.success('新增角色成功');
+        this.$message.success("新增角色成功");
       });
     },
     close() {
-      this.$emit('update:visibility', false);
+      this.$emit("update:visibility", false);
     }
   }
 };

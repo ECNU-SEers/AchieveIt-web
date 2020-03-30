@@ -2,15 +2,24 @@
   <div>
     <el-card class="box-card">
       <div slot="header" class="clearfix">
-        <span>当前项目ID: {{this.projectId}}</span>
+        <span>当前项目ID: {{ this.projectId }}</span>
         <el-button
           style="float: right; padding: 3px 0"
           type="text"
-          @click="editFormVisible = true;edit()"
-        >编辑</el-button>
+          @click="
+            editFormVisible = true;
+            edit();
+          "
+          >编辑</el-button
+        >
         <!--仅配置管理员可见-->
         <el-dialog title="项目配置信息" :visible.sync="editFormVisible">
-          <el-form :model="editForm" ref="editForm" label-width="120px" class="editForm">
+          <el-form
+            :model="editForm"
+            ref="editForm"
+            label-width="120px"
+            class="editForm"
+          >
             <!-- 输入框 -->
             <el-form-item label="Git仓库地址" prop="GitAddress">
               <el-input v-model="editForm.GitAddress" clearable></el-input>
@@ -23,33 +32,44 @@
 
             <!-- 布尔开关 仅第一次可修改 -->
             <el-form-item label="文件服务器目录" prop="fileCatalog">
-              <el-tooltip :content="'当前情况: ' + editForm.fileAddValue" placement="top">
+              <el-tooltip
+                :content="'当前情况: ' + editForm.fileAddValue"
+                placement="top"
+              >
                 <el-switch
                   ref="file"
                   v-model="editForm.fileAddValue"
                   active-value="true"
                   inactive-value="false"
-                  :disabled="this.fileTrigger == false ? false:true"
+                  :disabled="this.fileTrigger == false ? false : true"
                 ></el-switch>
               </el-tooltip>
             </el-form-item>
 
             <!-- 布尔开关 仅第一次可修改 -->
             <el-form-item label="邮件" prop="email">
-              <el-tooltip :content="'当前情况: ' + editForm.emailValue" placement="top">
+              <el-tooltip
+                :content="'当前情况: ' + editForm.emailValue"
+                placement="top"
+              >
                 <el-switch
                   ref="file"
                   v-model="editForm.emailValue"
                   active-value="true"
                   inactive-value="false"
-                  :disabled="this.emailTrigger == false ? false:true"
+                  :disabled="this.emailTrigger == false ? false : true"
                 ></el-switch>
               </el-tooltip>
             </el-form-item>
 
             <el-form-item style="padding-left:45%;">
               <!--btn和基本信息中略不同，建议试下放右边-->
-              <el-button type="primary" @click="editSubmit()" style="margin-right:8%;">确定</el-button>
+              <el-button
+                type="primary"
+                @click="editSubmit()"
+                style="margin-right:8%;"
+                >确定</el-button
+              >
               <el-button @click="changeFormVisible = false">取消</el-button>
             </el-form-item>
           </el-form>
@@ -113,28 +133,28 @@ export default {
   methods: {
     // 信息显示
     async getConfig() {
-       this.fileTrigger=true;
-      this.emailTrigger= true;
-      this.git=true;
-      this.virtual=true;
+      this.fileTrigger = true;
+      this.emailTrigger = true;
+      this.git = true;
+      this.virtual = true;
       const res = await ProjectLW.getConfig(this.projectId);
-      console.log("res.sMailConfirmed:"+res.isMailConfirmed);
+      console.log("res.sMailConfirmed:" + res.isMailConfirmed);
       this.tableData[0].detail = res.gitRepoAddress;
       this.tableData[1].detail = res.virtualMachineSpace;
       if (res.gitRepoAddress == ("" || null)) this.git = false;
       else this.git = true;
       if (res.virtualMachineSpace == ("" || null)) this.virtual = false;
       else this.virtual = true;
-     // console.log(
-     //   "res.isFileServerDirConfirmed=" + res.isFileServerDirConfirmed
-     // );
+      // console.log(
+      //   "res.isFileServerDirConfirmed=" + res.isFileServerDirConfirmed
+      // );
       if (res.isFileServerDirConfirmed == false) {
         this.fileTrigger = false;
         this.tableData[2].detail = res.fileServerDir + "  ( 配置状态:未完成 )";
       } else {
         this.tableData[2].detail = res.fileServerDir;
       }
-     // console.log("res.isMailConfirmed=" + res.isMailConfirmed);
+      // console.log("res.isMailConfirmed=" + res.isMailConfirmed);
       if (res.isMailConfirmed == false) {
         this.emailTrigger = false;
         this.tableData[3].detail = res.mail + "  ( 配置状态:未完成 )";
@@ -167,13 +187,13 @@ export default {
       if (
         this.editForm.fileAddValue === true &&
         this.editForm.emailValue === true &&
-        this.editForm.GitAddress !== (null || "")&&
-         this.editForm.virtualSpace !== (null || "")
+        this.editForm.GitAddress !== (null || "") &&
+        this.editForm.virtualSpace !== (null || "")
       ) {
-         if(this.git==false || this.virtual==false ){
+        if (this.git == false || this.virtual == false) {
           this.done = true;
           this.$message.success("配置完成");
-         }
+        }
       }
     }
   }

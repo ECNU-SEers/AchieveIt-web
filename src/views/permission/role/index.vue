@@ -7,52 +7,56 @@
     />
     <PageHeader title="角色设置">
       <Search :query-search="querySearch" />
-      <el-button @click="onAddRole" type="primary" class="add-btn"
-        >新增</el-button
-      >
+      <el-button @click="onAddRole" type="primary" class="add-btn">
+        新增
+      </el-button>
     </PageHeader>
-    <Pagination :current-page.sync="currentPage" :total="tableData.length">
-      <el-table :data="tableData" style="width:100%;">
-        <el-table-column type="index" :index="index => index + 1" />
-        <el-table-column
-          v-for="(item, index) in tableHeader"
-          :key="index"
-          :prop="item.prop"
-          :label="item.label"
-        />
-        <el-table-column label="操作">
-          <template slot-scope="scope">
-            <el-button
-              @click="onEditRole(scope.row)"
-              type="primary"
-              plain
-              size="mini"
-            >
-              编辑
-            </el-button>
-            <el-button
-              @click="onDeleteRole(scope.row)"
-              type="danger"
-              size="mini"
-              plain
-            >
-              删除
-            </el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-    </Pagination>
+    <LPageTable
+      :table-data="tableData"
+      :table-header="tableHeader"
+      :current-page.sync="currentPage"
+      :loading="loading"
+    >
+      <el-table-column slot="prefix" type="expand">
+        <template slot-scope="props">
+          <RolePermissions readonly :permissions="props.row.permissions" />
+        </template>
+      </el-table-column>
+      <el-table-column label="操作">
+        <template slot-scope="scope">
+          <el-button
+            @click="onEditRole(scope.row)"
+            type="primary"
+            plain
+            size="mini"
+          >
+            编辑
+          </el-button>
+          <el-button
+            @click="onDeleteRole(scope.row)"
+            type="danger"
+            size="mini"
+            plain
+          >
+            删除
+          </el-button>
+        </template>
+      </el-table-column>
+    </LPageTable>
   </div>
 </template>
 
 <script>
-import Search from '@/components/common/Search';
-import PageHeader from '@/components/common/PageHeader';
-import Pagination from '@/components/common/Pagination';
-import AddRoleDialog from '@/views/permission/role/AddRoleDialog';
-import EditRoleDialog from '@/views/permission/role/EditRoleDialog';
-import { roleListTableHeader } from '../const';
-import { getRoleList } from '@/api/permisssion';
+import Search from "@/components/common/Search";
+import PageHeader from "@/components/common/PageHeader";
+import Pagination from "@/components/common/Pagination";
+import LPageTable from "../../../components/common/LPageTable";
+import AddRoleDialog from "@/views/permission/role/AddRoleDialog";
+import EditRoleDialog from "@/views/permission/role/EditRoleDialog";
+import RolePermissions from "../../admin/role/RolePermissions";
+import { loadable, pageable } from "../../../util/mixin";
+import { roleListTableHeader } from "../const";
+import { getRoleList } from "@/api/permisssion";
 
 export default {
   components: {
@@ -60,12 +64,13 @@ export default {
     PageHeader,
     Pagination,
     AddRoleDialog,
-    EditRoleDialog
+    EditRoleDialog,
+    LPageTable,
+    RolePermissions
   },
+  mixins: [pageable, loadable],
   data() {
     return {
-      tableData: [],
-      currentPage: 1,
       showAddRoleDialog: false,
       showEditRoleDialog: false,
       tableHeader: Object.freeze(roleListTableHeader),
@@ -80,12 +85,20 @@ export default {
       this.editingRoleInfo = row;
       this.showEditRoleDialog = true;
     },
-    onDeleteRole(row) {},
+    onDeleteRole(row) {
+      console.log(row);
+    },
     getRoleListFromServe() {
-      getRoleList().then(res => (this.tableData = res));
+      this.loading = true;
+      getRoleList()
+        .then(res => {
+          this.loading = false;
+          this.tableData = res;
+        })
+        .catch(() => (this.loading = false));
     },
     querySearch(queryString, cb) {
-      cb([{ value: '111' }]);
+      cb([{ value: "111" }]);
     }
   },
   created() {

@@ -1,11 +1,11 @@
 import { post, get, put, _delete } from "@/sys/plugins/axios";
 
 export default class ProjectLW {
-  constructor(projectId=1) {
-    this.projectId=projectId;
-   }
+  constructor(projectId = 1) {
+    this.projectId = projectId;
+  }
 
-/************设备***************/
+  /************设备***************/
   /**
    * 获取当前项目所有设备信息
    * @param {number} pageNo
@@ -14,8 +14,15 @@ export default class ProjectLW {
    */
 
   static async getDeviceList(pageNo, pageSize, projectId) {
-   // console.log("getDeviceList");
-    const res = await get('/device/show/all/details?pageNo=' + pageNo + '&pageSize=' + pageSize + '&projectId=' + projectId);
+    // console.log("getDeviceList");
+    const res = await get(
+      "/device/show/all/details?pageNo=" +
+        pageNo +
+        "&pageSize=" +
+        pageSize +
+        "&projectId=" +
+        projectId
+    );
     return res;
   }
 
@@ -24,9 +31,11 @@ export default class ProjectLW {
    * @param {string} deviceId
    * @param {number} projectId
    */
-  static async getDeviceDetail(projectId,deviceId) {
+  static async getDeviceDetail(projectId, deviceId) {
     console.log("getDeviceDetail");
-    const res = await get('device/inspect?deviceOuterId=' + deviceId+'&projectId='+projectId);
+    const res = await get(
+      "device/inspect?deviceOuterId=" + deviceId + "&projectId=" + projectId
+    );
     return res;
   }
 
@@ -39,9 +48,8 @@ export default class ProjectLW {
    * @param {string} startDate;
    * @param {string} dueDate;
    */
-  static addDevice(outerId,type,projectId,managerId,startDate,dueDate){
-
-    return   post("device/create", {
+  static addDevice(outerId, type, projectId, managerId, startDate, dueDate) {
+    return post("device/create", {
       outerId,
       type,
       projectId,
@@ -60,9 +68,8 @@ export default class ProjectLW {
    * @param {string} startDate;
    * @param {string} dueDate;
    */
-  static updateDevice(outerId,type,projectId,managerId,startDate,dueDate){
-
-    return   put("device/update", {
+  static updateDevice(outerId, type, projectId, managerId, startDate, dueDate) {
+    return put("device/update", {
       outerId,
       type,
       projectId,
@@ -75,11 +82,10 @@ export default class ProjectLW {
   /**
    * 可选设备管理员
    */
-  static async getAllMembers(projectId){
-    const res = await get('/project/'+projectId+'/members/simple');
+  static async getAllMembers(projectId) {
+    const res = await get("/project/" + projectId + "/members/simple");
     return res;
   }
-
 
   /***********风险***************/
   /**
@@ -87,7 +93,7 @@ export default class ProjectLW {
    * @param {number} projectId
    * @param {string}  name;
    * @param {string}  type;
-   * @param {number} level; 
+   * @param {number} level;
    * @param {number} impact;
    * @param {string} strategy;
    * @param {number} ownerId;
@@ -95,10 +101,24 @@ export default class ProjectLW {
    * @param {number} trackingFreq;
    * @param {string}  source;
    * @param {string}  description;
-   * @param {number} relatedPersons; //List<Integer> 
+   * @param {number} relatedPersons; //List<Integer>
    */
-  static  addRisk(
-      projectId,
+  static addRisk(
+    projectId,
+    name,
+    type,
+    level,
+    impact,
+    strategy,
+    ownerId,
+    ownerName,
+    trackingFreq,
+    description,
+    relatedPersons
+  ) {
+    console.log("addRisk");
+    return post("/project/" + projectId + "/risk", {
+      // “/project/"+this.projectId+"/risk"
       name,
       type,
       level,
@@ -108,22 +128,8 @@ export default class ProjectLW {
       ownerName,
       trackingFreq,
       description,
-      relatedPersons)
-
-      {
-        console.log("addRisk");
-        return   post("/project/"+projectId+"/risk", {    // “/project/"+this.projectId+"/risk"
-            name,
-            type,
-            level,
-            impact,
-            strategy,
-            ownerId,
-            ownerName,
-            trackingFreq,
-            description,
-            relatedPersons
-        }); 
+      relatedPersons
+    });
   }
 
   /**
@@ -132,19 +138,20 @@ export default class ProjectLW {
    * @param {number} pageSize
    * @param {number} projectId
    */
-  static async getRiskList( projectId,page, pageSize) {
-  //  console.log("getRiskList");
-    const res = await get('/project/'+projectId+'/risks?page=' + page + '&pageSize=' + pageSize );
-  //  console.log("getRiskList"+res);
+  static async getRiskList(projectId, page, pageSize) {
+    //  console.log("getRiskList");
+    const res = await get(
+      "/project/" + projectId + "/risks?page=" + page + "&pageSize=" + pageSize
+    );
+    //  console.log("getRiskList"+res);
     return res;
   }
-  
 
-    /**
+  /**
    * 更新风险信息
    * @param {string}  name;
    * @param {string}  type;
-   * @param {number} level; 
+   * @param {number} level;
    * @param {number} impact;
    * @param {string} strategy;
    * @param {number} state;    //！！！！check一下
@@ -152,13 +159,39 @@ export default class ProjectLW {
    * @param {number} trackingFreq;
    * @param {string}  source;
    * @param {string}  description;
-   * @param {number} relatedPersons; //List<Integer> 
+   * @param {number} relatedPersons; //List<Integer>
    */
-  static updateRisk(projectId,riskId,{name,type,level,impact,strategy,state,ownerId,trackingFreq,source,description,relatedPersons}){
-       console.log("owner"+ownerId);
-       console.log("riskId"+riskId);
-    return   put("/project/"+projectId+"/risk/"+riskId, {
-      name,type,level,impact,strategy,ownerId,trackingFreq,source,description,relatedPersons,state
+  static updateRisk(
+    projectId,
+    riskId,
+    {
+      name,
+      type,
+      level,
+      impact,
+      strategy,
+      state,
+      ownerId,
+      trackingFreq,
+      source,
+      description,
+      relatedPersons
+    }
+  ) {
+    console.log("owner" + ownerId);
+    console.log("riskId" + riskId);
+    return put("/project/" + projectId + "/risk/" + riskId, {
+      name,
+      type,
+      level,
+      impact,
+      strategy,
+      ownerId,
+      trackingFreq,
+      source,
+      description,
+      relatedPersons,
+      state
     });
   }
 
@@ -168,70 +201,80 @@ export default class ProjectLW {
    * @param {number} riskId
    */
 
-   static deleteRisk(projectId,riskId){
-     console.log("riskId"+riskId);
-     return _delete("/project/"+projectId+"/risk/"+riskId);
+  static deleteRisk(projectId, riskId) {
+    console.log("riskId" + riskId);
+    return _delete("/project/" + projectId + "/risk/" + riskId);
+  }
 
-   }
+  /**
+   * 模糊查询risk
+   * @param {number} projectId
+   *  @param {string} riskName
+   */
+  static async searchRisk(projectId, riskName) {
+    const res = await get(
+      "/project/" + projectId + "/risks/search?name=" + riskName
+    );
+    console.log("searchRisk=" + res);
+    return res;
+  }
 
+  /************项目配置信息**************/
+  /**
+   * 显示项目配置信息
+   * @param {number} projectId
+   */
 
-   /************项目配置信息**************/
-   /**
-    * 显示项目配置信息
-    * @param {number} projectId
-    */
-   
-    static async getConfig(projectId){
-          const res =await get("/project/"+projectId+"/config");
-          return res;
-    }
+  static async getConfig(projectId) {
+    const res = await get("/project/" + projectId + "/config");
+    return res;
+  }
 
-    /**
-     * 编辑项目配置信息
-     * @param {number} projectId
-     * @param {string} gitRepoAddress
-     * @param {number} virtualMachineSpace
-     * @param {string}  isFileServerDirConfirmed //boolean
-     * @param {string} isMailConfirmed //boolean
-     */
+  /**
+   * 编辑项目配置信息
+   * @param {number} projectId
+   * @param {string} gitRepoAddress
+   * @param {number} virtualMachineSpace
+   * @param {string}  isFileServerDirConfirmed //boolean
+   * @param {string} isMailConfirmed //boolean
+   */
 
-     static  editConfig(projectId,gitRepoAddress,virtualMachineSpace,isFileServerDirConfirmed,isMailConfirmed){
-        return  put("/project/"+projectId+"/config",{
-        gitRepoAddress,
-        virtualMachineSpace,
-        isFileServerDirConfirmed,
-        isMailConfirmed
-       });
-      
-     }
+  static editConfig(
+    projectId,
+    gitRepoAddress,
+    virtualMachineSpace,
+    isFileServerDirConfirmed,
+    isMailConfirmed
+  ) {
+    return put("/project/" + projectId + "/config", {
+      gitRepoAddress,
+      virtualMachineSpace,
+      isFileServerDirConfirmed,
+      isMailConfirmed
+    });
+  }
 
-     /**********项目进展状态******************/
+  /**********项目进展状态******************/
 
-     /**
-      * 进展状态 列表展示
-      * @param {string} projectOuterId
-      */
+  /**
+   * 进展状态 列表展示
+   * @param {string} projectOuterId
+   */
 
-      static async getState(projectOuterId){
-        const res = await get("/project/state/change?outerId="+projectOuterId);
-     //   console.log("getState="+res);
-        return res;
-      }
+  static async getState(projectOuterId) {
+    const res = await get("/project/state/change?outerId=" + projectOuterId);
+    //   console.log("getState="+res);
+    return res;
+  }
 
-      /**
-       * 获取备注信息
-       * @param {string} projectOuterId
-       */
+  /**
+   * 获取备注信息
+   * @param {string} projectOuterId
+   */
 
-       static async getRemark(projectOuterId){
-         const res= await get("/project/retrieve?outerId="+projectOuterId);
-         console.log(getRemark="res");
-         return res;
-
-       }
-       
-      
-
-
-
+  static async getRemark(projectOuterId) {
+    const res = await get("/project/retrieve?outerId=" + projectOuterId);
+    // console.log("getRemark="+res);
+    return res;
+  }
 }

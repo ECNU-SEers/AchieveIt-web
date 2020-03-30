@@ -21,8 +21,10 @@
         <el-table-column label="触发人" prop="operatorId"></el-table-column>
 
         <el-table-column label="备注" width="180px" prop="operation">
-          <template  slot-scope="scope">
-            <el-button-group v-if="scope.row.latterState=== ('立项驳回'|| '结束') "> 
+          <template slot-scope="scope">
+            <el-button-group
+              v-if="scope.row.latterState === ('立项驳回' || '结束')"
+            >
               <el-button
                 type="info"
                 icon="el-icon-s-comment"
@@ -36,15 +38,20 @@
     </Pagination>
 
     <!--备注-->
-    <el-dialog title="提示" :visible.sync="detailFormVisible" @open="this.getRemark()" width="30%">
-      <span>{{this.remark}}</span>
+    <el-dialog
+      title="提示"
+      :visible.sync="detailFormVisible"
+      @open="this.getRemark()"
+      width="30%"
+    >
+      <span>{{ this.remark }}</span>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import PageHeader from '@/components/common/PageHeader';
-import Pagination from '@/components/common/Pagination';
+import PageHeader from "@/components/common/PageHeader";
+import Pagination from "@/components/common/Pagination";
 import ProjectLW from "@/sys/models/project_lw";
 
 export default {
@@ -54,37 +61,31 @@ export default {
   },
   data() {
     return {
-
-      projectId:1,
-      projectOuterId:'P01',
-      remark:"",
+      projectId: 1,
+      projectOuterId: "P01",
+      remark: "",
       //列表
       stateData: [],
       detailFormVisible: false
     };
   },
-  mounted(){
+  mounted() {
     this.getState();
     this.getRemark();
   },
   methods: {
     //列表展示
-    async getState(){
-        const res = await ProjectLW.getState(
-        this.projectOuterId
-     );
+    async getState() {
+      const res = await ProjectLW.getState(this.projectOuterId);
       this.stateData = res;
     },
 
     //获取备注
-    async getRemark(){
+    async getRemark() {
       const res = await ProjectLW.getRemark(this.projectOuterId);
-      console.log("这里的res"+res);
-      this.remark=res;
+      this.remark = res.project.remark;
     }
-
   }
-
 };
 </script>
 

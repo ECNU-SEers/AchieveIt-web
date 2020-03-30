@@ -6,7 +6,9 @@
       <div style="width:20px;height=100%;"></div>
 
       <!--新增-->
-      <el-button size="medium" @click="addFormVisible = true;" type="primary">新增</el-button>
+      <el-button size="medium" @click="addFormVisible = true" type="primary"
+        >新增</el-button
+      >
     </PageHeader>
 
     <!--列表展示-->
@@ -46,10 +48,26 @@
         <!--下拉展示-->
         <el-table-column type="expand">
           <template slot-scope="scope">
-            <el-table :data="inspectData" row-key="getRowKeys" style="width: 100%">
-              <el-table-column prop="inspectDate" label="检查日期" width="300"></el-table-column>
-              <el-table-column prop="intact" label="设备状态" width="300"></el-table-column>
-              <el-table-column prop="remark" label="备注" width="300"></el-table-column>
+            <el-table
+              :data="inspectData"
+              row-key="getRowKeys"
+              style="width: 100%"
+            >
+              <el-table-column
+                prop="inspectDate"
+                label="检查日期"
+                width="300"
+              ></el-table-column>
+              <el-table-column
+                prop="intact"
+                label="设备状态"
+                width="300"
+              ></el-table-column>
+              <el-table-column
+                prop="remark"
+                label="备注"
+                width="300"
+              ></el-table-column>
             </el-table>
           </template>
         </el-table-column>
@@ -72,16 +90,19 @@
 
         <!---编辑和删除-->
         <el-table-column label="操作" width="180px" prop="action">
-          <template slot-scope="{row,$index}">
+          <template slot-scope="{ row, $index }">
             <el-button-group>
               <el-button
                 type="primary"
                 icon="el-icon-edit"
                 size="medium"
-                @click="editFormVisible = true;updateDevice(row)"
+                @click="
+                  editFormVisible = true;
+                  updateDevice(row);
+                "
               ></el-button>
 
-            <!-- <el-button type="danger" size="medium" icon="el-icon-delete" @click="deleteSubmit"></el-button> -->
+              <!-- <el-button type="danger" size="medium" icon="el-icon-delete" @click="deleteSubmit"></el-button> -->
             </el-button-group>
           </template>
         </el-table-column>
@@ -127,8 +148,8 @@
             placeholder="请选择资产管理者"
           >
             <el-option
-              v-for="(item,index) in users"
-              :key="index+'1'"
+              v-for="(item, index) in users"
+              :key="index + '1'"
               :label="item.username"
               :value="item.userId"
             ></el-option>
@@ -137,19 +158,36 @@
 
         <!--日期段-->
         <el-form-item label="开始使用时间:" prop="startDate">
-          <el-date-picker v-model="addForm.startDate" type="date" placeholder="开始日期"></el-date-picker>
+          <el-date-picker
+            v-model="addForm.startDate"
+            type="date"
+            placeholder="开始日期"
+          ></el-date-picker>
         </el-form-item>
         <el-form-item label="到期时间:" prop="dueDate">
-          <el-date-picker v-model="addForm.dueDate" type="date" placeholder="结束日期"></el-date-picker>
+          <el-date-picker
+            v-model="addForm.dueDate"
+            type="date"
+            placeholder="结束日期"
+          ></el-date-picker>
         </el-form-item>
 
         <!--不可更改-->
         <el-form-item label="资产状态:">
-          <el-input placeholder="已领取" v-model="addForm.state" :disabled="true"></el-input>
+          <el-input
+            placeholder="已领取"
+            v-model="addForm.state"
+            :disabled="true"
+          ></el-input>
         </el-form-item>
 
         <el-form-item>
-          <el-button type="primary" @click="addSubmit('addForm')" style="margin-right:8%;">添加</el-button>
+          <el-button
+            type="primary"
+            @click="addSubmit('addForm')"
+            style="margin-right:8%;"
+            >添加</el-button
+          >
           <el-button @click="addFormVisible = false">取消</el-button>
         </el-form-item>
       </el-form>
@@ -163,9 +201,14 @@
       @open="handleForm(editForm)"
       :append-to-body="true"
     >
-      <el-form :model="editForm" :rules="rules" ref="editForm" label-width="120px">
+      <el-form
+        :model="editForm"
+        :rules="rules"
+        ref="editForm"
+        label-width="120px"
+      >
         <!--文本框-->
-        <el-form-item label="资产ID:" prop="outerId" >
+        <el-form-item label="资产ID:" prop="outerId">
           <el-input v-model="editForm.outerId" disabled></el-input>
         </el-form-item>
 
@@ -181,9 +224,13 @@
 
         <!--带搜索的下拉选择-->
         <el-form-item label="资产管理者:" prop="managerId">
-          <el-select v-model="editForm.managerId" filterable placeholder="请选择资产管理者">
+          <el-select
+            v-model="editForm.managerId"
+            filterable
+            placeholder="请选择资产管理者"
+          >
             <el-option
-              v-for="(item,index) in users" 
+              v-for="(item, index) in users"
               :key="index"
               :label="item.username"
               :value="item.userId"
@@ -192,11 +239,19 @@
         </el-form-item>
 
         <!--日期段-->
-        <el-form-item label="资产开始使用时间:" prop="startDate">
-          <el-date-picker v-model="editForm.startDate" type="date" placeholder="开始日期"></el-date-picker>
+        <el-form-item label="开始使用时间:" prop="startDate">
+          <el-date-picker
+            v-model="editForm.startDate"
+            type="date"
+            placeholder="开始日期"
+          ></el-date-picker>
         </el-form-item>
         <el-form-item label="资产到期时间:" prop="dueDate">
-          <el-date-picker v-model="editForm.dueDate" type="date" placeholder="结束日期"></el-date-picker>
+          <el-date-picker
+            v-model="editForm.dueDate"
+            type="date"
+            placeholder="结束日期"
+          ></el-date-picker>
         </el-form-item>
 
         <!--不可更改-->
@@ -205,7 +260,12 @@
         </el-form-item>
 
         <el-form-item>
-          <el-button type="primary" @click="editSubmit('editForm')" style="margin-right:8%;">修改</el-button>
+          <el-button
+            type="primary"
+            @click="editSubmit('editForm')"
+            style="margin-right:8%;"
+            >修改</el-button
+          >
           <el-button @click="editFormVisible = false">取消</el-button>
         </el-form-item>
       </el-form>
@@ -312,13 +372,16 @@ export default {
     //下拉展示设备审核
     async exChange(row, expandedRows) {
       console.log("exChange");
-      
+
       var _this = this;
       if (expandedRows.length) {
         //只展开一行
         _this.expands = [];
         if (row) {
-          const res = await ProjectLW.getDeviceDetail(this.projectId,row.outerId);
+          const res = await ProjectLW.getDeviceDetail(
+            this.projectId,
+            row.outerId
+          );
           console.log(res);
           _this.inspectData = res;
         }
@@ -408,7 +471,7 @@ export default {
             _this.editForm.startDate,
             _this.editForm.dueDate
           );
-         // console.log(res);
+          // console.log(res);
           _this.editFormVisible = false;
           _this.$message.success("修改成功");
           this.getDeviceList();
@@ -426,7 +489,7 @@ export default {
           return false;
         }
       });
-    },
+    }
 
     // //删除
     // deleteSubmit(row) {
