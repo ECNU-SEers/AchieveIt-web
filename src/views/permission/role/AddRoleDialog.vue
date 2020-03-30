@@ -23,14 +23,13 @@
 <script>
 import RolePermissions from '@/views/admin/role/RolePermissions';
 import { addNewRole } from '@/api/permisssion';
+import { dialogMixin } from '../../../util/mixin';
 
 export default {
   components: {
     RolePermissions
   },
-  props: {
-    visibility: Boolean
-  },
+  mixins: [dialogMixin],
   data() {
     return {
       allPermissions: [], // 所有权限
@@ -54,9 +53,6 @@ export default {
         this.$message.success('新增角色成功');
         this.$emit('success');
       });
-    },
-    close() {
-      this.$emit('update:visibility', false);
     }
   }
 };

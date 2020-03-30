@@ -1,241 +1,327 @@
 <template>
   <div>
-    <el-card class="box-card">
+    <PageHeader title="基本信息"></PageHeader>
+    <el-row v-if="this.projectId === undefined">
+      <el-col :span="24">
+        <el-tag type="success" effect="dark">请选择项目</el-tag>
+      </el-col>
+    </el-row>
+    <el-card v-if="this.projectId !== undefined" class="box-card">
       <div slot="header" class="clearfix">
         <span>AchieveIt</span>
         <el-button
           style="float: right; padding: 3px 0"
           type="text"
-          @click="dialogFormVisible = true"
+          @click="editBasic"
           >修改</el-button
         >
 
+        <!-- 修改项目信息 -->
         <el-dialog title="修改项目基本信息" :visible.sync="dialogFormVisible">
           <el-form
-            :model="ruleForm"
+            :model="editForm"
             :rules="rules"
-            ref="ruleForm"
+            ref="editForm"
             label-width="100px"
-            class="demo-ruleForm"
+            class="demo-editForm"
           >
             <!-- 不可修改 -->
             <el-form-item label="项目ID">
               <el-input
-                v-model="tableData[0].detail"
+                v-model="editForm.outerId"
                 :disabled="true"
-                placeholder=""
+                placeholder
               ></el-input>
             </el-form-item>
 
             <!-- 输入框 -->
             <el-form-item label="项目名称" prop="name">
               <el-input
-                v-model="ruleForm.name"
+                v-model="editForm.name"
                 placeholder="请输入项目名称"
                 clearable
               ></el-input>
             </el-form-item>
 
             <!-- 下拉单选 -->
-            <el-form-item label="客户名称" prop="userName">
+            <el-form-item label="客户名称" prop="company">
               <el-select
-                v-model="ruleForm.userName"
+                v-model="editForm.client"
+                value-key="outerId"
+                filterable
                 placeholder="请选择客户"
                 clearable
               >
-                <el-option label="客户1" value="客户11"></el-option>
-                <el-option label="客户2" value="客户22"></el-option>
+                <el-option
+                  v-for="item in clients"
+                  :key="item.outerId"
+                  :label="item.company"
+                  :value="item"
+                >
+                  <span style="float: left">{{ item.company }}</span>
+                  <span style="float: right; color: #8492a6; font-size: 13px">{{
+                    item.outerId
+                  }}</span>
+                </el-option>
               </el-select>
             </el-form-item>
 
             <!-- 预定时间 -->
-            <el-form-item label="预定时间" required prop="date1">
+            <el-form-item label="预定时间" required prop="startDate">
               <el-date-picker
                 type="date"
                 placeholder="选择日期"
-                v-model="ruleForm.date1"
-                style="width: 100%;"
+                v-model="editForm.startDate"
+                style="width: 30%;"
+                value-format="yyyy-MM-dd"
               ></el-date-picker>
             </el-form-item>
-            -->
             <!-- 交付日 -->
-            <el-form-item label="交付日" required prop="date2">
+            <el-form-item label="交付日" required prop="endDate">
               <el-date-picker
                 type="date"
                 placeholder="选择日期"
-                v-model="ruleForm.date2"
-                style="width: 100%;"
+                v-model="editForm.endDate"
+                style="width: 30%;"
+                value-format="yyyy-MM-dd"
               ></el-date-picker>
             </el-form-item>
 
-            <!-- 下拉单选 -->
+            <!-- 不可修改 -->
             <el-form-item label="项目上级" prop="leader">
-              <el-select v-model="ruleForm.leader" placeholder="请选择项目上级">
-                <el-option label="项目上级1" value="上级1"></el-option>
-                <el-option label="项目上级2" value="上级2"></el-option>
-              </el-select>
+              <el-input
+                v-model="tableData[5].detail"
+                :disabled="true"
+                placeholder
+              ></el-input>
             </el-form-item>
 
             <!-- 文本框 -->
             <el-form-item label="主要里程碑" prop="milestone">
-              <el-input type="textarea" v-model="ruleForm.milestone"></el-input>
+              <el-input
+                type="textarea"
+                autosize
+                :disabled="true"
+                v-model="this.stones"
+              ></el-input>
+              <el-input
+                type="textarea"
+                autosize
+                v-model="editForm.milestone"
+              ></el-input>
             </el-form-item>
 
             <!-- 多选 -->
-            <el-form-item label="采用技术" prop="skills">
-              <el-checkbox-group v-model="ruleForm.skills">
-                <el-checkbox label="技术1" name="type"></el-checkbox>
-                <el-checkbox label="技术2" name="type"></el-checkbox>
-                <el-checkbox label="技术3" name="type"></el-checkbox>
-                <el-checkbox label="技术4" name="type"></el-checkbox>
+            <el-form-item label="采用技术" prop="skillNames">
+              <el-checkbox-group v-model="editForm.skillNames">
+                <el-checkbox
+                  v-for="item in skills"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.name"
+                ></el-checkbox>
               </el-checkbox-group>
             </el-form-item>
 
             <!-- 单选 -->
             <el-form-item label="业务领域">
-              <el-radio-group v-model="ruleForm.area">
-                <el-radio label="业务领域1"></el-radio>
-                <el-radio label="业务领域2"></el-radio>
+              <el-radio-group v-model="editForm.businessAreaName">
+                <el-radio
+                  v-for="item in areas"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.name"
+                ></el-radio>
               </el-radio-group>
             </el-form-item>
 
             <!-- 文本框 -->
-            <el-form-item label="主要功能" prop="function">
-              <el-input type="textarea" v-model="ruleForm.function"></el-input>
-            </el-form-item>
+            <!-- <el-form-item label="主要功能" prop="function">
+              <el-input type="textarea" v-model="editForm.function"></el-input>
+            </el-form-item>-->
 
             <el-form-item>
-              <el-button type="primary" @click="submitForm('ruleForm')"
+              <el-button type="primary" @click="submitForm('editForm')"
                 >提交</el-button
               >
-              <el-button @click="resetForm('ruleForm')">重置</el-button>
+              <el-button @click="resetForm('editForm')">重置</el-button>
             </el-form-item>
           </el-form>
         </el-dialog>
       </div>
 
-      <el-table :data="tableData" :show-header="hiddenTableHeader">
-        <el-table-column prop="name" label="名称" width="140">
+      <!-- 项目详情展示 -->
+      <el-table
+        :data="tableData"
+        :show-header="hiddenTableHeader"
+        :row-class-name="getRowClassName"
+      >
+        <!-- 展开客户内容 -->
+        <el-table-column type="expand">
+          <template slot-scope="props">
+            <el-form label-position="left" inline class="demo-table-expand">
+              <el-form-item
+                v-for="item in props.row.moreDetail"
+                :key="item.name"
+                :label="item.name"
+              >
+                <span>{{ item.detail }}</span>
+              </el-form-item>
+            </el-form>
+          </template>
         </el-table-column>
-        <el-table-column prop="detail" label="详细信息"> </el-table-column>
+        <el-table-column prop="name" label="名称" width="140"></el-table-column>
+        <el-table-column prop="detail" label="详细信息"></el-table-column>
       </el-table>
     </el-card>
   </div>
 </template>
 
 <script>
-export default {
-  data() {
-    return {
-      dialogFormVisible: false,
-      formLabelWidth: '120px',
+import Project from "@/sys/models/project_htx";
+import PageHeader from "../../components/common/PageHeader";
 
+export default {
+  components: {
+    PageHeader
+  },
+
+  data() {
+    let validateDate = (rule, value, callback) => {
+      if (this.editForm.endDate > this.editForm.startDate == false) {
+        callback(new Error("交付日须在预定时间之后！"));
+      } else {
+        callback();
+      }
+    };
+    return {
+      projectId: "",
+      // 修改弹框
+      dialogFormVisible: false,
+      formLabelWidth: "120px",
+
+      // 详情信息
       tableData: [
         {
-          name: '项目ID',
-          detail: 'G08_20200312'
+          name: "项目ID",
+          detail: "暂无数据",
+          isExpend: 0
         },
         {
-          name: '项目名称',
-          detail: 'AchieveIt项目管理系统'
+          name: "项目名称",
+          detail: "暂无数据",
+          isExpend: 0
         },
         {
-          name: '客户信息',
-          detail: '小明'
+          name: "客户信息",
+          detail: "",
+          moreDetail: {},
+          isExpend: 1
         },
         {
-          name: '预定时间',
-          detail: '2020-02-23'
+          name: "预定时间",
+          detail: "暂无数据",
+          isExpend: 0
         },
         {
-          name: '交付日',
-          detail: '2020-04-29'
+          name: "交付日",
+          detail: "暂无数据",
+          isExpend: 0
         },
         {
-          name: '项目上级',
-          detail: '小张'
+          name: "项目上级",
+          detail: "暂无数据",
+          isExpend: 0
         },
         {
-          name: '主要里程碑',
-          detail: '主要里程碑主要里程碑主要里程碑主要里程碑'
+          name: "主要里程碑",
+          detail: "暂无数据",
+          moreDetail: {},
+          isExpend: 1
         },
         {
-          name: '采用技术',
-          detail: ['技术1', '技术2']
+          name: "采用技术",
+          detail: "暂无数据",
+          isExpend: 0
         },
         {
-          name: '业务领域',
-          detail: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+          name: "业务领域",
+          detail: "暂无数据",
+          isExpend: 0
         },
         {
-          name: '主要功能',
-          detail: 'XXXXXXXXXXXXXXXXXXXXXXXX'
+          name: "主要功能",
+          detail: "暂无数据",
+          isExpend: 0
         }
       ],
 
-      ruleForm: {
-        name: '',
-        userName: '',
-        date1: '',
-        date2: '',
-        leader: '',
-        milestone: '',
-        skills: [],
-        area: '',
-        function: ''
+      // 修改框
+      editForm: {
+        outerId: "",
+        name: "",
+        client: {
+          outerId: "",
+          company: ""
+        },
+        startDate: "",
+        endDate: "",
+        milestone: "",
+        skillNames: [],
+        businessAreaName: ""
       },
-
-      // 修改Form初始为原本的项目信息
-      // ruleForm.name: tableData[1].detail;
-      // userName:tableData[2].detail,
-      // date1:'',
-      // date2:'',
-      // leader:tableData[5].detail,
-      // milestone:tableData[6].detail,
-      // skills:'',
-      // area:tableData[8].detail,
-      // function:tableData[9].detail
-
+      // 修改框中可选项
+      clients: [
+        {
+          outerId: "",
+          company: ""
+        }
+      ],
+      supervisors: [
+        {
+          id: 2,
+          username: "kiki",
+          realName: "kiki"
+        }
+      ],
+      areas: [],
+      skills: [],
+      stones: "",
       rules: {
         name: [
-          { required: true, message: '请输入项目名称', trigger: 'blur' },
-          { min: 3, max: 30, message: '长度在 3 到 30 个字符', trigger: 'blur' }
+          { required: true, message: "请输入项目名称", trigger: "blur" }
+          // { min: 3, max: 30, message: "长度在 3 到 30 个字符", trigger: "blur" }
         ],
-        userName: [
-          { required: true, message: '请选择客户姓名', trigger: 'change' }
+        client: [
+          { required: true, message: "请选择客户姓名", trigger: "blur" }
         ],
-        date1: [
+        startDate: [
           {
-            type: 'date',
+            // type: "date",
             required: true,
-            message: '请选择预定日期',
-            trigger: 'blur'
+            message: "请选择预定日期",
+            trigger: "blur"
           }
         ],
-        date2: [
+        endDate: [
           {
-            type: 'date',
+            // type: "date",
             required: true,
-            message: '请选择交付时间',
-            trigger: 'blur'
-          }
+            message: "请选择交付时间",
+            trigger: "blur"
+          },
+          { validator: validateDate, trigger: "blur" }
         ],
-        leader: [
-          { required: true, message: '请选择项目上级', trigger: 'blur' }
-        ],
-        milestone: [
-          { required: true, message: '请填写主要里程碑', trigger: 'blur' }
-        ],
-        skills: [
+        // milestone: [
+        //   { required: true, message: "请填写主要里程碑", trigger: "blur" }
+        // ],
+        skillNames: [
           {
-            type: 'array',
+            type: "array",
             required: true,
-            message: '请至少选择一个技术',
-            trigger: 'blur'
+            message: "请至少选择一个技术",
+            trigger: "blur"
           }
-        ],
-        function: [
-          { required: true, message: '请填写项目主要功能', trigger: 'blur' }
         ]
       },
 
@@ -243,24 +329,206 @@ export default {
     };
   },
   methods: {
+    // 增加隐藏展开图标的样式
+    getRowClassName({ row, rowIndex }) {
+      if (row.isExpend === 0) {
+        return "row-expand-cover";
+      }
+    },
+
+    // 获取项目详细信息
+    async getBasic(projectId) {
+      console.log("try to get basic info");
+      try {
+        // 尝试获取项目详细信息
+        const info = await Project.getBasic(projectId);
+        console.log("get basic success!");
+
+        // 表格取值
+        this.tableData[0].detail = info.project.outerId;
+        this.tableData[1].detail = info.project.name;
+        this.tableData[2].detail = info.projectClient.company;
+        // 客户信息展开内容
+        this.tableData[2].moreDetail = [
+          {
+            name: "客户ID",
+            detail: info.projectClient.outerId
+          },
+          {
+            name: "接口人",
+            detail: info.projectClient.innerPerson
+          },
+          {
+            name: "公司名称",
+            detail: info.projectClient.company
+          },
+          {
+            name: "客户等级",
+            detail: info.projectClient.level
+          },
+          {
+            name: "电子邮件",
+            detail: info.projectClient.email
+          },
+          {
+            name: "电话",
+            detail: info.projectClient.phone
+          },
+          {
+            name: "地址",
+            detail: info.projectClient.address
+          }
+        ];
+        this.tableData[3].detail = info.project.startDate;
+        this.tableData[4].detail = info.project.endDate;
+        this.tableData[5].detail = info.project.supervisorName;
+        // 里程碑展开内容
+        if (info.projectMilestones.length == 0) {
+          this.tableData[6].detail = "暂无数据";
+        } else {
+          this.tableData[6].detail =
+            info.projectMilestones[0].recordDate +
+            " " +
+            info.projectMilestones[0].progress;
+          this.tableData[6].moreDetail = [];
+          for (var i = 0; i < info.projectMilestones.length; ++i) {
+            const obj = {};
+            obj.name = info.projectMilestones[i].recordDate;
+            obj.detail = info.projectMilestones[i].progress;
+            this.tableData[6].moreDetail.push(obj);
+          }
+        }
+        this.tableData[8].detail = info.projectBusinessArea.businessAreaName;
+        // 技术
+        var skillStr = "";
+        for (var i = 0; i < info.projectSkills.length; ++i) {
+          skillStr = skillStr + info.projectSkills[i].skillName;
+          if (i != info.projectSkills.length - 1) {
+            skillStr += "、 ";
+          }
+        }
+        this.tableData[7].detail = skillStr;
+        // 功能
+        var str = "";
+        for (var i = 0; i < info.projectFunctions.length; ++i) {
+          str = str + info.projectFunctions[i].name + " \n ";
+        }
+        this.tableData[9].detail = str;
+
+        // 获取修改框中的预设值（下拉选项和不可修改的显示）
+        // 客户
+        this.clients = await Project.getClients();
+        // 业务领域
+        this.areas = await Project.getAreas();
+        // 采用技术
+        this.skills = await Project.getSkills();
+        // 切割里程碑
+        this.stones = "";
+        for (var i = 0; i < info.projectMilestones.length; ++i) {
+          this.stones =
+            this.stones +
+            info.projectMilestones[i].recordDate +
+            " " +
+            info.projectMilestones[i].progress;
+          if (i != info.projectMilestones.length - 1) {
+            this.stones = this.stones + "\n";
+          }
+        }
+        console.log(this.stones);
+
+        console.log(this.tableData);
+      } catch (e) {
+        console.log(e);
+        // this.$message.error("获取设备信息失败");
+      }
+    },
+
+    // 修改弹框
+    async editBasic() {
+      this.dialogFormVisible = true;
+
+      var outerId = "P01";
+      const info = await Project.getBasic(outerId);
+      this.editForm = {
+        outerId: info.project.outerId,
+        name: info.project.name,
+        client: {
+          outerId: info.projectClient.outerId,
+          company: info.projectClient.company
+        },
+        startDate: info.project.startDate,
+        endDate: info.project.endDate,
+        milestone: "",
+        skillNames: [],
+        businessAreaName: ""
+      };
+      for (var i = 0; i < info.projectSkills.length; ++i) {
+        this.editForm.skillNames.push(info.projectSkills[i].skillName);
+      }
+
+      this.editForm.milestone = tmpStr;
+
+      // this.editForm.businessAreaName = info.projectBusinessArea;
+      // this.editForm.skillNames = info.projectSkills;
+      console.log(this.editForm);
+    },
+    // 提交表单
     submitForm(formName) {
+      console.log(formName);
+      console.log(this.editForm);
+      // var stones = this.editForm.milestone.split("\n");
+      // console.log(stones);
       this.$refs[formName].validate(valid => {
         if (valid) {
-          alert('submit!');
+          console.log("valid");
+          Project.updateBasic(
+            this.editForm.outerId,
+            this.editForm.name,
+            this.editForm.client.outerId,
+            this.editForm.client.company,
+            this.editForm.startDate,
+            this.editForm.endDate,
+            this.editForm.milestone,
+            this.editForm.skillNames,
+            this.editForm.businessAreaName
+          ).then(() => {
+            alert("submit!");
+          });
         } else {
-          console.log('error submit!!');
+          console.log("error submit!!");
           return false;
         }
       });
     },
+    // 重置表单
     resetForm(formName) {
       this.$refs[formName].resetFields();
+    }
+  },
+  mounted: function() {
+    console.log("in mounted");
+    // 获取projectId
+    this.projectId = this.$route.query.outerId;
+    console.log(this.projectId);
+    if (this.projectId === undefined) {
+      this.$message({
+        message: "请先选择项目！",
+        type: "warning"
+      });
+    } else {
+      // 获取项目基本信息
+      this.getBasic(this.projectId);
     }
   }
 };
 </script>
 
-<style scoped>
+<style>
+/* 不显示展开图标 */
+.row-expand-cover .el-table__expand-icon {
+  visibility: hidden;
+}
+
 .text {
   font-size: 14px;
 }
@@ -281,5 +549,19 @@ export default {
 .box-card {
   /* width: 480px; */
   margin: 20px 30px 30px 30px;
+}
+
+/* 展开信息的样式 */
+.demo-table-expand {
+  font-size: 0;
+}
+.demo-table-expand label {
+  width: 90px;
+  color: #99a9bf;
+}
+.demo-table-expand .el-form-item {
+  margin-right: 0;
+  margin-bottom: 0;
+  width: 50%;
 }
 </style>

@@ -3,8 +3,8 @@
     <PageHeader title="工时审核">
       <lin-date-picker v-model="searchDateRange" class="date" />
       <el-button @click="onSearch(1)" type="primary" class="btn"
-        >查询</el-button
-      >
+        >查询
+      </el-button>
     </PageHeader>
     <LPageTable
       :table-data="tableData"
@@ -22,15 +22,15 @@
               type="success"
               plain
               size="mini"
-              >通过</el-button
-            >
+              >通过
+            </el-button>
             <el-button
               @click="onRefuse(scope.row)"
               type="danger"
               size="mini"
               plain
-              >退回</el-button
-            >
+              >退回
+            </el-button>
           </template>
           <span
             v-else
@@ -80,26 +80,20 @@ export default {
     onSearch(page) {
       if (isEmpty(this.searchDateRange)) return this.getCheckList(1);
       const [start, end] = this.searchDateRange;
-      this.loading = true;
-      searchWorkTimeCheckList(start, end, page, this.pageSize)
-        .then(res => {
-          this.loading = false;
-          const { items, total } = res;
-          this.tableData = items;
-          this.total = total;
-        })
-        .catch(() => (this.loading = false));
+      this.applyLoading(
+        searchWorkTimeCheckList(start, end, page, this.pageSize)
+      ).then(res => {
+        const { items, total } = res;
+        this.tableData = items;
+        this.total = total;
+      });
     },
     getCheckList(page) {
-      this.loading = true;
-      getWorkTimeCheckList(page, this.pageSize)
-        .then(res => {
-          this.loading = false;
-          const { items, total } = res;
-          this.tableData = items;
-          this.total = total;
-        })
-        .catch(() => (this.loading = false));
+      this.applyLoading(getWorkTimeCheckList(page, this.pageSize)).then(res => {
+        const { items, total } = res;
+        this.tableData = items;
+        this.total = total;
+      });
     },
     onPageChange(nextPage) {
       isEmpty(this.searchDateRange)

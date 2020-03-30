@@ -5,7 +5,7 @@ import { generateEmptyArrayByLength } from '@/util/array';
 const OPEN_DEVELOP_MOCK = false;
 const MOCK = process.env.NODE_ENV === 'production' ? false : OPEN_DEVELOP_MOCK;
 
-export const getUserList = (page = 1, pageSize = 10) =>
+export const getUserList = (keyword = '', page = 1, pageSize = 10) =>
   MOCK
     ? Promise.resolve(
         generateEmptyArrayByLength(10).map(() => {
@@ -16,7 +16,7 @@ export const getUserList = (page = 1, pageSize = 10) =>
           return listItem;
         })
       )
-    : get('/users/view/permissions', { page, pageSize });
+    : get('/users/view/roles', { keyword, page, pageSize });
 
 export const getRoleList = () => get('/view/roles');
 
@@ -27,3 +27,6 @@ export const editUserRole = (id, name, permissions) =>
   MOCK ? Promise.resolve() : put(`/view/role/${id}`, { name, permissions });
 
 export const deleteRole = id => _delete(`/view/role/${id}`);
+
+export const setUserRole = (userId, roles) =>
+  put(`/user/${userId}/view/roles`, { roles });
