@@ -2,7 +2,11 @@
   <div>
     <PageHeader title="设备信息">
       <!--工具条：搜索栏-->
-      <Search />
+      <Search 
+      :query-search="querySearch" 
+      @select-suggestion="getDevice"
+      >
+      </Search>
       <div style="width:20px;height=100%;"></div>
 
       <!--新增-->
@@ -427,6 +431,31 @@ export default {
         }
       });
     },
+
+     //搜索
+    async querySearch(queryString, cb) {
+      var tmp=[];
+      const results = await ProjectLW.searchDevice(
+        this.projectId, 
+        queryString
+        );
+        results.forEach(item=>{
+          const obj ={};
+          obj.id =item;
+          obj.value=item;
+          tmp.push(obj);
+        })
+      // 调用 callback 返回建议列表的数据
+      cb(tmp);
+    },
+    
+    //查询返回单个设备信息
+        async getDevice(item){
+      console.log("deviceItem233="+item.id);
+
+      const res =await ProjectLW.getDevice(this.projectId,item.id.toString());
+      console.log("返回查询结果="+res);
+    }
 
     // //删除
     // deleteSubmit(row) {

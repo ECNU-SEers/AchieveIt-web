@@ -2,75 +2,71 @@
   <div>
     <PageHeader title="风险信息">
       <!--工具条：搜索栏-->
-      <Search 
-      v-model="riskSearch"
-      :query-search="querySearch"
-      value-key="name"
-      >
-      </Search>
+      <Search v-model="riskSearch" :query-search="querySearch" @select-suggestion="getRisk" value-key="name"></Search>
       <div style="width:20px;height=100%;"></div>
 
       <!--新增风险信息-->
-      <el-button size="medium" @click="addFormVisible = true" type="primary" >新增</el-button>
+      <el-button size="medium" @click="addFormVisible = true" type="primary">新增</el-button>
 
       <!--导入-->
-      <el-button size="medium" @click="importFormVisible = true" type="primary" >导入</el-button>
+      <el-button size="medium" @click="importFormVisible = true" type="primary">导入</el-button>
     </PageHeader>
 
     <!--列表展示-->
     <Pagination>
-      <el-table
-        :data="riskData"
-        stripe
-        border
-        highlight-current-row
-        style="width: 100%"
-      >
-       <el-table-column type="expand">
-         <template slot-scope="props">
-           <el-form label-position="left" class="demo-table-expand">
-             <el-form-item label="风险 ID">
-               <span>{{props.row.id}}</span>
-               </el-form-item>
-             <el-form-item label="风险名称">
-               <span>{{props.row.name}}</span>
-               </el-form-item>
-               <el-form-item label="风险类型">
-               <span>{{props.row.type}}</span>
-               </el-form-item>
-                  <el-form-item label="风险级别">
-               <span>{{props.row.level}}</span>
-               </el-form-item>
-                  <el-form-item label="风险描述">
-               <div class="text"> <span>{{props.row.description}}</span></div>
-               </el-form-item>
-                  <el-form-item label="影响程度">
-               <span>{{props.row.impact}}</span>
-               </el-form-item>
-                  <el-form-item label="应对策略">
-               <div class="text"> <span>{{props.row.strategy}}</span></div>
-               </el-form-item>
-                  <el-form-item label="风险状态">
-               <span>{{props.row.state}}</span>
-               </el-form-item>
-                  <el-form-item label="责任人">
-               <span>{{props.row.ownerName}}</span>
-               </el-form-item>
-                  <el-form-item label="跟踪频度">
-               <span>{{props.row.trackingFreq}}</span>
-               </el-form-item>
-                  <el-form-item label="相关者" >
-               <span v-for ="person in props.row.riskRelatedPeople" :key="person.id" >   {{person.username}}   </span> 
-               </el-form-item>
-                  <el-form-item label="风险来源">
-               <span>{{props.row.source}}</span>
-               </el-form-item>
-           </el-form>
-         </template>
-       </el-table-column>
-       <el-table-column label="序号" type="index" ></el-table-column>
+      <el-table :data="riskData" stripe border highlight-current-row style="width: 100%">
+        <el-table-column type="expand">
+          <template slot-scope="props">
+            <el-form label-position="left" class="demo-table-expand">
+              <el-form-item label="风险 ID">
+                <span>{{props.row.id}}</span>
+              </el-form-item>
+              <el-form-item label="风险名称">
+                <span>{{props.row.name}}</span>
+              </el-form-item>
+              <el-form-item label="风险类型">
+                <span>{{props.row.type}}</span>
+              </el-form-item>
+              <el-form-item label="风险级别">
+                <span>{{props.row.level}}</span>
+              </el-form-item>
+              <el-form-item label="风险描述">
+                <div class="text">
+                  <span>{{props.row.description}}</span>
+                </div>
+              </el-form-item>
+              <el-form-item label="影响程度">
+                <span>{{props.row.impact}}</span>
+              </el-form-item>
+              <el-form-item label="应对策略">
+                <div class="text">
+                  <span>{{props.row.strategy}}</span>
+                </div>
+              </el-form-item>
+              <el-form-item label="风险状态">
+                <span>{{props.row.state}}</span>
+              </el-form-item>
+              <el-form-item label="责任人">
+                <span>{{props.row.ownerName}}</span>
+              </el-form-item>
+              <el-form-item label="跟踪频度">
+                <span>{{props.row.trackingFreq}}</span>
+              </el-form-item>
+              <el-form-item label="相关者">
+                <span
+                  v-for="person in props.row.riskRelatedPeople"
+                  :key="person.id"
+                >{{person.username}}</span>
+              </el-form-item>
+              <el-form-item label="风险来源">
+                <span>{{props.row.source}}</span>
+              </el-form-item>
+            </el-form>
+          </template>
+        </el-table-column>
+        <el-table-column label="序号" type="index"></el-table-column>
         <el-table-column label="风险级别" prop="level"></el-table-column>
-          <el-table-column label="风险 ID" prop="id"></el-table-column>
+        <el-table-column label="风险 ID" prop="id"></el-table-column>
         <el-table-column label="风险名称" prop="name"></el-table-column>
         <el-table-column label="风险类型" prop="type"></el-table-column>
         <el-table-column label="风险级别" prop="level"></el-table-column>
@@ -81,7 +77,7 @@
         <el-table-column label="责任人" prop="ownerId"></el-table-column>
         <el-table-column label="跟踪频度" prop="trackingFreq"></el-table-column>
         <el-table-column label="相关者" prop="relatedPersons"></el-table-column>
-        <el-table-column label="风险来源" prop="source"></el-table-column> -->
+        <el-table-column label="风险来源" prop="source"></el-table-column>-->
 
         <!---编辑和移除-->
         <el-table-column label="操作" width="180px" prop="action">
@@ -94,12 +90,17 @@
                 @click="editFormVisible = true;updateRisk(row)"
               ></el-button>
 
-              <el-button type="danger" size="medium" icon="el-icon-delete" @click="deleteSubmit(row)"></el-button>
+              <el-button
+                type="danger"
+                size="medium"
+                icon="el-icon-delete"
+                @click="deleteSubmit(row)"
+              ></el-button>
             </el-button-group>
           </template>
         </el-table-column>
       </el-table>
-    </Pagination>     
+    </Pagination>
 
     <!--新增-->
     <el-dialog
@@ -133,18 +134,18 @@
         <!--单选-->
         <el-form-item label="风险级别:" prop="level">
           <el-radio-group v-model="addForm.level">
-            <el-radio :label=1>低</el-radio>
-            <el-radio :label=2>中</el-radio>
-            <el-radio :label=3>高</el-radio>
+            <el-radio :label="1">低</el-radio>
+            <el-radio :label="2">中</el-radio>
+            <el-radio :label="3">高</el-radio>
           </el-radio-group>
         </el-form-item>
 
         <!--单选-->
         <el-form-item label="风险影响度:" prop="impact">
           <el-radio-group v-model="addForm.impact">
-             <el-radio :label=1>低</el-radio>
-            <el-radio :label=2>中</el-radio>
-            <el-radio :label=3>高</el-radio>
+            <el-radio :label="1">低</el-radio>
+            <el-radio :label="2">中</el-radio>
+            <el-radio :label="3">高</el-radio>
           </el-radio-group>
         </el-form-item>
 
@@ -154,13 +155,19 @@
         </el-form-item>
 
         <!--单选-->
-        <el-form-item label="风险状态:" >
-        <el-input placeholder="仍存在" disabled></el-input>
+        <el-form-item label="风险状态:">
+          <el-input placeholder="仍存在" disabled></el-input>
         </el-form-item>
 
         <!--带搜索的下拉选择-->
         <el-form-item label="风险责任人:" prop="owner">
-          <el-select v-model="addForm.owner" value-key="userId"  @visible-change="getAllMembers($event)" filterable placeholder="请选择该风险责任人">
+          <el-select
+            v-model="addForm.owner"
+            value-key="userId"
+            @visible-change="getAllMembers($event)"
+            filterable
+            placeholder="请选择该风险责任人"
+          >
             <el-option
               v-for="item in users"
               :key="item.userId"
@@ -177,7 +184,13 @@
 
         <!--风险相关人员 （多选、可搜索）-->
         <el-form-item label="风险相关者:" prop="relatedPersons">
-          <el-select v-model="addForm.relatedPersons" @visible-change="getAllMembers($event)" multiple filterable placeholder="请选择">
+          <el-select
+            v-model="addForm.relatedPersons"
+            @visible-change="getAllMembers($event)"
+            multiple
+            filterable
+            placeholder="请选择"
+          >
             <el-option
               v-for="item in users"
               :key="item.userId"
@@ -189,7 +202,7 @@
 
         <!--不可更改-->
         <el-form-item label="资产来源:">
-          <el-input placeholder="项目本身识别"  :disabled="true"></el-input>
+          <el-input placeholder="项目本身识别" :disabled="true"></el-input>
         </el-form-item>
 
         <el-form-item>
@@ -260,18 +273,18 @@
         <!--单选-->
         <el-form-item label="风险级别:" prop="level">
           <el-radio-group v-model="editForm.level">
-            <el-radio :label=1>低</el-radio>
-            <el-radio :label=2>中</el-radio>
-            <el-radio :label=3>高</el-radio>
+            <el-radio :label="1">低</el-radio>
+            <el-radio :label="2">中</el-radio>
+            <el-radio :label="3">高</el-radio>
           </el-radio-group>
         </el-form-item>
 
         <!--单选-->
         <el-form-item label="风险影响度:" prop="impact">
           <el-radio-group v-model="editForm.impact">
-            <el-radio :label=1>低</el-radio>
-            <el-radio :label=2>中</el-radio>
-            <el-radio :label=3>高</el-radio>
+            <el-radio :label="1">低</el-radio>
+            <el-radio :label="2">中</el-radio>
+            <el-radio :label="3">高</el-radio>
           </el-radio-group>
         </el-form-item>
 
@@ -283,14 +296,19 @@
         <!--单选-->
         <el-form-item label="风险状态:" prop="state">
           <el-radio-group v-model="editForm.state">
-            <el-radio :label=1>仍存在</el-radio>
-            <el-radio :label=2>已排除</el-radio>
+            <el-radio :label="1">仍存在</el-radio>
+            <el-radio :label="2">已排除</el-radio>
           </el-radio-group>
         </el-form-item>
 
         <!--带搜索的下拉选择-->
         <el-form-item label="风险责任人:" prop="owner">
-          <el-select v-model="editForm.owner"  @visible-change="getAllMembers($event)" filterable placeholder="请选择该风险责任人">
+          <el-select
+            v-model="editForm.owner"
+            @visible-change="getAllMembers($event)"
+            filterable
+            placeholder="请选择该风险责任人"
+          >
             <el-option
               v-for="item in users"
               :key="item.userId"
@@ -301,14 +319,20 @@
         </el-form-item>
 
         <!--单选-->
-          <!--单选-->
+        <!--单选-->
         <el-form-item label="风险跟踪频度:（单位:天/次）" prop="trackingFreq">
           <el-input v-model="editForm.trackingFreq"></el-input>
         </el-form-item>
 
         <!--风险相关人员 （多选、可搜索）-->
         <el-form-item label="风险相关者:" prop="relatedPersons">
-          <el-select v-model="editForm.relatedPersons"  @visible-change="getAllMembers($event)" multiple filterable placeholder="请选择">
+          <el-select
+            v-model="editForm.relatedPersons"
+            @visible-change="getAllMembers($event)"
+            multiple
+            filterable
+            placeholder="请选择"
+          >
             <el-option
               v-for="item in users"
               :key="item.userId"
@@ -318,9 +342,9 @@
           </el-select>
         </el-form-item>
 
-         <!--资产来源-->
+        <!--资产来源-->
         <el-form-item label="资产来源:">
-          <el-input  v-model="editForm.source"></el-input>
+          <el-input v-model="editForm.source"></el-input>
         </el-form-item>
 
         <el-form-item>
@@ -349,25 +373,25 @@ export default {
       projectId: 1,
       pageNo: 1,
       pageSize: 10,
-      riskSearch:"",
+      riskSearch: "",
       riskData: [],
-      results:[],
+      results: [],
       users: [],
-       owner:[],
-       relatedPersons:[],
-       row:"",
+      owner: [],
+      relatedPersons: [],
+      row: "",
       //新增
       addFormVisible: false,
       addForm: {
-        owner:[],
-        relatedPersons:[]
+        owner: [],
+        relatedPersons: []
       },
-      
-     //编辑
-     editFormVisible: false,
+
+      //编辑
+      editFormVisible: false,
       editForm: {
-        owner:[],
-        relatedPersons:[]
+        owner: [],
+        relatedPersons: []
       },
 
       rules: {
@@ -400,7 +424,7 @@ export default {
             trigger: "change"
           }
         ],
-          state: [
+        state: [
           { required: true, message: "请选择风险状态", trigger: "change" }
         ]
       },
@@ -421,11 +445,11 @@ export default {
       ]
     };
   },
-  mounted(){
+  mounted() {
     this.getRiskList();
   },
   methods: {
-     //列表展示
+    //列表展示
     async getRiskList() {
       const res = await ProjectLW.getRiskList(
         this.projectId,
@@ -434,7 +458,6 @@ export default {
       );
       this.riskData = res.items;
     },
-
 
     //新增
     addSubmit(formName) {
@@ -454,26 +477,24 @@ export default {
             this.addForm.description,
             this.addForm.relatedPersons
           );
-         // console.log(res);
+          // console.log(res);
           this.getRiskList();
-          this.addFormVisible=false;
-       this.$message.success("添加成功");
-       
+          this.addFormVisible = false;
+          this.$message.success("添加成功");
         } else {
           this.$message.error("请填写正确信息");
           return false;
         }
       });
     },
-   //下拉，项目成员
+    //下拉，项目成员
     async getAllMembers(callback) {
-     // console.log("回调参数" + callback);
+      // console.log("回调参数" + callback);
       if (callback) {
         const res = await ProjectLW.getAllMembers(this.projectId);
-       // console.log(res);
+        // console.log(res);
         this.users = res;
       } else;
-      
     },
 
     handleClose(done) {
@@ -491,41 +512,43 @@ export default {
       }
     },
 
-  
     //点击“编辑” 深拷贝原信息
-     updateRisk(row){
-
+    updateRisk(row) {
       this.editForm = {
-         name:row.name,
-         type:row.type,
-         level:row.level,
-         impact:row.impact,
-         strategy:row.strategy,
-         owner:row.ownerName,
-         trackingFreq:row.trackingFreq,
-         source:row.source,
-         description:row.description,
-         relatedPersons:row.riskRelatedPeople,
-         state:row.state
+        name: row.name,
+        type: row.type,
+        level: row.level,
+        impact: row.impact,
+        strategy: row.strategy,
+        owner: row.ownerName,
+        trackingFreq: row.trackingFreq,
+        source: row.source,
+        description: row.description,
+        relatedPersons: row.riskRelatedPeople,
+        state: row.state
       };
-      this.row=row;
-     },
+      this.row = row;
+    },
 
     //确认编辑
     editSubmit(formName) {
-           this.$refs[formName].validate(async valid => {
+      this.$refs[formName].validate(async valid => {
         var _this = this;
         if (valid) {
-          const res = await ProjectLW.updateRisk(_this.row.id,_this.projectId,this.editForm);
-         // console.log(res);
+          const res = await ProjectLW.updateRisk(
+            _this.row.id,
+            _this.projectId,
+            this.editForm
+          );
+          // console.log(res);
           _this.editFormVisible = false;
           _this.$message.success("修改成功");
           this.getRiskList();
-           } else {
+        } else {
           this.$message.error("修改失败");
           return false;
         }
-           });
+      });
     },
 
     //删除
@@ -536,12 +559,12 @@ export default {
         type: "warning"
       })
         .then(async () => {
-          const res =await ProjectLW.deleteRisk(this.projectId,row.id); 
-            this.$message({
-              type: "success",
-              message: "删除成功!"
-            });
-            this.getRiskList();
+          const res = await ProjectLW.deleteRisk(this.projectId, row.id);
+          this.$message({
+            type: "success",
+            message: "删除成功!"
+          });
+          this.getRiskList();
         })
         .catch(() => {
           this.$message({
@@ -551,31 +574,41 @@ export default {
         });
     },
 
-    //   //搜索
-    //   async handleSelect(){
-    //     const res = await ProjectLW.getRisk(projectId,riskSearch);
-    //     this.riskData = res.items;
-    // }
+     //搜索
     async querySearch(queryString, cb) {
-    
-       this.results  = await ProjectLW.searchRisk(this.projectId,queryString);
-        // 调用 callback 返回建议列表的数据
-      
-        cb(this.results);
-        
-      }
+      var tmp=[];
+      const results = await ProjectLW.searchRisk(
+        this.projectId, 
+        queryString
+        );
+        results.forEach(item=>{
+          const obj ={};
+          obj.id =item.id;
+          obj.value=item.name;
+          tmp.push(obj);
+        })
+      // 调用 callback 返回建议列表的数据
+      console.log("tmp=" + tmp);
+      cb(tmp);
+    },
+
+    //查询
+    async getRisk(item){
+      console.log("item="+item);
+      const res =await ProjectLW.getRisk(this.projectId,item.id);
+      console.log("返回查询结果="+res);
+    }
 
   }
 };
 </script>
 
 <style lang="scss" scoped>
-
-.demo-table-expand .el-form-item{
-     width:50%;
-     .text{
-       height:100%;
-       width:100%;
-     }
+.demo-table-expand .el-form-item {
+  width: 50%;
+  .text {
+    height: 100%;
+    width: 100%;
+  }
 }
 </style>
