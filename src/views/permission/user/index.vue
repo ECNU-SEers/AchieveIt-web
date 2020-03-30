@@ -16,9 +16,14 @@
       @page-change="onPageChange"
     >
       <el-table-column label="角色">
-        <span slot-scope="scope">{{
-          scope.row.roles.map(item => item.name).join(" ")
-        }}</span>
+        <span slot-scope="scope">
+          {{ scope.row.roles.map(item => item.name).join(" ") }}
+        </span>
+      </el-table-column>
+      <el-table-column label="参与项目">
+        <span slot-scope="scope">
+          {{ scope.row.projects.join(" ") }}
+        </span>
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">

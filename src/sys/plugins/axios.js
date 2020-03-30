@@ -113,7 +113,7 @@ _axios.interceptors.request.use(
 // Add a response interceptor
 _axios.interceptors.response.use(
   async res => {
-    console.log(res.config.url.split("api/")[1], res.data);
+    console.log(res.config.url.split("api/")[1], res.data.data);
     let { code, message } = res.data; // eslint-disable-line
     if (res.status.toString().charAt(0) === "2") {
       return res.data.data;

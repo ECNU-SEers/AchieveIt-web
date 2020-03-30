@@ -1,4 +1,4 @@
-import { get, post, put } from '@/sys/plugins/axios';
+import { get, post, put, _delete } from '@/sys/plugins/axios';
 import { userPermissionTableHeader } from '@/views/permission/const';
 import { generateEmptyArrayByLength } from '@/util/array';
 
@@ -25,3 +25,5 @@ export const addNewRole = (name, permissions) =>
 
 export const editUserRole = (id, name, permissions) =>
   MOCK ? Promise.resolve() : put(`/view/role/${id}`, { name, permissions });
+
+export const deleteRole = id => _delete(`/view/role/${id}`);
