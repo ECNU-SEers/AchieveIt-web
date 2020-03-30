@@ -1,14 +1,19 @@
 <template>
   <div>
     <PageHeader title="项目缺陷信息">
-      <Search v-if="this.projectId !== undefined"
+      <Search
+        v-if="this.projectId !== undefined"
         placeholder="请输入缺陷名称"
         :query-search="querySearch"
         @search="searchDefect"
         @select-suggestion="selectSearch"
       >
       </Search>
-      <el-button v-if="this.projectId !== undefined" type="primary" class="add-btn" @click="handleAdd"
+      <el-button
+        v-if="this.projectId !== undefined"
+        type="primary"
+        class="add-btn"
+        @click="handleAdd"
         >新增</el-button
       >
     </PageHeader>
@@ -22,13 +27,15 @@
         <p v-permission="'查看日志'">Hello word</p>
     <button v-permission="['修改信息','修改密码']">编辑</button>-->
     <!--工具条：搜索栏-->
-    <Pagination v-if="this.projectId !== undefined"
+    <Pagination
+      v-if="this.projectId !== undefined"
       :current-page.sync="page"
       :page-size="pageSize"
       :total="defectsLength"
       @page-change="handlePageChange"
     >
-      <el-table v-if="this.projectId !== undefined"
+      <el-table
+        v-if="this.projectId !== undefined"
         :data="defects"
         highlight-current-row
         border
@@ -432,7 +439,12 @@ export default {
     },
 
     async searchDefect(keyword) {
-      this.defects = await ProjectSYJ.getProjectDefects(this.page, this.pageSize, this.projectId, keyword);
+      this.defects = await ProjectSYJ.getProjectDefects(
+        this.page,
+        this.pageSize,
+        this.projectId,
+        keyword
+      );
       // if(this.selectedProject !== "") {
       //   console.log("selected search");
       //   const res = await ProjectSYJ.searchOneProject(this.selectedProject);
@@ -443,7 +455,6 @@ export default {
       //   console.log("keyword search");
       //   this.projects = await ProjectSYJ.getProjectList(this.pageNo, this.pageSize, this.userId, keyword);
       // }
-      
     },
 
     getNowFormatDate() {
@@ -583,7 +594,7 @@ export default {
       });
     } else {
       this.getAllDefects();
-    this.getDefectModals();
+      this.getDefectModals();
     }
   }
 };

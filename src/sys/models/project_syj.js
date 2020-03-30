@@ -19,7 +19,7 @@ export default class ProjectSYJ {
   }
 
   static async searchOneProject(outerId) {
-    return await get("/project/show/list", {outerId}); 
+    return await get("/project/show/list", { outerId });
   }
 
   static async getAllClients() {

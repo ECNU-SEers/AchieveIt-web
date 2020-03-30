@@ -1,11 +1,13 @@
 <template>
   <div>
     <EditUserDialog
+      v-if="showEditUserDialog"
       :visibility.sync="showEditUserDialog"
       v-bind="editingUserInfo"
+      @success="onEditUserSuccess"
     />
     <PageHeader title="用户权限">
-      <Search @search="onSearch" />
+      <Search @search="onSearch" :query-search="querySearch" />
     </PageHeader>
     <LPageTable
       :table-data="tableData"
@@ -50,6 +52,7 @@ import LPageTable from '../../../components/common/LPageTable';
 import { userPermissionTableHeader } from '../const';
 import { getUserList } from '@/api/permisssion';
 import { loadable, pageable } from '../../../util/mixin';
+import { isEmpty } from 'lodash';
 
 export default {
   components: {
@@ -64,12 +67,20 @@ export default {
     return {
       tableHeader: Object.freeze(userPermissionTableHeader),
       showEditUserDialog: false,
-      editingUserInfo: null
+      editingUserInfo: null,
+      searchKey: ''
     };
   },
   methods: {
     onSearch(key) {
-      console.log(key);
+      this.searchKey = key;
+      this.getUserListFromServe(1);
+    },
+    querySearch(queryString, cb) {
+      const result = this.tableData
+        .filter(item => item.username.includes(queryString))
+        .map(item => ({ value: item.username }));
+      cb(result);
     },
     onPageChange(nextPage) {
       this.getUserListFromServe(nextPage);
@@ -78,16 +89,17 @@ export default {
       this.editingUserInfo = row;
       this.showEditUserDialog = true;
     },
+    onEditUserSuccess() {
+      this.getUserListFromServe(this.currentPage);
+    },
     getUserListFromServe(page) {
-      this.loading = true;
-      getUserList(page, this.pageSize)
-        .then(res => {
-          this.loading = false;
+      this.applyLoading(getUserList(this.searchKey, page, this.pageSize)).then(
+        res => {
           const { items, total } = res;
           this.total = total;
           this.tableData = items;
-        })
-        .catch(() => (this.loading = false));
+        }
+      );
     }
   },
   created() {

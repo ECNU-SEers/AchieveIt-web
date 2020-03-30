@@ -142,9 +142,8 @@ export default {
       });
     } else {
       //console.log(this.projectId);
-    this.getConfig();
+      this.getConfig();
     }
-    
   },
   methods: {
     // 信息显示
@@ -154,7 +153,7 @@ export default {
       this.git = true;
       this.virtual = true;
       const res = await ProjectLW.getConfig(this.projectId);
-     // console.log("res.sMailConfirmed:"+res.isMailConfirmed);
+      // console.log("res.sMailConfirmed:"+res.isMailConfirmed);
       this.tableData[0].detail = res.gitRepoAddress;
       this.tableData[1].detail = res.virtualMachineSpace;
       if (res.gitRepoAddress == ("" || null)) this.git = false;

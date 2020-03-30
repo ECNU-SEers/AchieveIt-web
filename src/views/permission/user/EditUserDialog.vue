@@ -7,16 +7,16 @@
           :key="index"
           :label="item.label"
         >
-          <el-input readonly :value="item.prop" />
+          <el-input readonly disabled :value="item.prop" />
         </el-form-item>
         <el-form-item label="角色">
-          <el-select v-model="role">
+          <el-select multiple v-model="role">
             <el-option
               class="option"
-              v-for="item in roles"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
+              v-for="item in allRoles"
+              :key="item.name"
+              :label="item.name"
+              :value="item.id"
             />
           </el-select>
         </el-form-item>
@@ -32,35 +32,61 @@
 <script>
 import { userPermissionTableHeader } from '@/views/permission/const';
 import { getRoleList, editUserRole } from '@/api/permisssion';
+import { isEmpty } from 'lodash';
+import { setUserRole } from '../../../api/permisssion';
+import { dialogMixin } from '../../../util/mixin';
 
 export default {
   props: {
-    visibility: Boolean,
-    role: String
+    roles: {
+      type: Array,
+      default: () => []
+    },
+    id: Number,
+    username: String,
+    department: String,
+    email: String,
+    phoneNumber: String,
+    projects: {
+      type: Array,
+      default: () => []
+    }
   },
+  mixins: [dialogMixin],
   data() {
     return {
-      fields: userPermissionTableHeader.filter(item => item.label !== '角色'),
-      roles: [],
-      currentRole: '未设置'
+      fields: [],
+      allRoles: [],
+      role: '未设置'
     };
   },
   methods: {
-    close() {
-      this.$emit('update:visibility', false);
-    },
     getRoleListFromServe() {
-      getRoleList().then(res => (this.roles = res));
+      getRoleList().then(res => {
+        this.allRoles = res;
+        this.role = this.roles.map(item => {
+          return this.allRoles.find(r => r.id === item.id).id;
+        });
+      });
     },
     onConfirmEdit() {
-      editUserRole().then(() => {
+      setUserRole(this.id, this.role).then(() => {
         this.$message.success('修改成功');
+        this.$emit('success');
         this.close();
       });
     }
   },
   created() {
     this.getRoleListFromServe();
+    this.fields = userPermissionTableHeader.map(item => ({
+      label: item.label,
+      prop: this[item.prop]
+    }));
+    this.fields.push({
+      label: '参与项目',
+      prop: this.projects.join(' ')
+    });
   }
 };
 </script>

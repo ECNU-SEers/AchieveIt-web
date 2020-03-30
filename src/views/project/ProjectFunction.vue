@@ -13,16 +13,26 @@
         <span style="float: right; color: #8492a6; font-size: 13px">{{item.id}}</span>-->
       </Search>
       <!-- <el-input prefix-icon="el-icon-search" v-model="search" style="width: 200px" placeholder="输入关键字搜索"></el-input> -->
-      <el-button type="primary" class="add-btn" @click="addFirst" v-if="this.projectId !== undefined"
+      <el-button
+        type="primary"
+        class="add-btn"
+        @click="addFirst"
+        v-if="this.projectId !== undefined"
         >新增</el-button
       >
       <el-button
         type="primary"
         class="add-btn"
-        @click="addExcelFormVisible = true" v-if="this.projectId !== undefined"
+        @click="addExcelFormVisible = true"
+        v-if="this.projectId !== undefined"
         >导入</el-button
       >
-      <el-button type="primary" class="add-btn" v-if="this.projectId !== undefined">下载</el-button>
+      <el-button
+        type="primary"
+        class="add-btn"
+        v-if="this.projectId !== undefined"
+        >下载</el-button
+      >
     </PageHeader>
 
     <el-row v-if="this.projectId === undefined">
@@ -54,7 +64,8 @@
 
     <!-- 功能列表 -->
     <Pagination v-if="this.projectId !== undefined">
-      <el-table v-if="this.projectId !== undefined"
+      <el-table
+        v-if="this.projectId !== undefined"
         :data="tableData"
         style="margin-bottom: 20px;"
         row-key="id"
@@ -214,7 +225,10 @@ export default {
     // 获取一级功能列表并展示
     async getFunctionList(keyword) {
       try {
-        const info = await Project.getFirstFunctionList(this.projectId, keyword);
+        const info = await Project.getFirstFunctionList(
+          this.projectId,
+          keyword
+        );
         console.log("get function list success!");
         this.tableData = info;
         // 标记有二级功能的功能
@@ -393,9 +407,8 @@ export default {
       });
     } else {
       this.keyword = "";
-    this.getFunctionList(this.keyword);
+      this.getFunctionList(this.keyword);
     }
-    
   }
 };
 </script>

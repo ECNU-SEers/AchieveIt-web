@@ -9,11 +9,17 @@
         @select-suggestion="selectSearch"
       >
         <template slot-scope="{ item }">
-          <div style="text-overflow: ellipsis; overflow: hidden;">{{ item.value }}</div>
-          <span style="float: right; color: #8492a6; font-size: 13px">{{ item.outerId }}</span>
+          <div style="text-overflow: ellipsis; overflow: hidden;">
+            {{ item.value }}
+          </div>
+          <span style="float: right; color: #8492a6; font-size: 13px">{{
+            item.outerId
+          }}</span>
         </template>
       </Search>
-      <el-button type="primary" class="add-btn" @click="handleAdd">新增</el-button>
+      <el-button type="primary" class="add-btn" @click="handleAdd"
+        >新增</el-button
+      >
     </PageHeader>
 
     <!--项目列表-->
@@ -46,18 +52,28 @@
                         </el-timeline-item>
                     </el-timeline>
         </el-table-column>-->
-        <el-table-column label="序号" type="index" width="70px"></el-table-column>
+        <el-table-column
+          label="序号"
+          type="index"
+          width="70px"
+        ></el-table-column>
         <el-table-column label="项目ID" prop="outerId"></el-table-column>
         <el-table-column label="项目名称" prop="name"></el-table-column>
         <el-table-column label="客户名称" prop="company"></el-table-column>
         <el-table-column label="预定时间" prop="startDate"></el-table-column>
         <el-table-column label="交付日" prop="endDate"></el-table-column>
         <el-table-column label="项目经理" prop="managerName"></el-table-column>
-        <el-table-column label="项目主管" prop="supervisorName"></el-table-column>
+        <el-table-column
+          label="项目主管"
+          prop="supervisorName"
+        ></el-table-column>
         <el-table-column label="项目状态" prop="state"></el-table-column>
         <el-table-column label="QA" prop="qaAssigned"></el-table-column>
         <el-table-column label="EPG" prop="epgAssigned"></el-table-column>
-        <el-table-column label="参与人数" prop="participantCounter"></el-table-column>
+        <el-table-column
+          label="参与人数"
+          prop="participantCounter"
+        ></el-table-column>
         <el-table-column fixed="right" label="操作" width="180px">
           <template slot-scope="scope">
             <el-button-group>
@@ -85,7 +101,11 @@
     </Pagination>
 
     <!-- 新建项目 -->
-    <el-dialog title="新建项目" :visible.sync="addFormVisible" :close-on-click-modal="false">
+    <el-dialog
+      title="新建项目"
+      :visible.sync="addFormVisible"
+      :close-on-click-modal="false"
+    >
       <el-form
         @submit.native.prevent
         :model="addForm"
@@ -95,14 +115,26 @@
       >
         <el-form-item label="项目ID" prop="outerId">
           <el-select v-model="addForm.outerId" placeholder="请选择ID">
-            <el-option v-for="item in IDs" :key="item" :label="item" :value="item"></el-option>
+            <el-option
+              v-for="item in IDs"
+              :key="item"
+              :label="item"
+              :value="item"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="项目名称" prop="name">
-          <el-input v-model="addForm.name" placeholder="请填写项目名称"></el-input>
+          <el-input
+            v-model="addForm.name"
+            placeholder="请填写项目名称"
+          ></el-input>
         </el-form-item>
         <el-form-item label="客户" prop="company">
-          <el-select v-model="addForm.company" value-key="outerId" placeholder="请选择客户">
+          <el-select
+            v-model="addForm.company"
+            value-key="outerId"
+            placeholder="请选择客户"
+          >
             <el-option
               v-for="item in clients"
               :key="item.outerId"
@@ -110,7 +142,9 @@
               :value="item"
             >
               <span style="float: left">{{ item.company }}</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">{{ item.outerId }}</span>
+              <span style="float: right; color: #8492a6; font-size: 13px">{{
+                item.outerId
+              }}</span>
             </el-option>
           </el-select>
         </el-form-item>
@@ -145,24 +179,43 @@
           <el-input v-model="addForm.managerName" disabled></el-input>
         </el-form-item>
         <el-form-item label="项目主管" prop="supervisorName">
-          <el-select v-model="addForm.supervisorName" value-key="id" placeholder="请选择项目主管">
-            <el-option v-for="item in mentors" :key="item.id" :label="item.realName" :value="item">
+          <el-select
+            v-model="addForm.supervisorName"
+            value-key="id"
+            placeholder="请选择项目主管"
+          >
+            <el-option
+              v-for="item in mentors"
+              :key="item.id"
+              :label="item.realName"
+              :value="item"
+            >
               <span style="float: left">{{ item.realName }}</span>
               <span style="float: right; color: #8492a6; font-size: 13px">
-                {{
-                item.username
-                }}
+                {{ item.username }}
               </span>
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="采用技术" prop="skillNames">
-          <el-select v-model="addForm.skillNames" multiple placeholder="请选择采用技术">
-            <el-option v-for="item in teches" :key="item.id" :label="item.name" :value="item.name"></el-option>
+          <el-select
+            v-model="addForm.skillNames"
+            multiple
+            placeholder="请选择采用技术"
+          >
+            <el-option
+              v-for="item in teches"
+              :key="item.id"
+              :label="item.name"
+              :value="item.name"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="业务领域" prop="businessAreaName">
-          <el-select v-model="addForm.businessAreaName" placeholder="请选择业务领域">
+          <el-select
+            v-model="addForm.businessAreaName"
+            placeholder="请选择业务领域"
+          >
             <el-option
               v-for="item in busiAreas"
               :key="item.id"
@@ -174,12 +227,21 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="addFormVisible = false">取消</el-button>
-        <el-button type="primary" @click.native="addProjectSubmit" :loading="submitLoading">提交</el-button>
+        <el-button
+          type="primary"
+          @click.native="addProjectSubmit"
+          :loading="submitLoading"
+          >提交</el-button
+        >
       </div>
     </el-dialog>
 
     <!--编辑项目-->
-    <el-dialog title="编辑项目" :visible.sync="editFormVisible" :close-on-click-modal="false">
+    <el-dialog
+      title="编辑项目"
+      :visible.sync="editFormVisible"
+      :close-on-click-modal="false"
+    >
       <el-form
         @submit.native.prevent
         ref="editForm"
@@ -188,13 +250,24 @@
         label-width="100px"
       >
         <el-form-item label="项目ID" prop="outerId">
-          <el-select v-model="editForm.outerId" placeholder="请选择ID" disabled></el-select>
+          <el-select
+            v-model="editForm.outerId"
+            placeholder="请选择ID"
+            disabled
+          ></el-select>
         </el-form-item>
         <el-form-item label="项目名称" prop="name">
-          <el-input v-model="editForm.name" placeholder="请填写项目名称"></el-input>
+          <el-input
+            v-model="editForm.name"
+            placeholder="请填写项目名称"
+          ></el-input>
         </el-form-item>
         <el-form-item label="客户" prop="company">
-          <el-select v-model="editForm.company" value-key="outerId" placeholder="请选择客户">
+          <el-select
+            v-model="editForm.company"
+            value-key="outerId"
+            placeholder="请选择客户"
+          >
             <el-option
               v-for="item in clients"
               :key="item.outerId"
@@ -202,7 +275,9 @@
               :value="item"
             >
               <span style="float: left">{{ item.company }}</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">{{ item.outerId }}</span>
+              <span style="float: right; color: #8492a6; font-size: 13px">{{
+                item.outerId
+              }}</span>
             </el-option>
           </el-select>
         </el-form-item>
@@ -242,12 +317,21 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="editFormVisible = false">取消</el-button>
-        <el-button type="primary" @click="editProjectSubmit" :loading="submitLoading">提交</el-button>
+        <el-button
+          type="primary"
+          @click="editProjectSubmit"
+          :loading="submitLoading"
+          >提交</el-button
+        >
       </div>
     </el-dialog>
 
     <!--审批项目-->
-    <el-dialog title="审批项目" :visible.sync="approvalVisible" :close-on-click-modal="false">
+    <el-dialog
+      title="审批项目"
+      :visible.sync="approvalVisible"
+      :close-on-click-modal="false"
+    >
       <el-form
         @submit.native.prevent
         ref="approvalForm"
@@ -256,10 +340,18 @@
         label-width="100px"
       >
         <el-form-item label="项目ID" prop="outerId">
-          <el-select v-model="approvalForm.outerId" placeholder="请选择ID" disabled></el-select>
+          <el-select
+            v-model="approvalForm.outerId"
+            placeholder="请选择ID"
+            disabled
+          ></el-select>
         </el-form-item>
         <el-form-item label="项目名称" prop="name">
-          <el-input v-model="approvalForm.name" placeholder="请填写项目名称" disabled></el-input>
+          <el-input
+            v-model="approvalForm.name"
+            placeholder="请填写项目名称"
+            disabled
+          ></el-input>
         </el-form-item>
         <el-form-item label="客户" prop="company">
           <el-select
@@ -315,12 +407,21 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="approvalVisible = false">取消</el-button>
-        <el-button type="primary" @click="approvalSubmit" :loading="submitLoading">提交</el-button>
+        <el-button
+          type="primary"
+          @click="approvalSubmit"
+          :loading="submitLoading"
+          >提交</el-button
+        >
       </div>
     </el-dialog>
 
     <!--分配QA-->
-    <el-dialog title="分配QA" :visible.sync="assignQAVisible" :close-on-click-modal="false">
+    <el-dialog
+      title="分配QA"
+      :visible.sync="assignQAVisible"
+      :close-on-click-modal="false"
+    >
       <el-form
         @submit.native.prevent
         ref="assignQAForm"
@@ -329,10 +430,18 @@
         label-width="100px"
       >
         <el-form-item label="项目ID" prop="outerId">
-          <el-select v-model="assignQAForm.outerId" placeholder="请选择ID" disabled></el-select>
+          <el-select
+            v-model="assignQAForm.outerId"
+            placeholder="请选择ID"
+            disabled
+          ></el-select>
         </el-form-item>
         <el-form-item label="项目名称" prop="name">
-          <el-input v-model="assignQAForm.name" placeholder="请填写项目名称" disabled></el-input>
+          <el-input
+            v-model="assignQAForm.name"
+            placeholder="请填写项目名称"
+            disabled
+          ></el-input>
         </el-form-item>
         <el-form-item label="客户" prop="company">
           <el-select
@@ -378,7 +487,11 @@
           <el-input v-model="assignQAForm.supervisorName" disabled></el-input>
         </el-form-item>
         <el-form-item label="分配QA" prop="qalist">
-          <el-select v-model="assignQAForm.qalist" multiple placeholder="请选择QA">
+          <el-select
+            v-model="assignQAForm.qalist"
+            multiple
+            placeholder="请选择QA"
+          >
             <el-option
               v-for="item in employees"
               :key="item.userId"
@@ -387,9 +500,7 @@
             >
               <span style="float: left">{{ item.username }}</span>
               <span style="float: right; color: #8492a6; font-size: 13px">
-                {{
-                item.userId
-                }}
+                {{ item.userId }}
               </span>
             </el-option>
           </el-select>
@@ -397,12 +508,21 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="assignQAVisible = false">取消</el-button>
-        <el-button type="primary" @click="assignQASubmit" :loading="submitLoading">提交</el-button>
+        <el-button
+          type="primary"
+          @click="assignQASubmit"
+          :loading="submitLoading"
+          >提交</el-button
+        >
       </div>
     </el-dialog>
 
     <!-- 分配EPG -->
-    <el-dialog title="分配EPG" :visible.sync="assignEPGVisible" :close-on-click-modal="false">
+    <el-dialog
+      title="分配EPG"
+      :visible.sync="assignEPGVisible"
+      :close-on-click-modal="false"
+    >
       <el-form
         @submit.native.prevent
         ref="assignEPGForm"
@@ -411,10 +531,18 @@
         label-width="100px"
       >
         <el-form-item label="项目ID" prop="outerId">
-          <el-select v-model="assignEPGForm.outerId" placeholder="请选择ID" disabled></el-select>
+          <el-select
+            v-model="assignEPGForm.outerId"
+            placeholder="请选择ID"
+            disabled
+          ></el-select>
         </el-form-item>
         <el-form-item label="项目名称" prop="name">
-          <el-input v-model="assignEPGForm.name" placeholder="请填写项目名称" disabled></el-input>
+          <el-input
+            v-model="assignEPGForm.name"
+            placeholder="请填写项目名称"
+            disabled
+          ></el-input>
         </el-form-item>
         <el-form-item label="客户" prop="company">
           <el-select
@@ -460,7 +588,11 @@
           <el-input v-model="assignEPGForm.supervisorName" disabled></el-input>
         </el-form-item>
         <el-form-item label="分配EPG" prop="epglist">
-          <el-select v-model="assignEPGForm.epglist" multiple placeholder="请选择EPG">
+          <el-select
+            v-model="assignEPGForm.epglist"
+            multiple
+            placeholder="请选择EPG"
+          >
             <el-option
               v-for="item in employees"
               :key="item.userId"
@@ -469,9 +601,7 @@
             >
               <span style="float: left">{{ item.username }}</span>
               <span style="float: right; color: #8492a6; font-size: 13px">
-                {{
-                item.userId
-                }}
+                {{ item.userId }}
               </span>
             </el-option>
           </el-select>
@@ -479,7 +609,12 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="assignEPGVisible = false">取消</el-button>
-        <el-button type="primary" @click="assignEPGSubmit" :loading="submitLoading">提交</el-button>
+        <el-button
+          type="primary"
+          @click="assignEPGSubmit"
+          :loading="submitLoading"
+          >提交</el-button
+        >
       </div>
     </el-dialog>
   </div>
@@ -506,7 +641,7 @@ export default {
       userName: "管理员",
       projects: [],
       projectsLength: 0,
-      keyword: '',
+      keyword: "",
       selectedProject: "",
 
       // 模态框
@@ -863,8 +998,7 @@ export default {
     },
 
     async searchProject(keyword) {
-      
-      if(this.selectedProject !== "") {
+      if (this.selectedProject !== "") {
         console.log("selected search");
         const res = await ProjectSYJ.searchOneProject(this.selectedProject);
         const tmplist = [];
@@ -872,9 +1006,13 @@ export default {
         this.projects = tmplist;
       } else {
         console.log("keyword search");
-        this.projects = await ProjectSYJ.getProjectList(this.pageNo, this.pageSize, this.userId, keyword);
+        this.projects = await ProjectSYJ.getProjectList(
+          this.pageNo,
+          this.pageSize,
+          this.userId,
+          keyword
+        );
       }
-      
     },
 
     // 获取客户模态框

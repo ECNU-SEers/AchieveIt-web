@@ -2,15 +2,20 @@
   <div>
     <PageHeader title="设备信息">
       <!--工具条：搜索栏-->
-      <Search  v-if="this.projectId !== undefined"
-      :query-search="querySearch" 
-      @select-suggestion="getDevice"
+      <Search
+        v-if="this.projectId !== undefined"
+        :query-search="querySearch"
+        @select-suggestion="getDevice"
       >
       </Search>
       <div style="width:20px;height=100%;"></div>
 
       <!--新增-->
-      <el-button class="add-btn" @click="addFormVisible = true" type="primary" v-if="this.projectId !== undefined"
+      <el-button
+        class="add-btn"
+        @click="addFormVisible = true"
+        type="primary"
+        v-if="this.projectId !== undefined"
         >新增</el-button
       >
     </PageHeader>
@@ -23,7 +28,8 @@
 
     <!--列表展示-->
     <Pagination v-if="this.projectId !== undefined">
-      <el-table v-if="this.projectId !== undefined"
+      <el-table
+        v-if="this.projectId !== undefined"
         :data="deviceData"
         stripe
         border
@@ -374,7 +380,6 @@ export default {
     } else {
       this.getDeviceList("");
     }
-    
   },
   methods: {
     //列表展示
@@ -511,29 +516,26 @@ export default {
       });
     },
 
-     //搜索
+    //搜索
     async querySearch(queryString, cb) {
-      var tmp=[];
-      const results = await ProjectLW.searchDevice(
-        this.projectId, 
-        queryString
-        );
-        results.forEach(item=>{
-          const obj ={};
-          obj.id =item;
-          obj.value=item;
-          tmp.push(obj);
-        })
+      var tmp = [];
+      const results = await ProjectLW.searchDevice(this.projectId, queryString);
+      results.forEach(item => {
+        const obj = {};
+        obj.id = item;
+        obj.value = item;
+        tmp.push(obj);
+      });
       // 调用 callback 返回建议列表的数据
       cb(tmp);
     },
-    
-    //查询返回单个设备信息
-        async getDevice(item){
-      console.log("deviceItem233="+item.id);
 
-      const res =await ProjectLW.getDevice(this.projectId,item.id.toString());
-      console.log("返回查询结果="+res);
+    //查询返回单个设备信息
+    async getDevice(item) {
+      console.log("deviceItem233=" + item.id);
+
+      const res = await ProjectLW.getDevice(this.projectId, item.id.toString());
+      console.log("返回查询结果=" + res);
     }
 
     // //删除
