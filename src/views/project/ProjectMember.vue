@@ -38,13 +38,13 @@
             <el-option
               v-for="item in users"
               :key="item.userId"
-              :label="item.username"
+              :label="item.realName"
               :value="item"
             >
-              <span style="float: left">{{ item.username }}</span>
+              <span style="float: left">{{ item.realName }}</span>
               <span style="float: right; color: #8492a6; font-size: 13px">
                 {{
-                item.userId
+                item.username
                 }}
               </span>
             </el-option>
@@ -64,13 +64,13 @@
             <el-option
               v-for="item in members"
               :key="item.userId"
-              :label="item.username"
+              :label="item.realName"
               :value="item"
             >
-              <span style="float: left">{{ item.username }}</span>
+              <span style="float: left">{{ item.realName }}</span>
               <span style="float: right; color: #8492a6; font-size: 13px">
                 {{
-                item.userId
+                item.username
                 }}
               </span>
             </el-option>
@@ -117,8 +117,8 @@
         border
       >
         <el-table-column fixed prop="userId" label="序号" width="50" type="index"></el-table-column>
-        <el-table-column prop="userId" label="员工ID"></el-table-column>
-        <el-table-column prop="username" label="姓名"></el-table-column>
+        <el-table-column prop="username" label="员工ID"></el-table-column>
+        <el-table-column prop="realName" label="姓名"></el-table-column>
         <el-table-column prop="rolesStr" label="角色"></el-table-column>
         <el-table-column prop="email" label="邮件地址" show-overflow-tooltip></el-table-column>
         <el-table-column prop="department" label="所属部门"></el-table-column>
@@ -151,7 +151,7 @@
       <el-form label-width="150px" class="demo-ruleForm">
         <!-- 不可修改 -->
         <el-form-item label="用户姓名" required>
-          <el-input v-model="editForm.username" :disabled="true" placeholder></el-input>
+          <el-input v-model="editForm.username" :disabled="true" placeholder style="width:40%"></el-input>
         </el-form-item>
 
         <!-- 多选 -->
@@ -291,14 +291,15 @@ export default {
 
     // 编辑项目成员信息
     async handleEdit(index, row) {
+      console.log("row:")
       console.log(row);
       this.editFormVisible = true;
       var info = await Project.getMemberList(this.projectId, 1, 999, "");
       this.members = info.items;
       this.roles = await Project.getRoles();
-      conosle.log(this.roles);
+      console.log(this.roles);
       this.editForm.userId = row.userId;
-      this.editForm.username = row.username;
+      this.editForm.username = row.username+" "+row.realName;
       this.editForm.roles = row.roles;
       this.editForm.leader = row.leaderName;
     },
@@ -404,7 +405,7 @@ export default {
       this.memberSearch.forEach(item => {
         const obj = {};
         obj.id = item.id;
-        obj.value = item.name;
+        obj.value = item.realName;
         tmp.push(obj);
       });
       const results = queryString
