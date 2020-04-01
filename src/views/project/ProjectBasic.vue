@@ -89,14 +89,14 @@
 
             <!-- 多选 -->
             <el-form-item label="采用技术" prop="skillNames">
-              <el-checkbox-group v-model="editForm.skillNames">
-                <el-checkbox
+              <el-select v-model="editForm.skillNames" multiple filterable placehoder="请选择采用的技术">
+                <el-option
                   v-for="item in skills"
                   :key="item.id"
                   :label="item.name"
                   :value="item.name"
-                ></el-checkbox>
-              </el-checkbox-group>
+                ></el-option>
+              </el-select>
             </el-form-item>
 
             <!-- 单选 -->
@@ -260,7 +260,7 @@ export default {
       ],
       areas: [],
       skills: [],
-      stones: "",
+      stones: "暂无数据",
       rules: {
         name: [
           { required: true, message: "请输入项目名称", trigger: "blur" }
@@ -413,17 +413,23 @@ export default {
         // 采用技术
         this.skills = await Project.getSkills();
         // 切割里程碑
-        this.stones = "";
-        for (var i = 0; i < info.projectMilestones.length; ++i) {
-          this.stones =
-            this.stones +
-            info.projectMilestones[i].recordDate +
-            " " +
-            info.projectMilestones[i].progress;
-          if (i != info.projectMilestones.length - 1) {
-            this.stones = this.stones + "\n";
+        if (info.projectMilestones.length > 0) {
+          this.stones = "";
+          for (var i = 0; i < info.projectMilestones.length; ++i) {
+            this.stones =
+              this.stones +
+              info.projectMilestones[i].recordDate +
+              " " +
+              info.projectMilestones[i].progress;
+            if (i != info.projectMilestones.length - 1) {
+              this.stones = this.stones + "\n";
+            }
           }
         }
+        else{
+          this.stones = "暂无数据";
+        }
+
         console.log(this.stones);
 
         console.log(this.tableData);
@@ -450,13 +456,11 @@ export default {
         endDate: info.project.endDate,
         milestone: "",
         skillNames: [],
-        businessAreaName: ""
+        businessAreaName: info.projectBusinessArea.businessAreaName
       };
       for (var i = 0; i < info.projectSkills.length; ++i) {
         this.editForm.skillNames.push(info.projectSkills[i].skillName);
       }
-
-      this.editForm.milestone = tmpStr;
 
       // this.editForm.businessAreaName = info.projectBusinessArea;
       // this.editForm.skillNames = info.projectSkills;
