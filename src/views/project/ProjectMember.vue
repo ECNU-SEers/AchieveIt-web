@@ -263,7 +263,8 @@ export default {
     async addMember() {
       this.addFormVisible = true;
       this.users = await Project.getUsers();
-      this.members = await Project.getMembers(this.projectId);
+      var info = await Project.getMemberList(this.projectId, 1, 999, "");
+      this.members = info.items;
       this.roles = await Project.getRoles();
       console.log("add:");
       console.log(this.users);
@@ -292,8 +293,10 @@ export default {
     async handleEdit(index, row) {
       console.log(row);
       this.editFormVisible = true;
-      this.members = await Project.getMembers(this.projectId);
+      var info = await Project.getMemberList(this.projectId, 1, 999, "");
+      this.members = info.items;
       this.roles = await Project.getRoles();
+      conosle.log(this.roles);
       this.editForm.userId = row.userId;
       this.editForm.username = row.username;
       this.editForm.roles = row.roles;
@@ -364,8 +367,8 @@ export default {
         }
 
         // 电话
-        if(this.tableData[i].phoneNumber===null){
-          this.tableData[i].phoneNumber="暂无数据";
+        if (this.tableData[i].phoneNumber === null) {
+          this.tableData[i].phoneNumber = "暂无数据";
         }
       }
     },

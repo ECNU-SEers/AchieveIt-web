@@ -197,6 +197,8 @@ export default {
           if (this.tableData[i].numSubFunctions > 0) {
             this.tableData[i].hasChildren = true;
           }
+          // 标记一级功能
+          this.tableData[i].isSub = false;
           // 功能描述展示
           if (this.tableData[i].description === null) {
             this.tableData[i].description = "暂无数据";
@@ -218,12 +220,14 @@ export default {
 
       for (var i = 0; i < info.length; ++i) {
         // 标记有二级功能的功能
-        if (info[i].numSubFunctions > 0) {
-          info[i].hasChildren = true;
-        }
+        // if (info[i].numSubFunctions > 0) {
+        //   info[i].hasChildren = true;
+        // }
+        // 标记为二级功能
+        info[i].isSub = true;
         // 功能描述展示
-        if (info[i].description===null) {
-          info[i].description="暂无数据";
+        if (info[i].description === null) {
+          info[i].description = "暂无数据";
         }
       }
 
@@ -238,8 +242,17 @@ export default {
     },
     // 新增子功能弹框
     addSubFunction(index, row) {
-      this.addFormVisible = true;
-      this.parentId = row.id;
+      console.log(row.isSub);
+      // 二级功能无法拥有总功能
+      if (row.isSub) {
+        this.$message({
+          message: "二级功能无法扩展",
+          type: "warning"
+        });
+      } else {
+        this.addFormVisible = true;
+        this.parentId = row.id;
+      }
     },
     // 提交新增功能
     async submitAddForm() {
