@@ -1,12 +1,12 @@
 <template>
   <div>
     <PageHeader title="基本信息"></PageHeader>
-    <el-row v-if="this.projectId === undefined">
+    <el-row v-if="this.outerId === undefined">
       <el-col :span="24">
         <el-tag type="success" effect="dark">请选择项目</el-tag>
       </el-col>
     </el-row>
-    <el-card v-if="this.projectId !== undefined" class="box-card">
+    <el-card v-if="this.outerId !== undefined" class="box-card">
       <div slot="header" class="clearfix">
         <span>AchieveIt</span>
         <el-button style="float: right; padding: 3px 0" type="text" @click="editBasic">修改</el-button>
@@ -169,7 +169,8 @@ export default {
       }
     };
     return {
-      projectId: "",
+      state: "",
+      outerId: "",
       // 修改弹框
       dialogFormVisible: false,
       formLabelWidth: "120px",
@@ -311,11 +312,11 @@ export default {
     },
 
     // 获取项目详细信息
-    async getBasic(projectId) {
+    async getBasic(outerId) {
       console.log("try to get basic info");
       try {
         // 尝试获取项目详细信息
-        const info = await Project.getBasic(projectId);
+        const info = await Project.getBasic(outerId);
         console.log("get basic success!");
 
         // 表格取值
@@ -425,8 +426,7 @@ export default {
               this.stones = this.stones + "\n";
             }
           }
-        }
-        else{
+        } else {
           this.stones = "暂无数据";
         }
 
@@ -441,30 +441,38 @@ export default {
 
     // 修改弹框
     async editBasic() {
-      this.dialogFormVisible = true;
+      // 项目状态判断
+      if (this.state === "结束" || this.state === "已归档") {
+        this.$message({
+          message: "项目已结束，不可修改！",
+          type: "warning"
+        });
+      } else {
+        this.dialogFormVisible = true;
 
-      var outerId = "P01";
-      const info = await Project.getBasic(outerId);
-      this.editForm = {
-        outerId: info.project.outerId,
-        name: info.project.name,
-        client: {
-          outerId: info.projectClient.outerId,
-          company: info.projectClient.company
-        },
-        startDate: info.project.startDate,
-        endDate: info.project.endDate,
-        milestone: "",
-        skillNames: [],
-        businessAreaName: info.projectBusinessArea.businessAreaName
-      };
-      for (var i = 0; i < info.projectSkills.length; ++i) {
-        this.editForm.skillNames.push(info.projectSkills[i].skillName);
+        var outerId = "P01";
+        const info = await Project.getBasic(outerId);
+        this.editForm = {
+          outerId: info.project.outerId,
+          name: info.project.name,
+          client: {
+            outerId: info.projectClient.outerId,
+            company: info.projectClient.company
+          },
+          startDate: info.project.startDate,
+          endDate: info.project.endDate,
+          milestone: "",
+          skillNames: [],
+          businessAreaName: info.projectBusinessArea.businessAreaName
+        };
+        for (var i = 0; i < info.projectSkills.length; ++i) {
+          this.editForm.skillNames.push(info.projectSkills[i].skillName);
+        }
+
+        // this.editForm.businessAreaName = info.projectBusinessArea;
+        // this.editForm.skillNames = info.projectSkills;
+        console.log(this.editForm);
       }
-
-      // this.editForm.businessAreaName = info.projectBusinessArea;
-      // this.editForm.skillNames = info.projectSkills;
-      console.log(this.editForm);
     },
     // 提交表单
     submitForm(formName) {
@@ -486,7 +494,11 @@ export default {
             this.editForm.skillNames,
             this.editForm.businessAreaName
           ).then(() => {
-            alert("submit!");
+            this.$message({
+              type: "success",
+              message: "已提交!"
+            });
+            this.dialogFormVisible = false;
           });
         } else {
           console.log("error submit!!");
@@ -501,17 +513,23 @@ export default {
   },
   mounted: function() {
     console.log("in mounted");
-    // 获取projectId
-    this.projectId = this.$route.query.outerId;
-    console.log(this.projectId);
-    if (this.projectId === undefined) {
+    // 获取outerId
+    this.outerId = this.$route.query.outerId;
+    console.log("outerId: " + this.outerId);
+
+    // 获取项目状态
+    console.log(this.$route.query);
+    this.state = this.$route.query.projectState;
+    console.log("state: " + this.state);
+
+    if (this.outerId === undefined) {
       this.$message({
         message: "请先选择项目！",
         type: "warning"
       });
     } else {
       // 获取项目基本信息
-      this.getBasic(this.projectId);
+      this.getBasic(this.outerId);
     }
   }
 };
