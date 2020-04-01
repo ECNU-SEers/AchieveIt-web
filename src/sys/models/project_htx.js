@@ -140,10 +140,10 @@ export default class Project {
    * 获取当前项目成员
    * @param {*} projectId
    */
-  static async getMembers(projectId) {
-    const info = await get("/project/" + projectId + "/members/simple");
-    return info;
-  }
+  // static async getMembers(projectId) {
+  //   const info = await get("/project/" + projectId + "/members/simple");
+  //   return info;
+  // }
 
   /**
    * 获取所有员工
