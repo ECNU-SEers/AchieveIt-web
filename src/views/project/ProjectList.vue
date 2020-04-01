@@ -12,9 +12,9 @@
           <div style="text-overflow: ellipsis; overflow: hidden;">
             {{ item.value }}
           </div>
-          <span style="float: right; color: #8492a6; font-size: 13px">{{
-            item.outerId
-          }}</span>
+          <span style="float: right; color: #8492a6; font-size: 13px">
+            {{ item.outerId }}
+          </span>
         </template>
       </Search>
       <el-button type="primary" class="add-btn" @click="handleAdd"
@@ -142,9 +142,9 @@
               :value="item"
             >
               <span style="float: left">{{ item.company }}</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">{{
-                item.outerId
-              }}</span>
+              <span style="float: right; color: #8492a6; font-size: 13px">
+                {{ item.outerId }}
+              </span>
             </el-option>
           </el-select>
         </el-form-item>
@@ -191,9 +191,9 @@
               :value="item"
             >
               <span style="float: left">{{ item.realName }}</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">
-                {{ item.username }}
-              </span>
+              <span style="float: right; color: #8492a6; font-size: 13px">{{
+                item.username
+              }}</span>
             </el-option>
           </el-select>
         </el-form-item>
@@ -275,9 +275,9 @@
               :value="item"
             >
               <span style="float: left">{{ item.company }}</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">{{
-                item.outerId
-              }}</span>
+              <span style="float: right; color: #8492a6; font-size: 13px">
+                {{ item.outerId }}
+              </span>
             </el-option>
           </el-select>
         </el-form-item>
@@ -499,9 +499,9 @@
               :value="item.userId"
             >
               <span style="float: left">{{ item.username }}</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">
-                {{ item.userId }}
-              </span>
+              <span style="float: right; color: #8492a6; font-size: 13px">{{
+                item.userId
+              }}</span>
             </el-option>
           </el-select>
         </el-form-item>
@@ -600,9 +600,9 @@
               :value="item.userId"
             >
               <span style="float: left">{{ item.username }}</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">
-                {{ item.userId }}
-              </span>
+              <span style="float: right; color: #8492a6; font-size: 13px">{{
+                item.userId
+              }}</span>
             </el-option>
           </el-select>
         </el-form-item>
@@ -995,24 +995,24 @@ export default {
       this.selectedProject = item.id;
       // this.projects = await ProjectSYJ.searchOneProject(item.id);
       // console.log(this.projects);
+      console.log("selected search");
+      const res = await ProjectSYJ.searchOneProject(this.selectedProject);
+      const tmplist = [];
+      tmplist.push(res);
+      this.projects = tmplist;
     },
 
     async searchProject(keyword) {
-      if (this.selectedProject !== "") {
-        console.log("selected search");
-        const res = await ProjectSYJ.searchOneProject(this.selectedProject);
-        const tmplist = [];
-        tmplist.push(res);
-        this.projects = tmplist;
-      } else {
-        console.log("keyword search");
-        this.projects = await ProjectSYJ.getProjectList(
-          this.pageNo,
-          this.pageSize,
-          this.userId,
-          keyword
-        );
-      }
+      console.log("keyword search");
+      console.log(keyword);
+      const res = await ProjectSYJ.getProjectList(
+        this.pageNo,
+        this.pageSize,
+        this.userId,
+        keyword
+      );
+      console.log(res);
+      this.projects = res.items;
     },
 
     // 获取客户模态框
@@ -1083,7 +1083,7 @@ export default {
     },
 
     handleEdit(index, row) {
-      const permission = "5";
+      const permission = "2";
       if (permission === "1") {
         this.editFormVisible = true;
         this.editForm = Object.assign({}, row);
