@@ -59,6 +59,10 @@ export default class ProjectSYJ {
     return await put("/project/accept", result);
   }
 
+  static async addConfigAfterAccepted(projectId, config) {
+    return await post("/project/" + projectId + "/config", config);
+  }
+
   static async rejectProject(result) {
     return await put("/project/reject", result);
   }

@@ -625,6 +625,7 @@ import PageHeader from "../../components/common/PageHeader";
 import Search from "../../components/common/Search";
 import Pagination from "../../components/common/Pagination";
 import ProjectSYJ from "@/sys/models/project_syj";
+import {mapGetters} from 'vuex';
 
 export default {
   components: {
@@ -930,9 +931,13 @@ export default {
       }
     };
   },
+  computed: {
+    ...mapGetters(['permissions'])
+  },
   mounted() {
     this.getProjects();
     this.getProjectModals();
+    console.log(this.permissions);
   },
   methods: {
     refresh() {
@@ -1166,6 +1171,7 @@ export default {
             this.submitLoading = true;
             const result = this.approvalForm.result;
             const para = {};
+            para.id = this.approvalForm.id;
             para.outerId = this.approvalForm.outerId;
             para.remark = this.approvalForm.remark;
             console.log(para);
@@ -1181,6 +1187,12 @@ export default {
               //   type: "success"
               // });
               // });
+              const config = {};
+              config["fileServerDir"] = "root\\" + para.outerId;
+              config["mail"] = para.outerId + "-List";
+              config["isFileServerDirConfirmed"] = 0;
+              config["isMailConfirmed"] = 0;
+              ProjectSYJ.addConfigAfterAccepted(para.id, config);
             } else {
               // ProjectSYJ.rejectProject(para).then(() => {
               // this.submitLoading = false;

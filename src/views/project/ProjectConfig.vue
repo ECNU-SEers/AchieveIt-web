@@ -1,6 +1,6 @@
 <template>
   <div>
-    <PageHeader title="配置信息"></PageHeader>
+    <PageHeader title="项目配置信息" style="height:40px;"></PageHeader>
     <el-row v-if="this.projectId === undefined">
       <el-col :span="24">
         <el-tag type="success" effect="dark">请选择项目</el-tag>
@@ -92,8 +92,13 @@
 
 <script>
 import ProjectLW from "@/sys/models/project_lw";
+import PageHeader from "@/components/common/PageHeader";
 
 export default {
+  components: {
+    PageHeader
+  },
+
   data() {
     return {
       editFormVisible: false,
