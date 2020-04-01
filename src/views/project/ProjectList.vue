@@ -9,17 +9,11 @@
         @select-suggestion="selectSearch"
       >
         <template slot-scope="{ item }">
-          <div style="text-overflow: ellipsis; overflow: hidden;">
-            {{ item.value }}
-          </div>
-          <span style="float: right; color: #8492a6; font-size: 13px">
-            {{ item.outerId }}
-          </span>
+          <div style="text-overflow: ellipsis; overflow: hidden;">{{ item.value }}</div>
+          <span style="float: right; color: #8492a6; font-size: 13px">{{ item.outerId }}</span>
         </template>
       </Search>
-      <el-button type="primary" class="add-btn" @click="handleAdd"
-        >新增</el-button
-      >
+      <el-button type="primary" class="add-btn" @click="handleAdd" v-permission="'新建项目'">新增</el-button>
     </PageHeader>
 
     <!--项目列表-->
@@ -52,28 +46,18 @@
                         </el-timeline-item>
                     </el-timeline>
         </el-table-column>-->
-        <el-table-column
-          label="序号"
-          type="index"
-          width="70px"
-        ></el-table-column>
+        <el-table-column label="序号" type="index" width="70px"></el-table-column>
         <el-table-column label="项目ID" prop="outerId"></el-table-column>
         <el-table-column label="项目名称" prop="name"></el-table-column>
         <el-table-column label="客户名称" prop="company"></el-table-column>
         <el-table-column label="预定时间" prop="startDate"></el-table-column>
         <el-table-column label="交付日" prop="endDate"></el-table-column>
         <el-table-column label="项目经理" prop="managerName"></el-table-column>
-        <el-table-column
-          label="项目主管"
-          prop="supervisorName"
-        ></el-table-column>
+        <el-table-column label="项目主管" prop="supervisorName"></el-table-column>
         <el-table-column label="项目状态" prop="state"></el-table-column>
         <el-table-column label="QA" prop="qaAssigned"></el-table-column>
         <el-table-column label="EPG" prop="epgAssigned"></el-table-column>
-        <el-table-column
-          label="参与人数"
-          prop="participantCounter"
-        ></el-table-column>
+        <el-table-column label="参与人数" prop="participantCounter"></el-table-column>
         <el-table-column fixed="right" label="操作" width="180px">
           <template slot-scope="scope">
             <el-button-group>
@@ -88,12 +72,13 @@
                 @click.stop="handleEdit(scope.$index, scope.row)"
                 icon="el-icon-edit"
               ></el-button>
-              <el-button
+              <!-- <el-button
                 size="medium"
                 type="danger"
+                v-permission="'归档申请'"
                 @click.stop="handleDel(scope.$index, scope.row)"
                 icon="el-icon-delete"
-              ></el-button>
+              ></el-button> -->
             </el-button-group>
           </template>
         </el-table-column>
@@ -101,40 +86,24 @@
     </Pagination>
 
     <!-- 新建项目 -->
-    <el-dialog
-      title="新建项目"
-      :visible.sync="addFormVisible"
-      :close-on-click-modal="false"
-    >
+    <el-dialog title="新建项目" :visible.sync="addFormVisible" :close-on-click-modal="false">
       <el-form
         @submit.native.prevent
         :model="addForm"
         :rules="addFormRules"
         ref="addForm"
-        label-width="100px"
+        label-width="130px"
       >
         <el-form-item label="项目ID" prop="outerId">
           <el-select v-model="addForm.outerId" placeholder="请选择ID">
-            <el-option
-              v-for="item in IDs"
-              :key="item"
-              :label="item"
-              :value="item"
-            ></el-option>
+            <el-option v-for="item in IDs" :key="item" :label="item" :value="item"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="项目名称" prop="name">
-          <el-input
-            v-model="addForm.name"
-            placeholder="请填写项目名称"
-          ></el-input>
+          <el-input v-model="addForm.name" placeholder="请填写项目名称"></el-input>
         </el-form-item>
         <el-form-item label="客户" prop="company">
-          <el-select
-            v-model="addForm.company"
-            value-key="outerId"
-            placeholder="请选择客户"
-          >
+          <el-select v-model="addForm.company" value-key="outerId" placeholder="请选择客户">
             <el-option
               v-for="item in clients"
               :key="item.outerId"
@@ -142,9 +111,7 @@
               :value="item"
             >
               <span style="float: left">{{ item.company }}</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">
-                {{ item.outerId }}
-              </span>
+              <span style="float: right; color: #8492a6; font-size: 13px">{{ item.outerId }}</span>
             </el-option>
           </el-select>
         </el-form-item>
@@ -179,43 +146,75 @@
           <el-input v-model="addForm.managerName" disabled></el-input>
         </el-form-item>
         <el-form-item label="项目主管" prop="supervisorName">
-          <el-select
-            v-model="addForm.supervisorName"
-            value-key="id"
-            placeholder="请选择项目主管"
-          >
+          <el-select v-model="addForm.supervisorName" value-key="id" placeholder="请选择项目主管">
+            <el-option v-for="item in mentors" :key="item.id" :label="item.realName" :value="item">
+              <span style="float: left">{{ item.realName }}</span>
+              <span style="float: right; color: #8492a6; font-size: 13px">
+                {{
+                item.username
+                }}
+              </span>
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="QA经理" prop="qaManagerName">
+          <el-select v-model="addForm.qaManagerName" value-key="id" placeholder="请选择QA经理">
             <el-option
-              v-for="item in mentors"
+              v-for="item in QAmanagers"
               :key="item.id"
               :label="item.realName"
               :value="item"
             >
               <span style="float: left">{{ item.realName }}</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">{{
+              <span style="float: right; color: #8492a6; font-size: 13px">
+                {{
                 item.username
-              }}</span>
+                }}
+              </span>
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="EPG Leader" prop="epgLeaderName">
+          <el-select v-model="addForm.epgLeaderName" value-key="id" placeholder="请选择EPG Leader">
+            <el-option
+              v-for="item in EPGLeaders"
+              :key="item.id"
+              :label="item.realName"
+              :value="item"
+            >
+              <span style="float: left">{{ item.realName }}</span>
+              <span style="float: right; color: #8492a6; font-size: 13px">
+                {{
+                item.username
+                }}
+              </span>
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="组织配置管理员" prop="configOrganizerName">
+          <el-select v-model="addForm.configOrganizerName" value-key="id" placeholder="请选择组织配置管理员">
+            <el-option
+              v-for="item in configLeaders"
+              :key="item.id"
+              :label="item.realName"
+              :value="item"
+            >
+              <span style="float: left">{{ item.realName }}</span>
+              <span style="float: right; color: #8492a6; font-size: 13px">
+                {{
+                item.username
+                }}
+              </span>
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="采用技术" prop="skillNames">
-          <el-select
-            v-model="addForm.skillNames"
-            multiple
-            placeholder="请选择采用技术"
-          >
-            <el-option
-              v-for="item in teches"
-              :key="item.id"
-              :label="item.name"
-              :value="item.name"
-            ></el-option>
+          <el-select v-model="addForm.skillNames" multiple placeholder="请选择采用技术">
+            <el-option v-for="item in teches" :key="item.id" :label="item.name" :value="item.name"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="业务领域" prop="businessAreaName">
-          <el-select
-            v-model="addForm.businessAreaName"
-            placeholder="请选择业务领域"
-          >
+          <el-select v-model="addForm.businessAreaName" placeholder="请选择业务领域">
             <el-option
               v-for="item in busiAreas"
               :key="item.id"
@@ -224,24 +223,18 @@
             ></el-option>
           </el-select>
         </el-form-item>
+        <el-form-item label="备注" prop="remark">
+          <el-input v-model="addForm.remark" placeholder="请填写备注" type="textarea"></el-input>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="addFormVisible = false">取消</el-button>
-        <el-button
-          type="primary"
-          @click.native="addProjectSubmit"
-          :loading="submitLoading"
-          >提交</el-button
-        >
+        <el-button type="primary" @click.native="addProjectSubmit" :loading="submitLoading">提交</el-button>
       </div>
     </el-dialog>
 
     <!--编辑项目-->
-    <el-dialog
-      title="编辑项目"
-      :visible.sync="editFormVisible"
-      :close-on-click-modal="false"
-    >
+    <el-dialog title="编辑项目" :visible.sync="editFormVisible" :close-on-click-modal="false">
       <el-form
         @submit.native.prevent
         ref="editForm"
@@ -250,24 +243,13 @@
         label-width="100px"
       >
         <el-form-item label="项目ID" prop="outerId">
-          <el-select
-            v-model="editForm.outerId"
-            placeholder="请选择ID"
-            disabled
-          ></el-select>
+          <el-select v-model="editForm.outerId" placeholder="请选择ID" disabled></el-select>
         </el-form-item>
         <el-form-item label="项目名称" prop="name">
-          <el-input
-            v-model="editForm.name"
-            placeholder="请填写项目名称"
-          ></el-input>
+          <el-input v-model="editForm.name" placeholder="请填写项目名称"></el-input>
         </el-form-item>
         <el-form-item label="客户" prop="company">
-          <el-select
-            v-model="editForm.company"
-            value-key="outerId"
-            placeholder="请选择客户"
-          >
+          <el-select v-model="editForm.company" value-key="outerId" placeholder="请选择客户">
             <el-option
               v-for="item in clients"
               :key="item.outerId"
@@ -275,9 +257,7 @@
               :value="item"
             >
               <span style="float: left">{{ item.company }}</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">
-                {{ item.outerId }}
-              </span>
+              <span style="float: right; color: #8492a6; font-size: 13px">{{ item.outerId }}</span>
             </el-option>
           </el-select>
         </el-form-item>
@@ -317,21 +297,12 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="editFormVisible = false">取消</el-button>
-        <el-button
-          type="primary"
-          @click="editProjectSubmit"
-          :loading="submitLoading"
-          >提交</el-button
-        >
+        <el-button type="primary" @click="editProjectSubmit" :loading="submitLoading">提交</el-button>
       </div>
     </el-dialog>
 
     <!--审批项目-->
-    <el-dialog
-      title="审批项目"
-      :visible.sync="approvalVisible"
-      :close-on-click-modal="false"
-    >
+    <el-dialog title="审批项目" :visible.sync="approvalVisible" :close-on-click-modal="false">
       <el-form
         @submit.native.prevent
         ref="approvalForm"
@@ -340,18 +311,10 @@
         label-width="100px"
       >
         <el-form-item label="项目ID" prop="outerId">
-          <el-select
-            v-model="approvalForm.outerId"
-            placeholder="请选择ID"
-            disabled
-          ></el-select>
+          <el-select v-model="approvalForm.outerId" placeholder="请选择ID" disabled></el-select>
         </el-form-item>
         <el-form-item label="项目名称" prop="name">
-          <el-input
-            v-model="approvalForm.name"
-            placeholder="请填写项目名称"
-            disabled
-          ></el-input>
+          <el-input v-model="approvalForm.name" placeholder="请填写项目名称" disabled></el-input>
         </el-form-item>
         <el-form-item label="客户" prop="company">
           <el-select
@@ -399,6 +362,7 @@
         <el-form-item label="审批结果" prop="result">
           <el-radio-group v-model="approvalForm.result">
             <el-radio label="通过"></el-radio>
+            <el-radio label="驳回"></el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="备注" prop="remark">
@@ -407,21 +371,12 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="approvalVisible = false">取消</el-button>
-        <el-button
-          type="primary"
-          @click="approvalSubmit"
-          :loading="submitLoading"
-          >提交</el-button
-        >
+        <el-button type="primary" @click="approvalSubmit" :loading="submitLoading">提交</el-button>
       </div>
     </el-dialog>
 
     <!--分配QA-->
-    <el-dialog
-      title="分配QA"
-      :visible.sync="assignQAVisible"
-      :close-on-click-modal="false"
-    >
+    <el-dialog title="分配QA" :visible.sync="assignQAVisible" :close-on-click-modal="false">
       <el-form
         @submit.native.prevent
         ref="assignQAForm"
@@ -430,18 +385,10 @@
         label-width="100px"
       >
         <el-form-item label="项目ID" prop="outerId">
-          <el-select
-            v-model="assignQAForm.outerId"
-            placeholder="请选择ID"
-            disabled
-          ></el-select>
+          <el-select v-model="assignQAForm.outerId" placeholder="请选择ID" disabled></el-select>
         </el-form-item>
         <el-form-item label="项目名称" prop="name">
-          <el-input
-            v-model="assignQAForm.name"
-            placeholder="请填写项目名称"
-            disabled
-          ></el-input>
+          <el-input v-model="assignQAForm.name" placeholder="请填写项目名称" disabled></el-input>
         </el-form-item>
         <el-form-item label="客户" prop="company">
           <el-select
@@ -487,11 +434,7 @@
           <el-input v-model="assignQAForm.supervisorName" disabled></el-input>
         </el-form-item>
         <el-form-item label="分配QA" prop="qalist">
-          <el-select
-            v-model="assignQAForm.qalist"
-            multiple
-            placeholder="请选择QA"
-          >
+          <el-select v-model="assignQAForm.qalist" multiple placeholder="请选择QA">
             <el-option
               v-for="item in employees"
               :key="item.userId"
@@ -499,30 +442,23 @@
               :value="item.userId"
             >
               <span style="float: left">{{ item.username }}</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">{{
+              <span style="float: right; color: #8492a6; font-size: 13px">
+                {{
                 item.userId
-              }}</span>
+                }}
+              </span>
             </el-option>
           </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="assignQAVisible = false">取消</el-button>
-        <el-button
-          type="primary"
-          @click="assignQASubmit"
-          :loading="submitLoading"
-          >提交</el-button
-        >
+        <el-button type="primary" @click="assignQASubmit" :loading="submitLoading">提交</el-button>
       </div>
     </el-dialog>
 
     <!-- 分配EPG -->
-    <el-dialog
-      title="分配EPG"
-      :visible.sync="assignEPGVisible"
-      :close-on-click-modal="false"
-    >
+    <el-dialog title="分配EPG" :visible.sync="assignEPGVisible" :close-on-click-modal="false">
       <el-form
         @submit.native.prevent
         ref="assignEPGForm"
@@ -531,18 +467,10 @@
         label-width="100px"
       >
         <el-form-item label="项目ID" prop="outerId">
-          <el-select
-            v-model="assignEPGForm.outerId"
-            placeholder="请选择ID"
-            disabled
-          ></el-select>
+          <el-select v-model="assignEPGForm.outerId" placeholder="请选择ID" disabled></el-select>
         </el-form-item>
         <el-form-item label="项目名称" prop="name">
-          <el-input
-            v-model="assignEPGForm.name"
-            placeholder="请填写项目名称"
-            disabled
-          ></el-input>
+          <el-input v-model="assignEPGForm.name" placeholder="请填写项目名称" disabled></el-input>
         </el-form-item>
         <el-form-item label="客户" prop="company">
           <el-select
@@ -588,11 +516,7 @@
           <el-input v-model="assignEPGForm.supervisorName" disabled></el-input>
         </el-form-item>
         <el-form-item label="分配EPG" prop="epglist">
-          <el-select
-            v-model="assignEPGForm.epglist"
-            multiple
-            placeholder="请选择EPG"
-          >
+          <el-select v-model="assignEPGForm.epglist" multiple placeholder="请选择EPG">
             <el-option
               v-for="item in employees"
               :key="item.userId"
@@ -600,21 +524,18 @@
               :value="item.userId"
             >
               <span style="float: left">{{ item.username }}</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">{{
+              <span style="float: right; color: #8492a6; font-size: 13px">
+                {{
                 item.userId
-              }}</span>
+                }}
+              </span>
             </el-option>
           </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="assignEPGVisible = false">取消</el-button>
-        <el-button
-          type="primary"
-          @click="assignEPGSubmit"
-          :loading="submitLoading"
-          >提交</el-button
-        >
+        <el-button type="primary" @click="assignEPGSubmit" :loading="submitLoading">提交</el-button>
       </div>
     </el-dialog>
   </div>
@@ -638,8 +559,8 @@ export default {
       // 分页
       pageNo: 1,
       pageSize: 5,
-      userId: 1,
-      userName: "管理员",
+      userId: 12,
+      userName: "manager-201911",
       projects: [],
       projectsLength: 0,
       keyword: "",
@@ -650,6 +571,9 @@ export default {
       teches: [],
       busiAreas: [],
       mentors: [],
+      QAmanagers: [],
+      EPGLeaders: [],
+      configLeaders: [],
       IDs: [],
 
       // 搜索框
@@ -679,7 +603,14 @@ export default {
         managerId: 0,
         managerName: "",
         skillNames: [],
-        businessAreaName: ""
+        businessAreaName: "",
+        qaManagerId: 0,
+        qaManagerName: "",
+        epgLeaderId: 0,
+        epgLeaderName: "",
+        configOrganizerId: 0,
+        configOrganizerName: "",
+        remark: ""
       },
       addFormRules: {
         outerId: [
@@ -723,6 +654,30 @@ export default {
             type: "object",
             required: true,
             message: "请选择项目主管",
+            triggle: "blur"
+          }
+        ],
+        qaManagerName: [
+          {
+            type: "object",
+            required: true,
+            message: "请选择QA经理",
+            triggle: "blur"
+          }
+        ],
+        epgLeaderName: [
+          {
+            type: "object",
+            required: true,
+            message: "请选择EPG Leader",
+            triggle: "blur"
+          }
+        ],
+        configOrganizerName: [
+          {
+            type: "object",
+            required: true,
+            message: "请选择组织配置管理员",
             triggle: "blur"
           }
         ],
@@ -1044,6 +999,21 @@ export default {
       this.mentors = res;
     },
 
+    async getQAManagerModal() {
+      const res = await ProjectSYJ.getAllQAManagers();
+      this.QAmanagers = res;
+    },
+
+    async getEPGLeaderModal() {
+      const res = await ProjectSYJ.getAllEPGLeaders();
+      this.EPGLeaders = res;
+    },
+
+    async getConfigLeader() {
+      const res = await ProjectSYJ.getAllConfigLeaders();
+      this.configLeaders = res;
+    },
+
     async getProjectIdModal() {
       const res = await ProjectSYJ.getAllProjectId();
       this.IDs = res;
@@ -1058,6 +1028,9 @@ export default {
       this.getBusinessModal();
       this.getMentorModal();
       this.getProjectIdModal();
+      this.getQAManagerModal();
+      this.getEPGLeaderModal();
+      this.getConfigLeader();
     },
 
     addProjectSubmit() {
@@ -1066,11 +1039,19 @@ export default {
           this.$confirm("确定提交吗？", "提示", {}).then(() => {
             this.submitLoading = true;
             const para = Object.assign({}, this.addForm);
+            console.log(para);
+            // const para = {};
             para.clientOuterId = para.company.outerId;
             para.company = para.company.company;
             para.supervisorId = para.supervisorName.id;
             para.supervisorName = para.supervisorName.username;
             para.managerId = this.userId;
+            para.qaManagerId = para.qaManagerName.id;
+            para.qaManagerName = para.qaManagerName.username;
+            para.epgLeaderId = para.epgLeaderName.id;
+            para.epgLeaderName = para.epgLeaderName.username;
+            para.configOrganizerId = para.configOrganizerName.id;
+            para.configOrganizerName = para.configOrganizerName.username;
             console.log(para);
             ProjectSYJ.addProject(para).then(res => {
               this.submitLoading = false;
@@ -1088,49 +1069,153 @@ export default {
     },
 
     handleEdit(index, row) {
-      const permission = "2";
-      if (permission === "1") {
-        this.editFormVisible = true;
-        this.editForm = Object.assign({}, row);
-        const id = this.editForm.clientOuterId;
-        const name = this.editForm.company;
-        this.editForm.company = { outerId: id, company: name };
-        this.getClientModal();
-        this.getTechModal();
-        this.getBusinessModal();
-        this.getMentorModal();
-        this.getProjectIdModal();
-      } else if (permission === "2") {
-        this.approvalVisible = true;
-        this.approvalForm = Object.assign({}, row);
-      } else if (permission === "3") {
-        this.getAllUsers();
-        this.assignQAVisible = true;
-        this.assignQAForm = Object.assign({}, row);
-      } else if (permission === "4") {
-        this.getAllUsers();
-        this.assignEPGVisible = true;
-        this.assignEPGForm = Object.assign({}, row);
-      } else if (permission === "5") {
-        this.$confirm("确定同意对该项目进行归档吗?", "提示", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        })
-          .then(() => {
-            ProjectSYJ.approvalArchive(res => {
+      // const permission = "2";
+      if (this.permissions !== []) {
+        this.permissions.find(value => {
+          if (value === "新建项目") {
+            if (row.state === "已立项") {
+              this.$prompt("如果确定将进行该项目，请填写备注（选填）", "提示", {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                type: "warning"
+              })
+                .then(({value}) => {
+                  ProjectSYJ.stateToRun(row.outerId, value).then(res => {
+                    this.getProjects();
+                    this.$message({
+                      type: "success",
+                      message: "已修改!"
+                    });
+                  });
+                })
+                .catch(() => {
+                  this.$message({
+                    type: "info",
+                    message: "已取消"
+                  });
+                });
+            } else if (row.state === "进行中") {
+              this.$prompt("如果确定交付该项目，请填写备注（选填）", "提示", {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                type: "warning"
+              })
+                .then(({value}) => {
+                  ProjectSYJ.stateToDeliver(row.outerId, value).then(res => {
+                    this.getProjects();
+                    this.$message({
+                      type: "success",
+                      message: "已修改!"
+                    });
+                  });
+                })
+                .catch(() => {
+                  this.$message({
+                    type: "info",
+                    message: "已取消"
+                  });
+                });
+            } else if (row.state === "已交付") {
+              this.$prompt("如果确定结束该项目，请填写备注", "提示", {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                type: "warning"
+              })
+                .then(({value}) => {
+                  ProjectSYJ.stateToEnd(row.outerId, value).then(res => {
+                    this.getProjects();
+                    this.$message({
+                      type: "success",
+                      message: "已修改!"
+                    });
+                  });
+                })
+                .catch(() => {
+                  this.$message({
+                    type: "info",
+                    message: "已取消"
+                  });
+                });
+            } else if (row.state === "结束" || row.state === "已归档") {
               this.$message({
-                type: "success",
-                message: "已同意!"
+                type: "warning",
+                message: "当前项目已结束，不允许编辑"
               });
-            });
-          })
-          .catch(() => {
-            this.$message({
-              type: "info",
-              message: "已取消"
-            });
-          });
+            } else {
+              this.editFormVisible = true;
+              this.editForm = Object.assign({}, row);
+              const id = this.editForm.clientOuterId;
+              const name = this.editForm.company;
+              this.editForm.company = { outerId: id, company: name };
+              this.getClientModal();
+              this.getTechModal();
+              this.getBusinessModal();
+              this.getMentorModal();
+              this.getProjectIdModal();
+            }
+          } else if (value === "审核项目") {
+            if (row.state === "申请立项") {
+              this.approvalVisible = true;
+              this.approvalForm = Object.assign({}, row);
+            } else {
+              this.$message({
+                type: "warning",
+                message: "项目当前状态不需要审批"
+              });
+            }
+          } else if (value === "分配QA") {
+            this.assignQAForm = Object.assign({}, row);
+            if (this.assignQAForm.state === "已立项") {
+              this.getAllUsers();
+              this.assignQAVisible = true;
+            } else {
+              this.$message({
+                type: "warning",
+                message: "项目当前状态不允许分配QA"
+              });
+            }
+          } else if (value === "分配EPG") {
+            this.assignEPGForm = Object.assign({}, row);
+            if (this.assignEPGForm.state === "已立项") {
+              this.getAllUsers();
+              this.assignEPGVisible = true;
+            } else {
+              this.$message({
+                type: "warning",
+                message: "项目当前状态不允许分配EPG"
+              });
+            }
+          } else if (value === "归档审批") {
+            const tmp = Object.assign({}, row);
+            if (tmp.state === "结束") {
+              this.$prompt("如果确定对该项目进行归档，请填写备注", "提示", {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                type: "warning"
+              })
+                .then(({value}) => {
+                  ProjectSYJ.approvalArchive(row.outerId, value).then(res => {
+                    this.$message({
+                      type: "success",
+                      message: "已同意!"
+                    });
+                    this.getProjects();
+                  });
+                })
+                .catch(() => {
+                  this.$message({
+                    type: "info",
+                    message: "已取消"
+                  });
+                });
+            } else {
+              this.$message({
+                type: "warning",
+                message: "当前项目未结束，不允许归档"
+              });
+            }
+          }
+        });
       }
     },
 
@@ -1170,23 +1255,22 @@ export default {
           this.$confirm("确认提交吗", "提示", {}).then(() => {
             this.submitLoading = true;
             const result = this.approvalForm.result;
-            const para = {};
-            para.id = this.approvalForm.id;
-            para.outerId = this.approvalForm.outerId;
-            para.remark = this.approvalForm.remark;
-            console.log(para);
-            console.log(result);
+            console.log(this.approvalForm.outerId);
+            console.log(this.approvalForm.remark);
             if (result === "通过") {
-              // ProjectSYJ.acceptProject(para).then(() => {
-              // this.submitLoading = false;
-              // this.approvalVisible = false;
-              // this.refresh();
-              // this.$refs["approvalForm"].resetFields();
-              // this.$message({
-              //   message: "提交成功！",
-              //   type: "success"
-              // });
-              // });
+              ProjectSYJ.acceptProject(
+                this.approvalForm.outerId,
+                this.approvalForm.remark
+              ).then(() => {
+                this.submitLoading = false;
+                this.approvalVisible = false;
+                this.refresh();
+                this.$refs["approvalForm"].resetFields();
+                this.$message({
+                  message: "提交成功！",
+                  type: "success"
+                });
+              });
               const config = {};
               config["fileServerDir"] = "root\\" + para.outerId;
               config["mail"] = para.outerId + "-List";
@@ -1194,16 +1278,19 @@ export default {
               config["isMailConfirmed"] = 0;
               ProjectSYJ.addConfigAfterAccepted(para.id, config);
             } else {
-              // ProjectSYJ.rejectProject(para).then(() => {
-              // this.submitLoading = false;
-              // this.approvalVisible = false;
-              // this.refresh();
-              // this.$refs["approvalForm"].resetFields();
-              // this.$message({
-              //   message: "提交成功！",
-              //   type: "success"
-              // });
-              // });
+              ProjectSYJ.rejectProject(
+                his.approvalForm.outerId,
+                this.approvalForm.remark
+              ).then(() => {
+                this.submitLoading = false;
+                this.approvalVisible = false;
+                this.refresh();
+                this.$refs["approvalForm"].resetFields();
+                this.$message({
+                  message: "提交成功！",
+                  type: "success"
+                });
+              });
             }
           });
         }
@@ -1241,7 +1328,7 @@ export default {
             this.submitLoading = true;
             const para = {};
             para.outerId = this.assignEPGForm.outerId;
-            para.userId = this.assignEPGForm.qalist;
+            para.userId = this.assignEPGForm.epglist;
             console.log(para);
             ProjectSYJ.assignEPGs(para).then(() => {
               this.submitLoading = false;
