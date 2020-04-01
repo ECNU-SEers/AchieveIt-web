@@ -167,13 +167,13 @@
             <el-option
               v-for="item in tableData"
               :key="item.userId"
-              :label="item.username"
+              :label="item.realName"
               :value="item"
             >
-              <span style="float: left">{{ item.username }}</span>
+              <span style="float: left">{{ item.realName }}</span>
               <span style="float: right; color: #8492a6; font-size: 13px">
                 {{
-                item.userId
+                item.username
                 }}
               </span>
             </el-option>
@@ -300,8 +300,16 @@ export default {
       console.log(this.roles);
       this.editForm.userId = row.userId;
       this.editForm.username = row.username+" "+row.realName;
+
       this.editForm.roles = row.roles;
+
+      if(row.leaderName==="暂无数据"){
+        this.editForm.leader ="";
+      }
+      else{
       this.editForm.leader = row.leaderName;
+
+      }
     },
     async submitEditForm(form) {
       var info = await Project.editMember(
