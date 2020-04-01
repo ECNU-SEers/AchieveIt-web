@@ -89,7 +89,11 @@
         </el-table-column>
 
         <!--列表展示-->
-        <el-table-column label="序号" width="70px" type="index"></el-table-column>
+        <el-table-column
+          label="序号"
+          width="70px"
+          type="index"
+        ></el-table-column>
 
         <el-table-column label="资产 ID" prop="outerId"></el-table-column>
 

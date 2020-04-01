@@ -625,7 +625,7 @@ import PageHeader from "../../components/common/PageHeader";
 import Search from "../../components/common/Search";
 import Pagination from "../../components/common/Pagination";
 import ProjectSYJ from "@/sys/models/project_syj";
-import {mapGetters} from 'vuex';
+import { mapGetters } from "vuex";
 
 export default {
   components: {
@@ -932,7 +932,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['permissions'])
+    ...mapGetters(["permissions"])
   },
   mounted() {
     this.getProjects();

@@ -19,7 +19,12 @@
       highlight-current-row
       style="width: 100%"
     >
-      <el-table-column label="序号" type="index" fixed width="70px"></el-table-column>
+      <el-table-column
+        label="序号"
+        type="index"
+        fixed
+        width="70px"
+      ></el-table-column>
 
       <el-table-column label="变更日期" prop="changeDate"></el-table-column>
 
@@ -44,7 +49,12 @@
     </el-table>
 
     <!--备注-->
-    <el-dialog title="提示" :visible.sync="detailFormVisible" @open="this.getRemark()" width="30%">
+    <el-dialog
+      title="提示"
+      :visible.sync="detailFormVisible"
+      @open="this.getRemark()"
+      width="30%"
+    >
       <span>{{ this.remark }}</span>
     </el-dialog>
   </div>
@@ -54,7 +64,7 @@
 import PageHeader from "@/components/common/PageHeader";
 import Pagination from "@/components/common/Pagination";
 import ProjectLW from "@/sys/models/project_lw";
-import moment from 'moment'
+import moment from "moment";
 
 export default {
   components: {
@@ -81,7 +91,7 @@ export default {
       });
     } else {
       //console.log(this.projectId);
-      this.pageTitle = ""
+      this.pageTitle = "";
       this.getState();
       this.getRemark();
     }
