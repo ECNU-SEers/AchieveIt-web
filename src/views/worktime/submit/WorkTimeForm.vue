@@ -24,14 +24,14 @@
       <el-time-picker
         v-model="form.startTime"
         placeholder="请选择开始时间"
-        format="HH:mm:ss"
+        format="HH:mm"
       />
     </el-form-item>
     <el-form-item required label="结束时间">
       <el-time-picker
         v-model="form.endTime"
         placeholder="请选择结束时间"
-        format="HH:mm:ss"
+        format="HH:mm"
       />
     </el-form-item>
   </el-form>
@@ -40,7 +40,7 @@
 <script>
 export default {
   props: {
-    date: String,
+    date: Number,
     functionId: Number,
     functionName: String,
     subfunctionId: Number,
@@ -49,8 +49,8 @@ export default {
     activityName: String,
     subactivityId: Number,
     subactivityName: String,
-    startTime: String,
-    endTime: String,
+    startTime: Number,
+    endTime: Number,
     featureOptions: Array,
     activityOptions: Array
   },

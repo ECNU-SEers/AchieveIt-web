@@ -13,6 +13,7 @@
         :key="index"
         :prop="item.prop"
         :label="item.label"
+        :formatter="item.formatter"
       />
       <slot></slot>
     </el-table>

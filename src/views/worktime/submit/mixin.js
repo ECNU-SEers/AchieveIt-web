@@ -13,11 +13,24 @@ export const workTimeFormCheckMixin = {
     getParamsForRemote(form) {
       const { date, startTime, endTime, activities, features } = form;
       if (!date) this.$message.error('请选择日期');
-      else if (features.length !== 3) this.$message.error('请选择功能');
+      else if (features.length < 2) this.$message.error('请选择功能');
       else if (activities.length !== 2) this.$message.error('请选择活动');
       else if (!startTime) this.$message.error('请选择开始时间');
       else if (!endTime) this.$message.error('请选择结束时间');
       else {
+        if (features.length === 2) {
+          for (let i = 0; i < this.featureOptions.length; ++i) {
+            for (let j = 0; j < this.featureOptions[i].children.length; ++j) {
+              if (this.featureOptions[i].children[j].value === features[0]) {
+                const projectId = this.featureOptions[i].value;
+                features.splice(0, 0, projectId);
+                break;
+              }
+            }
+            if (features.length > 2) break;
+          }
+        }
+
         const functionName = this.featureOptions
           .find(item => item.value === features[0])
           .children.find(item => item.value === features[1]).label;
@@ -36,7 +49,7 @@ export const workTimeFormCheckMixin = {
           .children.find(item => item.id === activities[1]).name;
 
         return {
-          date: dateFormat(date),
+          date: date instanceof Date ? date.getTime() : date,
           functionId: features[1],
           functionName,
           subfunctionId: features[2],
@@ -45,8 +58,8 @@ export const workTimeFormCheckMixin = {
           activityName: activityName,
           subactivityId: activities[1],
           subactivityName: subactivityName,
-          startTime: dateFormat(startTime, 'hh:mm:ss'),
-          endTime: dateFormat(endTime, 'hh:mm:ss')
+          startTime: startTime.getTime(),
+          endTime: endTime.getTime()
         };
       }
     },
