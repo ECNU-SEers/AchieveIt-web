@@ -168,9 +168,9 @@
             placeholder="请选择资产管理者"
           >
             <el-option
-              v-for="(item, index) in users"
+              v-for="(item, index) in users.items"
               :key="index + '1'"
-              :label="item.username"
+              :label="item.realName+'('+item.username+')'"
               :value="item.userId"
             ></el-option>
           </el-select>
@@ -250,9 +250,9 @@
             placeholder="请选择资产管理者"
           >
             <el-option
-              v-for="(item, index) in users"
+              v-for="(item, index) in users.items"
               :key="index"
-              :label="item.username"
+             :label="item.realName+'('+item.username+')'"
               :value="item.userId"
             ></el-option>
           </el-select>
@@ -311,6 +311,7 @@ export default {
       pageNo: 1,
       pageSize: 10,
       projectId: 1,
+      projectState:"",
 
       //列表
       deviceData: [],
@@ -376,6 +377,7 @@ export default {
   },
   mounted() {
     this.projectId = this.$route.query.projectId;
+    this.projectState=this.$route.query.projectState;
     if (this.projectId === undefined) {
       this.$message({
         message: "请先选择项目！",

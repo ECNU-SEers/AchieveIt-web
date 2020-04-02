@@ -1,8 +1,8 @@
 import { post, get, put, _delete } from "@/sys/plugins/axios";
 
 export default class ProjectLW {
-  constructor(projectId = 1) {
-    this.projectId = projectId;
+  constructor() {
+    
   }
 
   /************设备***************/
@@ -82,10 +82,10 @@ export default class ProjectLW {
   }
 
   /**
-   * 可选设备管理员
+   * 项目中成员作为可选 设备/风险 的 管理员/相关人员
    */
   static async getAllMembers(projectId) {
-    const res = await get("/project/" + projectId + "/members/simple");
+    const res = await get("/project/" + projectId + "/members?page=1&pageSize=100");
     return res;
   }
 
@@ -179,7 +179,7 @@ export default class ProjectLW {
    * @param {number} level;
    * @param {number} impact;
    * @param {string} strategy;
-   * @param {number} state;    //！！！！check一下
+   * @param {number} state;  
    * @param {number} ownerId;
    * @param {number} trackingFreq;
    * @param {string}  source;
@@ -203,8 +203,8 @@ export default class ProjectLW {
       relatedPersons
     }
   ) {
-    console.log("owner" + ownerId);
-    console.log("riskId" + riskId);
+    // console.log("owner" + ownerId);
+    // console.log("riskId" + riskId);
     return put("/project/" + projectId + "/risk/" + riskId, {
       name,
       type,
@@ -255,7 +255,25 @@ export default class ProjectLW {
    * 导入时，下拉获取其他项目projectOuterId
    */
   static async getOtherProjects(){
-    const res =await get("/project/id/all");
+    const res =await get("/project/all");
+    return res;
+  }
+  /**
+   * 从标准库导入
+   * @param {number} projectId 
+   */
+  static async importRisksFromStdLib(projectId){
+    const res = await post("/project/"+projectId+"/risk/import/std",{projectId});
+    return res;
+  }
+
+  /**
+   * 从其他项目导入
+   *  @param {number} projectId 
+   *  @param {number} otherProjectId 
+   */
+    static async importRisksFromOtherProject(projectId,otherProjectId){
+    const res = await post("/project/"+projectId+"/risk/import/other",{projectId,otherProjectId});
     return res;
   }
 

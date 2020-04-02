@@ -75,7 +75,9 @@ export default {
     return {
       projectId: "",
       outerId: "",
+      projectState:"",
       remark: "",
+
       //列表
       stateData: [],
       detailFormVisible: false,
@@ -85,6 +87,7 @@ export default {
   mounted() {
     this.projectId = this.$route.query.projectId;
     this.outerId = this.$route.query.outerId;
+    this.projectState=this.$route.query.projectState;
     if (this.projectId === undefined) {
       this.$message({
         message: "请先选择项目！",
@@ -111,12 +114,6 @@ export default {
         }
       }
     },
-
-    // //获取项目OuterId
-    // async getouterId(){
-    //   const res = await ProjectLW.getRemark(this.outerId);
-    //   this.remark=res.project.remark;
-    // }
 
     //获取备注
     async getRemark() {

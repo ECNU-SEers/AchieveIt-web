@@ -1,12 +1,7 @@
 <template>
   <div>
-<<<<<<< HEAD
-    <PageHeader title="基本信息" style="height:40px;"></PageHeader>
-    <el-row v-if="this.projectId === undefined">
-=======
     <PageHeader title="基本信息"></PageHeader>
     <el-row v-if="this.outerId === undefined">
->>>>>>> b9de88430477b3d8fb976be3b08b5646b43848a5
       <el-col :span="24">
         <el-tag type="success" effect="dark">请选择项目</el-tag>
       </el-col>

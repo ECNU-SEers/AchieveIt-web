@@ -105,6 +105,8 @@ export default {
       editFormVisible: false,
       formLabelWidth: "120px",
       projectId: "",
+      outerId:"",
+      projectState:"",
       fileTrigger: "true",
       emailTrigger: "true",
       git: "true",
@@ -142,6 +144,7 @@ export default {
   mounted() {
     this.projectId = this.$route.query.projectId;
     this.outerId = this.$route.query.outerId;
+   this.projectState=this.$route.query.projectState;
     if (this.projectId === undefined) {
       this.$message({
         message: "请先选择项目！",
@@ -208,17 +211,16 @@ export default {
       this.$message.success("修改成功");
       this.getConfig();
       if (
-        this.editForm.fileAddValue === "false" &&
-        this.editForm.emailValue === "false" &&
+        this.editForm.fileAddValue === "true" &&
+        this.editForm.emailValue === "true" &&
         this.editForm.GitAddress !== (null || "") &&
         this.editForm.virtualSpace !== (null || "")
       ) {
-        // if (this.git == false || this.virtual == false) {
-        //   this.done = true;
+         if (this.fileTrigger==false || this.emailTrigger==false) { //第1次配置完成，触发
           // this.$message.success("配置完成");
           console.log(this.outerId);
           ProjectSYJ.assignConfig(this.outerId);
-        // }
+         }
       }
     }
   }
