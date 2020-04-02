@@ -245,10 +245,17 @@ export default class ProjectLW {
 
   /**
    * 返回查询的风险
-   * @param {*} projectId
+   * @param {number} projectId
    */
   static async getRisk(projectId, riskId) {
     const res = await get("/project/" + projectId + "/risk/" + riskId);
+    return res;
+  }
+  /**
+   * 导入时，下拉获取其他项目projectOuterId
+   */
+  static async getOtherProjects(){
+    const res =await get("/project/id/all");
     return res;
   }
 

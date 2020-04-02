@@ -286,6 +286,7 @@
             :show-all-levels="false"
             filterable
             @change="handleChange"
+            @visible-change="getOtherProjects($event)"
           ></el-cascader>
         </div>
         <div style="padding-top:30px;">
@@ -444,7 +445,7 @@ export default {
   },
   data() {
     return {
-      projectId: "",
+      projectId: 1,
       pageNo: 1,
       pageSize: 10,
       riskSearch: "",
@@ -453,6 +454,7 @@ export default {
       users: [],
       owner: [],
       relatedPersons: [],
+      otherProjects:[],
       row: "",
       //新增
       addFormVisible: false,
@@ -514,22 +516,23 @@ export default {
         {
           value: "otherProject",
           label: "其他项目",
-          children: []
+          children: "this.otherProjects"
         }
       ]
     };
   },
   mounted() {
-    this.projectId = this.$route.query.projectId;
-    if (this.projectId === undefined) {
-      this.$message({
-        message: "请先选择项目！",
-        type: "warning"
-      });
-    } else {
-      //console.log(this.projectId);
-      this.getRiskList();
-    }
+    // this.projectId = this.$route.query.projectId;
+    // if (this.projectId === undefined) {
+    //   this.$message({
+    //     message: "请先选择项目！",
+    //     type: "warning"
+    //   });
+    // } else {
+    //   //console.log(this.projectId);
+    //   this.getRiskList();
+    // }
+    this.getRiskList();
   },
   methods: {
     //列表展示
@@ -579,7 +582,24 @@ export default {
         this.users = res;
       } else;
     },
+  //“导入”时下拉，获取其他项目
 
+  async getOtherProjects(callback){
+    if(callback){
+      const res =await ProjectLW.getOtherProjects();
+      console.log("getOtherProjects="+res);
+      var tmp=[];
+       res.forEach(item=>{
+            console.log("getOtherProjects="+item);
+         const obj={};
+         obj.value=item;
+         obj.label=item;
+         tmp.push(obj);
+          console.log("getOtherProjects="+tmp);
+         this.otherProjects=tmp;
+       })
+    }
+  },
     handleClose(done) {
       this.$confirm("确认关闭？")
         .then(_ => {

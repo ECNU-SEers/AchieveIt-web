@@ -107,19 +107,19 @@ export default {
       tableData: [
         {
           name: "Git仓库地址",
-          detail: "暂无"
+          detail: "暂无数据"
         },
         {
           name: "虚拟机空间",
-          detail: "暂无"
+          detail: "暂无数据"
         },
         {
           name: "文件服务器目录",
-          detail: "暂无"
+          detail: "暂无数据"
         },
         {
           name: "邮件",
-          detail: "暂无"
+          detail: "暂无数据"
         }
       ],
 

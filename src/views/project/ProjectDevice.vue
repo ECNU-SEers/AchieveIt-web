@@ -380,6 +380,7 @@ export default {
     } else {
       this.getDeviceList("");
     }
+    
   },
   methods: {
     //列表展示
