@@ -155,6 +155,7 @@ export default {
   },
   data() {
     return {
+      state:"",
       // 搜索
       keyword: "",
       functionSearch: [],
@@ -384,6 +385,11 @@ export default {
   },
   mounted: function() {
     this.projectId = this.$route.query.projectId;
+    // 获取项目状态
+    console.log(this.$route.query);
+    this.state = this.$route.query.projectState;
+    console.log("state: " + this.state);
+    
     if (this.projectId === undefined) {
       this.$message({
         message: "请先选择项目！",

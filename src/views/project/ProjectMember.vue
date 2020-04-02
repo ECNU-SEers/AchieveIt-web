@@ -363,7 +363,7 @@ export default {
 
         // 上级
         if (this.tableData[i].leaderRealName === null) {
-          this.tableData[i].leadeRealName = "暂无数据";
+          this.tableData[i].leaderRealName = "暂无数据";
         }
 
         // 电话
