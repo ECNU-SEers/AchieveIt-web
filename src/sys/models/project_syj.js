@@ -38,6 +38,18 @@ export default class ProjectSYJ {
     return await get("/supervisors");
   }
 
+  static async getAllQAManagers() {
+    return await get("/qa/managers");
+  }
+
+  static async getAllEPGLeaders() {
+    return await get("/epg/leaders");
+  }
+
+  static async getAllConfigLeaders() {
+    return await get("/config/organizers");
+  }
+
   static async getAllProjectId() {
     return await get("/project/id/all");
   }
@@ -55,12 +67,16 @@ export default class ProjectSYJ {
     return await put("/project/update/less", project);
   }
 
-  static async acceptProject(result) {
-    return await put("/project/accept", result);
+  static async acceptProject(projectOuterId, remark) {
+    return await put("/project/accept?" + "projectOuterId=" + projectOuterId + "&remark=" + remark);
   }
 
-  static async rejectProject(result) {
-    return await put("/project/reject", result);
+  static async addConfigAfterAccepted(projectId, config) {
+    return await post("/project/" + projectId + "/config", config);
+  }
+
+  static async rejectProject(projectOuterId, remark) {
+    return await put("/project/reject"+ "projectOuterId=" + projectOuterId + "&remark=" + remark);
   }
 
   static async getAllUser() {
@@ -75,8 +91,24 @@ export default class ProjectSYJ {
     return await put("/project/assign/epg", EPGs);
   }
 
-  static async approvalArchive(projectId) {
-    return await put("/project/approve/archive", { projectId });
+  static async assignConfig(config) {
+    return await put("/project/assign/config?outerId="+config);
+  }
+
+  static async stateToRun(outerId, remark) {
+    return await put("/project/set/config?" + "outerId=" + outerId + "&remark=" + remark);
+  }
+
+  static async stateToDeliver(outerId, remark) {
+    return await put("/project/deliver?"  + "outerId=" + outerId + "&remark=" + remark);
+  }
+
+  static async stateToEnd(outerId, remark) {
+    return await put("/project/end?" + "outerId=" + outerId + "&remark=" + remark);
+  }
+
+  static async approvalArchive(outerId, remark) {
+    return await put("/project/approve/archive?"+ "outerId=" + outerId + "&remark=" + remark);
   }
 
   static async getProjectByKeyword(pageNo, pageSize, userId, keyword) {

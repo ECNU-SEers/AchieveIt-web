@@ -18,21 +18,14 @@
         class="add-btn"
         @click="addFirst"
         v-if="this.projectId !== undefined"
-        >新增</el-button
-      >
+      >新增</el-button>
       <el-button
         type="primary"
         class="add-btn"
         @click="addExcelFormVisible = true"
         v-if="this.projectId !== undefined"
-        >导入</el-button
-      >
-      <el-button
-        type="primary"
-        class="add-btn"
-        v-if="this.projectId !== undefined"
-        >下载</el-button
-      >
+      >导入</el-button>
+      <el-button type="primary" class="add-btn" v-if="this.projectId !== undefined">下载</el-button>
     </PageHeader>
 
     <el-row v-if="this.projectId === undefined">
@@ -56,9 +49,7 @@
 
       <div slot="footer" class="dialog-footer">
         <el-button @click="addExcelFormVisible = false">取消</el-button>
-        <el-button type="primary" @click="submitUpload" :loading="submitLoading"
-          >提交</el-button
-        >
+        <el-button type="primary" @click="submitUpload" :loading="submitLoading">提交</el-button>
       </div>
     </el-dialog>
 
@@ -76,17 +67,9 @@
         :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
       >
         <el-table-column width="50"></el-table-column>
-        <el-table-column
-          type="index"
-          label="序号"
-          width="100"
-        ></el-table-column>
+        <el-table-column type="index" label="序号" width="100"></el-table-column>
         <el-table-column prop="id" label="功能ID" width="180"></el-table-column>
-        <el-table-column
-          prop="name"
-          label="功能名称"
-          width="180"
-        ></el-table-column>
+        <el-table-column prop="name" label="功能名称" width="180"></el-table-column>
         <el-table-column prop="description" label="功能描述"></el-table-column>
 
         <el-table-column fixed="right" label="操作" width="180px">
@@ -123,28 +106,16 @@
         </el-form-item>-->
 
         <el-form-item label="功能名称" required>
-          <el-input
-            v-model="addForm.name"
-            placeholder="请填写项目名称"
-          ></el-input>
+          <el-input v-model="addForm.name" placeholder="请填写项目名称"></el-input>
         </el-form-item>
 
         <el-form-item label="功能描述" required>
-          <el-input
-            type="textarea"
-            v-model="addForm.description"
-            placeholder="请填写项目描述"
-          ></el-input>
+          <el-input type="textarea" v-model="addForm.description" placeholder="请填写项目描述"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="addFormVisible = false">取消</el-button>
-        <el-button
-          type="primary"
-          @click="submitAddForm"
-          :loading="submitLoading"
-          >提交</el-button
-        >
+        <el-button type="primary" @click="submitAddForm" :loading="submitLoading">提交</el-button>
       </div>
     </el-dialog>
 
@@ -156,28 +127,16 @@
         </el-form-item>-->
 
         <el-form-item label="项目名称" required>
-          <el-input
-            v-model="editForm.name"
-            placeholder="请填写项目名称"
-          ></el-input>
+          <el-input v-model="editForm.name" placeholder="请填写项目名称"></el-input>
         </el-form-item>
 
         <el-form-item label="项目描述" required>
-          <el-input
-            type="textarea"
-            v-model="editForm.description"
-            placeholder="请填写项目描述"
-          ></el-input>
+          <el-input type="textarea" v-model="editForm.description" placeholder="请填写项目描述"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="editFormVisible = false">取消</el-button>
-        <el-button
-          type="primary"
-          @click="submitEditForm"
-          :loading="submitLoading"
-          >提交</el-button
-        >
+        <el-button type="primary" @click="submitEditForm" :loading="submitLoading">提交</el-button>
       </div>
     </el-dialog>
   </div>
@@ -222,6 +181,7 @@ export default {
     };
   },
   methods: {
+    showInfo() {},
     // 获取一级功能列表并展示
     async getFunctionList(keyword) {
       try {
@@ -231,10 +191,17 @@ export default {
         );
         console.log("get function list success!");
         this.tableData = info;
-        // 标记有二级功能的功能
+
         for (var i = 0; i < this.tableData.length; ++i) {
+          // 标记有二级功能的功能
           if (this.tableData[i].numSubFunctions > 0) {
             this.tableData[i].hasChildren = true;
+          }
+          // 标记一级功能
+          this.tableData[i].isSub = false;
+          // 功能描述展示
+          if (this.tableData[i].description === null) {
+            this.tableData[i].description = "暂无数据";
           }
         }
       } catch (e) {
@@ -250,12 +217,20 @@ export default {
       var info = await Project.getSubFunctionList(this.projectId, tree.id);
       console.log("sub function:");
       console.log(info);
-      // 标记有二级功能的功能
+
       for (var i = 0; i < info.length; ++i) {
-        if (info[i].numSubFunctions > 0) {
-          info[i].hasChildren = true;
+        // 标记有二级功能的功能
+        // if (info[i].numSubFunctions > 0) {
+        //   info[i].hasChildren = true;
+        // }
+        // 标记为二级功能
+        info[i].isSub = true;
+        // 功能描述展示
+        if (info[i].description === null) {
+          info[i].description = "暂无数据";
         }
       }
+
       setTimeout(() => {
         resolve(info);
       }, 500);
@@ -267,8 +242,17 @@ export default {
     },
     // 新增子功能弹框
     addSubFunction(index, row) {
-      this.addFormVisible = true;
-      this.parentId = row.id;
+      console.log(row.isSub);
+      // 二级功能无法拥有总功能
+      if (row.isSub) {
+        this.$message({
+          message: "二级功能无法扩展",
+          type: "warning"
+        });
+      } else {
+        this.addFormVisible = true;
+        this.parentId = row.id;
+      }
     },
     // 提交新增功能
     async submitAddForm() {

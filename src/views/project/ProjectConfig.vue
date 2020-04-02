@@ -1,6 +1,6 @@
 <template>
   <div>
-    <PageHeader title="配置信息"></PageHeader>
+    <PageHeader title="项目配置信息" style="height:40px;"></PageHeader>
     <el-row v-if="this.projectId === undefined">
       <el-col :span="24">
         <el-tag type="success" effect="dark">请选择项目</el-tag>
@@ -76,7 +76,7 @@
                 style="margin-right:8%;"
                 >确定</el-button
               >
-              <el-button @click="changeFormVisible = false">取消</el-button>
+              <el-button @click="editFormVisible = false">取消</el-button>
             </el-form-item>
           </el-form>
         </el-dialog>
@@ -92,8 +92,14 @@
 
 <script>
 import ProjectLW from "@/sys/models/project_lw";
+import PageHeader from "@/components/common/PageHeader";
+import ProjectSYJ from "@/sys/models/project_syj";
 
 export default {
+  components: {
+    PageHeader
+  },
+
   data() {
     return {
       editFormVisible: false,
@@ -135,6 +141,7 @@ export default {
   },
   mounted() {
     this.projectId = this.$route.query.projectId;
+    this.outerId = this.$route.query.outerId;
     if (this.projectId === undefined) {
       this.$message({
         message: "请先选择项目！",
@@ -189,6 +196,7 @@ export default {
     },
     //确认编辑
     async editSubmit() {
+      console.log(this.editForm);
       const res = await ProjectLW.editConfig(
         this.projectId,
         this.editForm.GitAddress,
@@ -200,15 +208,17 @@ export default {
       this.$message.success("修改成功");
       this.getConfig();
       if (
-        this.editForm.fileAddValue === true &&
-        this.editForm.emailValue === true &&
+        this.editForm.fileAddValue === "false" &&
+        this.editForm.emailValue === "false" &&
         this.editForm.GitAddress !== (null || "") &&
         this.editForm.virtualSpace !== (null || "")
       ) {
-        if (this.git == false || this.virtual == false) {
-          this.done = true;
-          this.$message.success("配置完成");
-        }
+        // if (this.git == false || this.virtual == false) {
+        //   this.done = true;
+          // this.$message.success("配置完成");
+          console.log(this.outerId);
+          ProjectSYJ.assignConfig(this.outerId);
+        // }
       }
     }
   }

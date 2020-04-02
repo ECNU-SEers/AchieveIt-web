@@ -1,6 +1,6 @@
 <template>
   <div>
-    <PageHeader title="基本信息"></PageHeader>
+    <PageHeader title="基本信息" style="height:40px;"></PageHeader>
     <el-row v-if="this.projectId === undefined">
       <el-col :span="24">
         <el-tag type="success" effect="dark">请选择项目</el-tag>
@@ -9,12 +9,7 @@
     <el-card v-if="this.projectId !== undefined" class="box-card">
       <div slot="header" class="clearfix">
         <span>AchieveIt</span>
-        <el-button
-          style="float: right; padding: 3px 0"
-          type="text"
-          @click="editBasic"
-          >修改</el-button
-        >
+        <el-button style="float: right; padding: 3px 0" type="text" @click="editBasic">修改</el-button>
 
         <!-- 修改项目信息 -->
         <el-dialog title="修改项目基本信息" :visible.sync="dialogFormVisible">
@@ -27,20 +22,12 @@
           >
             <!-- 不可修改 -->
             <el-form-item label="项目ID">
-              <el-input
-                v-model="editForm.outerId"
-                :disabled="true"
-                placeholder
-              ></el-input>
+              <el-input v-model="editForm.outerId" :disabled="true" placeholder></el-input>
             </el-form-item>
 
             <!-- 输入框 -->
             <el-form-item label="项目名称" prop="name">
-              <el-input
-                v-model="editForm.name"
-                placeholder="请输入项目名称"
-                clearable
-              ></el-input>
+              <el-input v-model="editForm.name" placeholder="请输入项目名称" clearable></el-input>
             </el-form-item>
 
             <!-- 下拉单选 -->
@@ -59,9 +46,11 @@
                   :value="item"
                 >
                   <span style="float: left">{{ item.company }}</span>
-                  <span style="float: right; color: #8492a6; font-size: 13px">{{
+                  <span style="float: right; color: #8492a6; font-size: 13px">
+                    {{
                     item.outerId
-                  }}</span>
+                    }}
+                  </span>
                 </el-option>
               </el-select>
             </el-form-item>
@@ -89,26 +78,13 @@
 
             <!-- 不可修改 -->
             <el-form-item label="项目上级" prop="leader">
-              <el-input
-                v-model="tableData[5].detail"
-                :disabled="true"
-                placeholder
-              ></el-input>
+              <el-input v-model="tableData[5].detail" :disabled="true" placeholder></el-input>
             </el-form-item>
 
             <!-- 文本框 -->
             <el-form-item label="主要里程碑" prop="milestone">
-              <el-input
-                type="textarea"
-                autosize
-                :disabled="true"
-                v-model="this.stones"
-              ></el-input>
-              <el-input
-                type="textarea"
-                autosize
-                v-model="editForm.milestone"
-              ></el-input>
+              <el-input type="textarea" autosize :disabled="true" v-model="this.stones"></el-input>
+              <el-input type="textarea" autosize v-model="editForm.milestone"></el-input>
             </el-form-item>
 
             <!-- 多选 -->
@@ -141,9 +117,7 @@
             </el-form-item>-->
 
             <el-form-item>
-              <el-button type="primary" @click="submitForm('editForm')"
-                >提交</el-button
-              >
+              <el-button type="primary" @click="submitForm('editForm')">提交</el-button>
               <el-button @click="resetForm('editForm')">重置</el-button>
             </el-form-item>
           </el-form>
@@ -398,22 +372,38 @@ export default {
             this.tableData[6].moreDetail.push(obj);
           }
         }
-        this.tableData[8].detail = info.projectBusinessArea.businessAreaName;
+        if (
+          info.projectBusinessArea === null ||
+          info.projectBusinessArea.length === 0
+        ) {
+          this.tableData[8].detail = "暂无数据";
+        } else {
+          this.tableData[8].detail = info.projectBusinessArea.businessAreaName;
+        }
         // 技术
-        var skillStr = "";
-        for (var i = 0; i < info.projectSkills.length; ++i) {
-          skillStr = skillStr + info.projectSkills[i].skillName;
-          if (i != info.projectSkills.length - 1) {
-            skillStr += "、 ";
+        if (info.projectSkills.length > 0) {
+          var skillStr = "";
+          for (var i = 0; i < info.projectSkills.length; ++i) {
+            skillStr = skillStr + info.projectSkills[i].skillName;
+            if (i != info.projectSkills.length - 1) {
+              skillStr += "、 ";
+            }
           }
+          this.tableData[7].detail = skillStr;
+        } else {
+          this.tableData[7].detail = "暂无数据";
         }
-        this.tableData[7].detail = skillStr;
+
         // 功能
-        var str = "";
-        for (var i = 0; i < info.projectFunctions.length; ++i) {
-          str = str + info.projectFunctions[i].name + " \n ";
+        if (info.projectFunctions.length > 0) {
+          var str = "";
+          for (var i = 0; i < info.projectFunctions.length; ++i) {
+            str = str + info.projectFunctions[i].name + " \n ";
+          }
+          this.tableData[9].detail = str;
+        } else {
+          this.tableData[9].detail = "暂无数据";
         }
-        this.tableData[9].detail = str;
 
         // 获取修改框中的预设值（下拉选项和不可修改的显示）
         // 客户
