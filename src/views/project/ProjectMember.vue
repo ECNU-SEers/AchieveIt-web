@@ -122,7 +122,7 @@
         <el-table-column prop="rolesStr" label="角色"></el-table-column>
         <el-table-column prop="email" label="邮件地址" show-overflow-tooltip></el-table-column>
         <el-table-column prop="department" label="所属部门"></el-table-column>
-        <el-table-column prop="leaderName" label="项目中的上级"></el-table-column>
+        <el-table-column prop="leaderRealName" label="项目中的上级"></el-table-column>
         <el-table-column prop="phoneNumber" label="电话"></el-table-column>
         <el-table-column prop="workingHours" label="总工时"></el-table-column>
         <el-table-column label="操作" width="120px">
@@ -167,13 +167,13 @@
             <el-option
               v-for="item in tableData"
               :key="item.userId"
-              :label="item.username"
+              :label="item.realName"
               :value="item"
             >
-              <span style="float: left">{{ item.username }}</span>
+              <span style="float: left">{{ item.realName }}</span>
               <span style="float: right; color: #8492a6; font-size: 13px">
                 {{
-                item.userId
+                item.username
                 }}
               </span>
             </el-option>
@@ -232,19 +232,7 @@ export default {
         roles: [],
         leader: ""
       },
-      tableData: [
-        {
-          userId: "",
-          username: "",
-          roles: [],
-          email: "",
-          department: "",
-          leaderName: "",
-          leaderEmail: "",
-          phoneNumber: "",
-          workingHours: 0.0
-        }
-      ]
+      tableData: []
     };
   },
   methods: {
@@ -294,14 +282,25 @@ export default {
       console.log("row:")
       console.log(row);
       this.editFormVisible = true;
+      // 获取项目成员
       var info = await Project.getMemberList(this.projectId, 1, 999, "");
       this.members = info.items;
+      // 获取所有角色
       this.roles = await Project.getRoles();
       console.log(this.roles);
+      // 表格预设值
       this.editForm.userId = row.userId;
       this.editForm.username = row.username+" "+row.realName;
+
       this.editForm.roles = row.roles;
-      this.editForm.leader = row.leaderName;
+
+      if(row.leaderRealName==="暂无数据"){
+        this.editForm.leader ="";
+      }
+      else{
+      this.editForm.leader = row.leaderRealName;
+
+      }
     },
     async submitEditForm(form) {
       var info = await Project.editMember(
@@ -363,8 +362,8 @@ export default {
         }
 
         // 上级
-        if (this.tableData[i].leaderName === null) {
-          this.tableData[i].leaderName = "暂无数据";
+        if (this.tableData[i].leaderRealName === null) {
+          this.tableData[i].leadeRealName = "暂无数据";
         }
 
         // 电话
