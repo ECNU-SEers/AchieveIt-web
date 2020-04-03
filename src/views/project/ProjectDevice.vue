@@ -15,6 +15,7 @@
         class="add-btn"
         @click="addFormVisible = true"
         type="primary"
+        :disabled="this.projectStateTrigger==true ? false:true"
         v-if="this.projectId !== undefined"
         >新增</el-button
       >
@@ -108,12 +109,13 @@
 
         <el-table-column label="归还日期" prop="returnDate"></el-table-column>
 
-        <!---编辑和删除-->
+        <!---编辑-->
         <el-table-column label="操作" width="180px" prop="action">
           <template slot-scope="{ row }">
             <el-button-group>
               <el-button
                 type="primary"
+               :disabled="this.projectStateTrigger==true ? false:true"
                 icon="el-icon-edit"
                 size="medium"
                 @click="
@@ -312,6 +314,8 @@ export default {
       pageSize: 10,
       projectId: 1,
       projectState:"",
+     projectStateTrigger:"",
+
 
       //列表
       deviceData: [],
@@ -384,6 +388,11 @@ export default {
         type: "warning"
       });
     } else {
+     if(this.projectState!="申请立项" && this.projectState!="立项驳回"  && this.projectState!="已归档" ){
+        this.projectStateTrigger=true;
+      }else {
+        this.projectStateTrigger=false;
+      }
       this.getDeviceList("");
     }
     

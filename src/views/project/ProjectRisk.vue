@@ -17,6 +17,7 @@
         v-if="this.projectId !== undefined"
         @click="addFormVisible = true"
         type="primary"
+       :disabled="this.projectStateTrigger==true ? false:true"
       >新增</el-button>
 
       <!--导入-->
@@ -25,6 +26,7 @@
         v-if="this.projectId !== undefined"
         @click="importFormVisible = true"
         type="primary"
+        :disabled="this.projectStateTrigger==true ? false:true"
       >导入</el-button>
     </PageHeader>
 
@@ -81,9 +83,8 @@
               <el-form-item label="跟踪频度(单位:次/天)">
                 <span>{{ props.row.trackingFreq }}</span>
               </el-form-item>
-              <el-form-item label="相关者" 
-             >
-                <span 
+              <el-form-item label="相关者">
+                <span
                   v-for="person in props.row.riskRelatedPeople"
                   :key="person.id"
                 >{{ person.username }}</span>
@@ -115,6 +116,7 @@
             <el-button-group>
               <el-button
                 type="primary"
+                 :disabled="this.projectStateTrigger==true ? false:true"
                 icon="el-icon-edit"
                 size="medium"
                 @click="
@@ -125,6 +127,7 @@
 
               <el-button
                 type="danger"
+                :disabled="this.projectStateTrigger==true ? false:true"
                 size="medium"
                 icon="el-icon-delete"
                 @click="deleteSubmit(row)"
@@ -415,65 +418,66 @@ export default {
       owner: [],
       relatedPersons: [],
       row: "",
+      projectStateTrigger: "",
 
       //风险级别映射
-      level:[
+      level: [
         {},
         {
-          name:"低",
-          value:1
+          name: "低",
+          value: 1
         },
         {
-          name:"中",
-          value:2
+          name: "中",
+          value: 2
         },
         {
-          name:"高",
-          value:3
+          name: "高",
+          value: 3
         }
       ],
       //风险影响度映射
-      impact:[
+      impact: [
         {},
-         {
-          name:"低",
-          value:1
+        {
+          name: "低",
+          value: 1
         },
         {
-          name:"中",
-          value:2
+          name: "中",
+          value: 2
         },
         {
-          name:"高",
-          value:3
+          name: "高",
+          value: 3
         }
       ],
-    //风险状态映射
-      state:[
+      //风险状态映射
+      state: [
         {},
-      {
-      name:"仍存在",
-      value:1
-      },
-     {
-       name:"已排除",
-       value:2
-       }
+        {
+          name: "仍存在",
+          value: 1
+        },
+        {
+          name: "已排除",
+          value: 2
+        }
       ],
-    //风险来源映射
-      source:[
+      //风险来源映射
+      source: [
         {},
         {
-       name : "项目自身识别",
-       value : 1
+          name: "项目自身识别",
+          value: 1
         },
         {
-       name : "从其它项目导入",
-       value : 2
+          name: "从其它项目导入",
+          value: 2
         },
         {
-       name :"从组织风险标准库导入",
-       value : 3
+          name: "从组织风险标准库导入",
+          value: 3
         }
       ],
       //新增
@@ -546,7 +550,7 @@ export default {
     };
   },
   mounted() {
-   this.projectId = this.$route.query.projectId;
+    this.projectId = this.$route.query.projectId;
     this.projectState = this.$route.query.projectState;
     if (this.projectId === undefined) {
       this.$message({
@@ -555,9 +559,19 @@ export default {
       });
     } else {
       //console.log(this.projectId);
+
+      if (
+        this.projectState != "申请立项" &&
+        this.projectState != "立项驳回" &&
+        this.projectState != "已归档"
+      ) {
+        this.projectStateTrigger = true;
+      } else {
+        this.projectStateTrigger = false;
+      }
+
       this.getRiskList();
     }
-  
   },
   methods: {
     //列表展示
@@ -629,7 +643,7 @@ export default {
         if (JSON.stringify(item.riskRelatedPeople) == "{}") {
           obj.riskRelatedPeople = null;
         } else {
-         // console.log("there are riskRelatedPeople! and item.id="+item.id);
+          // console.log("there are riskRelatedPeople! and item.id="+item.id);
           obj.riskRelatedPeople = item.riskRelatedPeople;
         }
         tmp.push(obj);
@@ -650,7 +664,7 @@ export default {
             this.addForm.impact,
             this.addForm.strategy,
             this.addForm.owner.userId,
-            this.addForm.owner.realName,//realname or username
+            this.addForm.owner.realName, //realname or username
             this.addForm.trackingFreq,
             this.addForm.description,
             this.addForm.relatedPersons
@@ -691,13 +705,13 @@ export default {
     },
 
     //映射数字对应的中文
-     find(obj,val) { 
+    find(obj, val) {
       var res;
-      obj.forEach(item=>{
-        if(item.name==val){
-          res=item.value;
+      obj.forEach(item => {
+        if (item.name == val) {
+          res = item.value;
         }
-      })
+      });
       //console.log(val+"深拷贝:"+res);
       return res;
     },
@@ -705,17 +719,17 @@ export default {
     updateRisk(row) {
       var _this = this;
       this.editForm = {
-        name: row.name==="暂无数据"? "":row.name,
-        type: row.type==="暂无数据"? "":row.type,
-        level: this.$options.methods.find(_this.level,row.level),
-        impact: this.$options.methods.find(_this.impact,row.impact),
-        strategy: row.strategy==="暂无数据"? "":row.strategy,
-        owner: row.ownerName==="暂无数据"? "":row.ownerName,
-        trackingFreq: row.trackingFreq==="暂无数据"? "":row.trackingFreq,
+        name: row.name === "暂无数据" ? "" : row.name,
+        type: row.type === "暂无数据" ? "" : row.type,
+        level: this.$options.methods.find(_this.level, row.level),
+        impact: this.$options.methods.find(_this.impact, row.impact),
+        strategy: row.strategy === "暂无数据" ? "" : row.strategy,
+        owner: row.ownerName === "暂无数据" ? "" : row.ownerName,
+        trackingFreq: row.trackingFreq === "暂无数据" ? "" : row.trackingFreq,
         source: row.source,
-        description: row.description==="暂无数据"? "":row.description,
+        description: row.description === "暂无数据" ? "" : row.description,
         relatedPersons: JSON.stringify(row.riskRelatedPeople),
-        state: this.$options.methods.find(_this.state,row.state)
+        state: this.$options.methods.find(_this.state, row.state)
       };
       this.row = row;
     },
@@ -727,7 +741,7 @@ export default {
         if (valid) {
           const res = await ProjectLW.updateRisk(
             _this.projectId,
-             _this.row.id,
+            _this.row.id,
             this.editForm
           );
           // console.log(res);
@@ -794,21 +808,25 @@ export default {
       }
     },
     //确定“导入”
-    async importSubmit(){
-         var importSourceId=this.importSourceId;
-         var _this = this;
-         try{if(importSourceId===-1){
-           const res = await ProjectLW.importRisksFromStdLib(this.projectId);
-           _this.$message.success("导入成功");
-         }else{
-          const res = await ProjectLW.importRisksFromOtherProject(this.projectId,importSourceId);
+    async importSubmit() {
+      var importSourceId = this.importSourceId;
+      var _this = this;
+      try {
+        if (importSourceId === -1) {
+          const res = await ProjectLW.importRisksFromStdLib(this.projectId);
           _this.$message.success("导入成功");
-         }
-         this.getRiskList();
-         this.importFormVisible=false;
-         }catch(e){
-           _this.$message.error("导入失败");
-         }
+        } else {
+          const res = await ProjectLW.importRisksFromOtherProject(
+            this.projectId,
+            importSourceId
+          );
+          _this.$message.success("导入成功");
+        }
+        this.getRiskList();
+        this.importFormVisible = false;
+      } catch (e) {
+        _this.$message.error("导入失败");
+      }
     },
 
     //搜索

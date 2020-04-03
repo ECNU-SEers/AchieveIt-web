@@ -12,6 +12,7 @@
         <el-button
           style="float: right; padding: 3px 0"
           type="text"
+          :disabled="this.projectStateTrigger==true ? false:true"
           @click="
             editFormVisible = true;
             edit();
@@ -112,6 +113,7 @@ export default {
       git: "true",
       virtual: "true",
       done: "false",
+      projectStateTrigger:"",
       tableData: [
         {
           name: "Git仓库地址",
@@ -144,15 +146,23 @@ export default {
   mounted() {
     this.projectId = this.$route.query.projectId;
     this.outerId = this.$route.query.outerId;
-   this.projectState=this.$route.query.projectState;
+    this.projectState=this.$route.query.projectState;
     if (this.projectId === undefined) {
       this.$message({
         message: "请先选择项目！",
         type: "warning"
       });
     } else {
-      //console.log(this.projectId);
-      this.getConfig();
+     
+      if(this.projectState!="申请立项" && this.projectState!="立项驳回"  && this.projectState!="已归档" ){
+        this.projectStateTrigger=true;
+      }else {
+        this.projectStateTrigger=false;
+      }
+      console.log("projectStateTrigger="+this.projectStateTrigger);
+      if(this.projectState!="申请立项" && this.projectState!= "立项驳回"  ){
+         this.getConfig();
+      }
     }
   },
   methods: {
