@@ -19,7 +19,7 @@
     </el-form>
     <span slot="footer">
       <el-button @click="close">取 消</el-button>
-      <el-button type="primary" @click="onEditRole">确 定</el-button>
+      <el-button ref="btn" type="primary" @click="onEditRole">确 定</el-button>
     </span>
   </el-dialog>
 </template>
@@ -64,8 +64,8 @@ export default {
       const { name, permissions } = this.form;
       editUserRole(this.id, name, permissions).then(() => {
         this.$message.success('更新角色成功');
-        this.$emit('success');
         this.close();
+        this.$emit('success');
       });
     }
   }
