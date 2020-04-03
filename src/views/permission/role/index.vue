@@ -105,13 +105,9 @@ export default {
         });
     },
     getRoleListFromServe() {
-      this.loading = true;
-      getRoleList()
-        .then(res => {
-          this.loading = false;
-          this.tableData = res;
-        })
-        .catch(() => (this.loading = false));
+      this.applyLoading(getRoleList()).then(res => {
+        this.tableData = res;
+      });
     },
     querySearch(queryString, cb) {
       const results = this.tableData
