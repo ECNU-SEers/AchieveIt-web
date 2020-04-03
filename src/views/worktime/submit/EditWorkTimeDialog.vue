@@ -16,7 +16,7 @@
 <script>
 import WorkTimeForm from './WorkTimeForm';
 import { workTimeFormCheckMixin } from './mixin';
-import { submitWorkTime, updateWorkTimeSubmit } from '../../../api/workTime';
+import { updateWorkTimeSubmit } from '../../../api/workTime';
 import { dialogMixin } from '../../../util/mixin';
 
 export default {
@@ -25,7 +25,7 @@ export default {
   },
   props: {
     id: Number,
-    date: String,
+    date: Number,
     functionId: Number,
     functionName: String,
     subfunctionId: Number,
@@ -34,8 +34,8 @@ export default {
     activityName: String,
     subactivityId: Number,
     subactivityName: String,
-    startTime: String,
-    endTime: String
+    startTime: Number,
+    endTime: Number
   },
   mixins: [workTimeFormCheckMixin, dialogMixin],
   data() {
@@ -60,6 +60,7 @@ export default {
     onEditWorkTime() {
       const params = this.getParamsForRemote(this.workTimeInfo);
       if (params) {
+        params.id = this.id;
         updateWorkTimeSubmit(params).then(() => {
           this.close();
           this.$message.success('更新工时成功');
