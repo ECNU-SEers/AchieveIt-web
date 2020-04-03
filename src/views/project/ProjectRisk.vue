@@ -17,8 +17,9 @@
         v-if="this.projectId !== undefined"
         @click="addFormVisible = true"
         type="primary"
-       :disabled="this.projectStateTrigger==true ? false:true"
-      >新增</el-button>
+        :disabled="this.projectStateTrigger == true ? false : true"
+        >新增</el-button
+      >
 
       <!--导入-->
       <el-button
@@ -26,8 +27,9 @@
         v-if="this.projectId !== undefined"
         @click="importFormVisible = true"
         type="primary"
-        :disabled="this.projectStateTrigger==true ? false:true"
-      >导入</el-button>
+        :disabled="this.projectStateTrigger == true ? false : true"
+        >导入</el-button
+      >
     </PageHeader>
 
     <el-row v-if="this.projectId === undefined">
@@ -87,8 +89,9 @@
                 <span
                   v-for="person in props.row.riskRelatedPeople"
                   :key="person.id"
-                >{{ person.username }}</span>
-                <span v-if=" props.row.riskRelatedPeople==null">暂无</span>
+                  >{{ person.username }}</span
+                >
+                <span v-if="props.row.riskRelatedPeople == null">暂无</span>
               </el-form-item>
               <el-form-item label="风险来源">
                 <span>{{ props.row.source }}</span>
@@ -116,7 +119,7 @@
             <el-button-group>
               <el-button
                 type="primary"
-                 :disabled="this.projectStateTrigger==true ? false:true"
+                :disabled="this.projectStateTrigger == true ? false : true"
                 icon="el-icon-edit"
                 size="medium"
                 @click="
@@ -127,7 +130,7 @@
 
               <el-button
                 type="danger"
-                :disabled="this.projectStateTrigger==true ? false:true"
+                :disabled="this.projectStateTrigger == true ? false : true"
                 size="medium"
                 icon="el-icon-delete"
                 @click="deleteSubmit(row)"
@@ -146,7 +149,12 @@
       @open="handleForm('addForm')"
       :append-to-body="true"
     >
-      <el-form :model="addForm" :rules="rules" ref="addForm" label-width="120px">
+      <el-form
+        :model="addForm"
+        :rules="rules"
+        ref="addForm"
+        label-width="120px"
+      >
         <!--文本框-->
         <el-form-item label="风险名称:" prop="name">
           <el-input v-model="addForm.name"></el-input>
@@ -187,7 +195,12 @@
 
         <!--文本域-->
         <el-form-item label="风险应对策略:" prop="strategy">
-          <el-input type="textarea" :row="3" placeholder="请输入风险应对策略" v-model="addForm.strategy"></el-input>
+          <el-input
+            type="textarea"
+            :row="3"
+            placeholder="请输入风险应对策略"
+            v-model="addForm.strategy"
+          ></el-input>
         </el-form-item>
 
         <!--单选-->
@@ -207,7 +220,7 @@
             <el-option
               v-for="item in users.items"
               :key="item.userId"
-              :label="item.realName+'('+item.username+')'"
+              :label="item.realName + '(' + item.username + ')'"
               :value="item"
             ></el-option>
           </el-select>
@@ -230,7 +243,7 @@
             <el-option
               v-for="item in users.items"
               :key="item.userId"
-              :label="item.realName+'('+item.username+')'"
+              :label="item.realName + '(' + item.username + ')'"
               :value="item.userId"
             ></el-option>
           </el-select>
@@ -242,7 +255,12 @@
         </el-form-item>
 
         <el-form-item>
-          <el-button type="primary" @click="addSubmit('addForm')" style="margin-right:8%;">添加</el-button>
+          <el-button
+            type="primary"
+            @click="addSubmit('addForm')"
+            style="margin-right:8%;"
+            >添加</el-button
+          >
           <el-button @click="addFormVisible = false">取消</el-button>
         </el-form-item>
       </el-form>
@@ -257,8 +275,12 @@
       :append-to-body="true"
       center
     >
-      <div style="text-align:center;margin:-20px auto 0 auto;color:red;font-size:1px;">
-        <span>(提示：若从其他项目导入，可直接搜索项目名称，所选项目所有风险将会被导入)</span>
+      <div
+        style="text-align:center;margin:-20px auto 0 auto;color:red;font-size:1px;"
+      >
+        <span
+          >(提示：若从其他项目导入，可直接搜索项目名称，所选项目所有风险将会被导入)</span
+        >
         <div style="padding-top:30px;">
           <el-cascader
             ref="cascader"
@@ -272,7 +294,12 @@
           ></el-cascader>
         </div>
         <div style="padding-top:30px;">
-          <el-button type="primary" @click="importSubmit()" style="margin-right:8%;">导入</el-button>
+          <el-button
+            type="primary"
+            @click="importSubmit()"
+            style="margin-right:8%;"
+            >导入</el-button
+          >
           <el-button @click="importFormVisible = false">取消</el-button>
         </div>
       </div>
@@ -286,7 +313,12 @@
       @open="handleForm('editForm')"
       :append-to-body="true"
     >
-      <el-form :model="editForm" :rules="rules" ref="editForm" label-width="120px">
+      <el-form
+        :model="editForm"
+        :rules="rules"
+        ref="editForm"
+        label-width="120px"
+      >
         <!--文本框-->
         <el-form-item label="风险名称:" prop="name">
           <el-input v-model="editForm.name"></el-input>
@@ -327,7 +359,12 @@
 
         <!--文本域-->
         <el-form-item label="风险应对策略:" prop="strategy">
-          <el-input type="textarea" :row="3" placeholder="请输入风险应对策略" v-model="editForm.strategy"></el-input>
+          <el-input
+            type="textarea"
+            :row="3"
+            placeholder="请输入风险应对策略"
+            v-model="editForm.strategy"
+          ></el-input>
         </el-form-item>
 
         <!--单选-->
@@ -349,7 +386,7 @@
             <el-option
               v-for="item in users.items"
               :key="item.userId"
-              :label="item.realName+'('+item.username+')'"
+              :label="item.realName + '(' + item.username + ')'"
               :value="item"
             ></el-option>
           </el-select>
@@ -373,7 +410,7 @@
             <el-option
               v-for="item in users.items"
               :key="item.userId"
-              :label="item.realName+'('+item.username+')'"
+              :label="item.realName + '(' + item.username + ')'"
               :value="item.userId"
             ></el-option>
           </el-select>
@@ -385,7 +422,12 @@
         </el-form-item>
 
         <el-form-item>
-          <el-button type="primary" @click="editSubmit('editForm')" style="margin-right:8%;">添加</el-button>
+          <el-button
+            type="primary"
+            @click="editSubmit('editForm')"
+            style="margin-right:8%;"
+            >添加</el-button
+          >
           <el-button @click="addFormVisible = false">取消</el-button>
         </el-form-item>
       </el-form>

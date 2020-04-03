@@ -15,7 +15,7 @@
         class="add-btn"
         @click="addFormVisible = true"
         type="primary"
-        :disabled="this.projectStateTrigger==true ? false:true"
+        :disabled="this.projectStateTrigger == true ? false : true"
         v-if="this.projectId !== undefined"
         >新增</el-button
       >
@@ -115,7 +115,7 @@
             <el-button-group>
               <el-button
                 type="primary"
-               :disabled="this.projectStateTrigger==true ? false:true"
+                :disabled="this.projectStateTrigger == true ? false : true"
                 icon="el-icon-edit"
                 size="medium"
                 @click="
@@ -172,7 +172,7 @@
             <el-option
               v-for="(item, index) in users.items"
               :key="index + '1'"
-              :label="item.realName+'('+item.username+')'"
+              :label="item.realName + '(' + item.username + ')'"
               :value="item.userId"
             ></el-option>
           </el-select>
@@ -254,7 +254,7 @@
             <el-option
               v-for="(item, index) in users.items"
               :key="index"
-             :label="item.realName+'('+item.username+')'"
+              :label="item.realName + '(' + item.username + ')'"
               :value="item.userId"
             ></el-option>
           </el-select>
@@ -313,9 +313,8 @@ export default {
       pageNo: 1,
       pageSize: 10,
       projectId: 1,
-      projectState:"",
-     projectStateTrigger:"",
-
+      projectState: "",
+      projectStateTrigger: "",
 
       //列表
       deviceData: [],
@@ -381,21 +380,24 @@ export default {
   },
   mounted() {
     this.projectId = this.$route.query.projectId;
-    this.projectState=this.$route.query.projectState;
+    this.projectState = this.$route.query.projectState;
     if (this.projectId === undefined) {
       this.$message({
         message: "请先选择项目！",
         type: "warning"
       });
     } else {
-     if(this.projectState!="申请立项" && this.projectState!="立项驳回"  && this.projectState!="已归档" ){
-        this.projectStateTrigger=true;
-      }else {
-        this.projectStateTrigger=false;
+      if (
+        this.projectState != "申请立项" &&
+        this.projectState != "立项驳回" &&
+        this.projectState != "已归档"
+      ) {
+        this.projectStateTrigger = true;
+      } else {
+        this.projectStateTrigger = false;
       }
       this.getDeviceList("");
     }
-    
   },
   methods: {
     //列表展示

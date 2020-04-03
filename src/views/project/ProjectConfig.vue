@@ -12,7 +12,7 @@
         <el-button
           style="float: right; padding: 3px 0"
           type="text"
-          :disabled="this.projectStateTrigger==true ? false:true"
+          :disabled="this.projectStateTrigger == true ? false : true"
           @click="
             editFormVisible = true;
             edit();
@@ -106,14 +106,14 @@ export default {
       editFormVisible: false,
       formLabelWidth: "120px",
       projectId: "",
-      outerId:"",
-      projectState:"",
+      outerId: "",
+      projectState: "",
       fileTrigger: "true",
       emailTrigger: "true",
       git: "true",
       virtual: "true",
       done: "false",
-      projectStateTrigger:"",
+      projectStateTrigger: "",
       tableData: [
         {
           name: "Git仓库地址",
@@ -146,22 +146,25 @@ export default {
   mounted() {
     this.projectId = this.$route.query.projectId;
     this.outerId = this.$route.query.outerId;
-    this.projectState=this.$route.query.projectState;
+    this.projectState = this.$route.query.projectState;
     if (this.projectId === undefined) {
       this.$message({
         message: "请先选择项目！",
         type: "warning"
       });
     } else {
-     
-      if(this.projectState!="申请立项" && this.projectState!="立项驳回"  && this.projectState!="已归档" ){
-        this.projectStateTrigger=true;
-      }else {
-        this.projectStateTrigger=false;
+      if (
+        this.projectState != "申请立项" &&
+        this.projectState != "立项驳回" &&
+        this.projectState != "已归档"
+      ) {
+        this.projectStateTrigger = true;
+      } else {
+        this.projectStateTrigger = false;
       }
-      console.log("projectStateTrigger="+this.projectStateTrigger);
-      if(this.projectState!="申请立项" && this.projectState!= "立项驳回"  ){
-         this.getConfig();
+      console.log("projectStateTrigger=" + this.projectStateTrigger);
+      if (this.projectState != "申请立项" && this.projectState != "立项驳回") {
+        this.getConfig();
       }
     }
   },
@@ -226,11 +229,12 @@ export default {
         this.editForm.GitAddress !== (null || "") &&
         this.editForm.virtualSpace !== (null || "")
       ) {
-         if (this.fileTrigger==false || this.emailTrigger==false) { //第1次配置完成，触发
+        if (this.fileTrigger == false || this.emailTrigger == false) {
+          //第1次配置完成，触发
           // this.$message.success("配置完成");
           console.log(this.outerId);
           ProjectSYJ.assignConfig(this.outerId);
-         }
+        }
       }
     }
   }
