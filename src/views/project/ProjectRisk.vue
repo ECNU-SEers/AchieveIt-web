@@ -140,6 +140,7 @@
             <el-button-group>
               <el-button
                 type="primary"
+                 :disabled="this.projectStateTrigger==true ? false:true"
                 icon="el-icon-edit"
                 size="medium"
                 @click="
@@ -150,6 +151,7 @@
 
               <el-button
                 type="danger"
+                :disabled="this.projectStateTrigger==true ? false:true"
                 size="medium"
                 icon="el-icon-delete"
                 @click="deleteSubmit(row)"
@@ -479,6 +481,7 @@ export default {
       owner: [],
       relatedPersons: [],
       row: "",
+      projectStateTrigger: "",
 
       //风险级别映射
       level: [
@@ -619,6 +622,17 @@ export default {
       });
     } else {
       //console.log(this.projectId);
+
+      if (
+        this.projectState != "申请立项" &&
+        this.projectState != "立项驳回" &&
+        this.projectState != "已归档"
+      ) {
+        this.projectStateTrigger = true;
+      } else {
+        this.projectStateTrigger = false;
+      }
+
       this.getRiskList();
     }
   },

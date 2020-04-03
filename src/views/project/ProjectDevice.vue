@@ -129,6 +129,7 @@
             <el-button-group>
               <el-button
                 type="primary"
+               :disabled="this.projectStateTrigger==true ? false:true"
                 icon="el-icon-edit"
                 size="medium"
                 @click="
@@ -326,7 +327,9 @@ export default {
       pageNo: 1,
       pageSize: 10,
       projectId: 1,
-      projectState: "",
+      projectState:"",
+      projectStateTrigger:"",
+
 
       //列表
       deviceData: [],
@@ -399,6 +402,11 @@ export default {
         type: "warning"
       });
     } else {
+     if(this.projectState!="申请立项" && this.projectState!="立项驳回"  && this.projectState!="已归档" ){
+        this.projectStateTrigger=true;
+      }else {
+        this.projectStateTrigger=false;
+      }
       this.getDeviceList("");
     }
   },
