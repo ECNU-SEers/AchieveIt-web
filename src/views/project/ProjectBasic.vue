@@ -450,8 +450,8 @@ export default {
       } else {
         this.dialogFormVisible = true;
 
-        var outerId = "P01";
-        const info = await Project.getBasic(outerId);
+        
+        const info = await Project.getBasic(this.outerId);
         this.editForm = {
           outerId: info.project.outerId,
           name: info.project.name,
@@ -463,8 +463,14 @@ export default {
           endDate: info.project.endDate,
           milestone: "",
           skillNames: [],
-          businessAreaName: info.projectBusinessArea.businessAreaName
+          
         };
+        if(info.projectBusinessArea===null ||info.projectBusinessArea===""){
+          this.editForm.businessAreaName= "";
+        }
+        else{
+          this.editForm.businessAreaName=info.projectBusinessArea.businessAreaName;
+        }
         for (var i = 0; i < info.projectSkills.length; ++i) {
           this.editForm.skillNames.push(info.projectSkills[i].skillName);
         }
