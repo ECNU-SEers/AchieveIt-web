@@ -10,7 +10,12 @@
       >
       </Search>
       <el-button
-        v-if="this.projectId !== undefined"
+        v-if="
+          this.projectState !== '结束' &&
+            this.projectState !== '已归档' &&
+            this.projectState !== '申请立项' &&
+            this.projectState !== '立项驳回'
+        "
         type="primary"
         class="add-btn"
         @click="handleAdd"
@@ -57,7 +62,17 @@
         <el-table-column label="创建日期" prop="createdAt"></el-table-column>
         <el-table-column label="预定日期" prop="due"></el-table-column>
         <el-table-column label="更新日期" prop="updatedAt"></el-table-column>
-        <el-table-column fixed="right" label="操作" width="100px">
+        <el-table-column
+          fixed="right"
+          label="操作"
+          width="100px"
+          v-if="
+            this.projectState !== '结束' &&
+              this.projectState !== '已归档' &&
+              this.projectState !== '申请立项' &&
+              this.projectState !== '立项驳回'
+          "
+        >
           <template slot-scope="scope">
             <el-button
               size="medium"
@@ -228,6 +243,7 @@ export default {
       defectsLength: 0,
       type: [],
       selectedDefect: "",
+      projectState: "",
 
       defectModal: [],
 
@@ -587,6 +603,7 @@ export default {
   },
   mounted() {
     this.projectId = this.$route.query.projectId;
+    this.projectState = this.$route.query.projectState;
     if (this.projectId === undefined) {
       this.$message({
         message: "请先选择项目！",

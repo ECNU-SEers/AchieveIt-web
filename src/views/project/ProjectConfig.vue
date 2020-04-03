@@ -16,6 +16,12 @@
             editFormVisible = true;
             edit();
           "
+          v-if="
+            this.projectState !== '结束' &&
+              this.projectState !== '已归档' &&
+              this.projectState !== '申请立项' &&
+              this.projectState !== '立项驳回'
+          "
           >编辑</el-button
         >
         <!--仅配置管理员可见-->
@@ -105,8 +111,8 @@ export default {
       editFormVisible: false,
       formLabelWidth: "120px",
       projectId: "",
-      outerId:"",
-      projectState:"",
+      outerId: "",
+      projectState: "",
       fileTrigger: "true",
       emailTrigger: "true",
       git: "true",
@@ -144,7 +150,7 @@ export default {
   mounted() {
     this.projectId = this.$route.query.projectId;
     this.outerId = this.$route.query.outerId;
-   this.projectState=this.$route.query.projectState;
+    this.projectState = this.$route.query.projectState;
     if (this.projectId === undefined) {
       this.$message({
         message: "请先选择项目！",
@@ -216,11 +222,12 @@ export default {
         this.editForm.GitAddress !== (null || "") &&
         this.editForm.virtualSpace !== (null || "")
       ) {
-         if (this.fileTrigger==false || this.emailTrigger==false) { //第1次配置完成，触发
+        if (this.fileTrigger == false || this.emailTrigger == false) {
+          //第1次配置完成，触发
           // this.$message.success("配置完成");
           console.log(this.outerId);
           ProjectSYJ.assignConfig(this.outerId);
-         }
+        }
       }
     }
   }

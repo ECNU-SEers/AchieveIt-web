@@ -9,7 +9,13 @@
     <el-card v-if="this.outerId !== undefined" class="box-card">
       <div slot="header" class="clearfix">
         <span>AchieveIt</span>
-        <el-button style="float: right; padding: 3px 0" type="text" @click="editBasic">修改</el-button>
+        <el-button
+          style="float: right; padding: 3px 0"
+          type="text"
+          @click="editBasic"
+          v-if="this.state !== '结束' && this.state !== '已归档'"
+          >编辑</el-button
+        >
 
         <!-- 修改项目信息 -->
         <el-dialog title="修改项目基本信息" :visible.sync="dialogFormVisible">
@@ -22,12 +28,20 @@
           >
             <!-- 不可修改 -->
             <el-form-item label="项目ID">
-              <el-input v-model="editForm.outerId" :disabled="true" placeholder></el-input>
+              <el-input
+                v-model="editForm.outerId"
+                :disabled="true"
+                placeholder
+              ></el-input>
             </el-form-item>
 
             <!-- 输入框 -->
             <el-form-item label="项目名称" prop="name">
-              <el-input v-model="editForm.name" placeholder="请输入项目名称" clearable></el-input>
+              <el-input
+                v-model="editForm.name"
+                placeholder="请输入项目名称"
+                clearable
+              ></el-input>
             </el-form-item>
 
             <!-- 下拉单选 -->
@@ -47,9 +61,7 @@
                 >
                   <span style="float: left">{{ item.company }}</span>
                   <span style="float: right; color: #8492a6; font-size: 13px">
-                    {{
-                    item.outerId
-                    }}
+                    {{ item.outerId }}
                   </span>
                 </el-option>
               </el-select>
@@ -78,18 +90,36 @@
 
             <!-- 不可修改 -->
             <el-form-item label="项目上级" prop="leader">
-              <el-input v-model="tableData[5].detail" :disabled="true" placeholder></el-input>
+              <el-input
+                v-model="tableData[5].detail"
+                :disabled="true"
+                placeholder
+              ></el-input>
             </el-form-item>
 
             <!-- 文本框 -->
             <el-form-item label="主要里程碑" prop="milestone">
-              <el-input type="textarea" autosize :disabled="true" v-model="this.stones"></el-input>
-              <el-input type="textarea" autosize v-model="editForm.milestone"></el-input>
+              <el-input
+                type="textarea"
+                autosize
+                :disabled="true"
+                v-model="this.stones"
+              ></el-input>
+              <el-input
+                type="textarea"
+                autosize
+                v-model="editForm.milestone"
+              ></el-input>
             </el-form-item>
 
             <!-- 多选 -->
             <el-form-item label="采用技术" prop="skillNames">
-              <el-select v-model="editForm.skillNames" multiple filterable placehoder="请选择采用的技术">
+              <el-select
+                v-model="editForm.skillNames"
+                multiple
+                filterable
+                placehoder="请选择采用的技术"
+              >
                 <el-option
                   v-for="item in skills"
                   :key="item.id"
@@ -117,7 +147,9 @@
             </el-form-item>-->
 
             <el-form-item>
-              <el-button type="primary" @click="submitForm('editForm')">提交</el-button>
+              <el-button type="primary" @click="submitForm('editForm')"
+                >提交</el-button
+              >
               <el-button @click="resetForm('editForm')">重置</el-button>
             </el-form-item>
           </el-form>

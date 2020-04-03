@@ -12,9 +12,9 @@
           <div style="text-overflow: ellipsis; overflow: hidden;">
             {{ item.value }}
           </div>
-          <span style="float: right; color: #8492a6; font-size: 13px">{{
-            item.outerId
-          }}</span>
+          <span style="float: right; color: #8492a6; font-size: 13px">
+            {{ item.outerId }}
+          </span>
         </template>
       </Search>
       <el-button
@@ -92,13 +92,13 @@
                 @click.stop="handleEdit(scope.$index, scope.row)"
                 icon="el-icon-edit"
               ></el-button>
-              <!-- <el-button
+              <el-button
                 size="medium"
                 type="danger"
                 v-permission="'归档申请'"
                 @click.stop="handleDel(scope.$index, scope.row)"
                 icon="el-icon-delete"
-              ></el-button> -->
+              ></el-button>
             </el-button-group>
           </template>
         </el-table-column>
@@ -147,9 +147,9 @@
               :value="item"
             >
               <span style="float: left">{{ item.company }}</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">{{
-                item.outerId
-              }}</span>
+              <span style="float: right; color: #8492a6; font-size: 13px">
+                {{ item.outerId }}
+              </span>
             </el-option>
           </el-select>
         </el-form-item>
@@ -196,9 +196,9 @@
               :value="item"
             >
               <span style="float: left">{{ item.realName }}</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">
-                {{ item.username }}
-              </span>
+              <span style="float: right; color: #8492a6; font-size: 13px">{{
+                item.username
+              }}</span>
             </el-option>
           </el-select>
         </el-form-item>
@@ -215,9 +215,9 @@
               :value="item"
             >
               <span style="float: left">{{ item.realName }}</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">
-                {{ item.username }}
-              </span>
+              <span style="float: right; color: #8492a6; font-size: 13px">{{
+                item.username
+              }}</span>
             </el-option>
           </el-select>
         </el-form-item>
@@ -234,9 +234,9 @@
               :value="item"
             >
               <span style="float: left">{{ item.realName }}</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">
-                {{ item.username }}
-              </span>
+              <span style="float: right; color: #8492a6; font-size: 13px">{{
+                item.username
+              }}</span>
             </el-option>
           </el-select>
         </el-form-item>
@@ -253,9 +253,9 @@
               :value="item"
             >
               <span style="float: left">{{ item.realName }}</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">
-                {{ item.username }}
-              </span>
+              <span style="float: right; color: #8492a6; font-size: 13px">{{
+                item.username
+              }}</span>
             </el-option>
           </el-select>
         </el-form-item>
@@ -344,9 +344,9 @@
               :value="item"
             >
               <span style="float: left">{{ item.company }}</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">{{
-                item.outerId
-              }}</span>
+              <span style="float: right; color: #8492a6; font-size: 13px">
+                {{ item.outerId }}
+              </span>
             </el-option>
           </el-select>
         </el-form-item>
@@ -569,9 +569,9 @@
               :value="item.userId"
             >
               <span style="float: left">{{ item.username }}</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">
-                {{ item.userId }}
-              </span>
+              <span style="float: right; color: #8492a6; font-size: 13px">{{
+                item.userId
+              }}</span>
             </el-option>
           </el-select>
         </el-form-item>
@@ -670,9 +670,9 @@
               :value="item.userId"
             >
               <span style="float: left">{{ item.username }}</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">
-                {{ item.userId }}
-              </span>
+              <span style="float: right; color: #8492a6; font-size: 13px">{{
+                item.userId
+              }}</span>
             </el-option>
           </el-select>
         </el-form-item>
@@ -708,8 +708,6 @@ export default {
       // 分页
       pageNo: 1,
       pageSize: 5,
-      userId: 12,
-      userName: "manager-201911",
       projects: [],
       projectsLength: 0,
       keyword: "",
@@ -1050,7 +1048,12 @@ export default {
     },
 
     handleDetail(index, row) {
-      console.log(row.id);
+      // if (row.state === '申请立项' || row.state === '立项驳回') {
+      //   this.$message({
+      //     type: "warning",
+      //     message: "当前项目申请中，暂无详情"
+      //   });
+      // } else {
       this.$router.push({
         path: "/project/basic",
         query: {
@@ -1059,6 +1062,7 @@ export default {
           projectState: row.state
         }
       });
+      // }
     },
 
     handlePageChange(val) {
@@ -1071,14 +1075,13 @@ export default {
       const res = await ProjectSYJ.getProjectList(
         this.pageNo,
         this.pageSize,
-        this.userId,
         this.keyword
       );
       this.projects = res.items;
     },
 
     async getProjectModals() {
-      this.projectModal = await ProjectSYJ.getProjectModal(this.userId);
+      this.projectModal = await ProjectSYJ.getProjectModal();
       this.projectsLength = this.projectModal.length;
     },
 
@@ -1118,7 +1121,6 @@ export default {
       const res = await ProjectSYJ.getProjectList(
         this.pageNo,
         this.pageSize,
-        this.userId,
         keyword
       );
       console.log(res);
@@ -1195,13 +1197,14 @@ export default {
             para.company = para.company.company;
             para.supervisorId = para.supervisorName.id;
             para.supervisorName = para.supervisorName.username;
-            para.managerId = this.userId;
             para.qaManagerId = para.qaManagerName.id;
             para.qaManagerName = para.qaManagerName.username;
             para.epgLeaderId = para.epgLeaderName.id;
             para.epgLeaderName = para.epgLeaderName.username;
             para.configOrganizerId = para.configOrganizerName.id;
             para.configOrganizerName = para.configOrganizerName.username;
+            delete para.managerId;
+            delete para.managerName;
             console.log(para);
             ProjectSYJ.addProject(para).then(res => {
               this.submitLoading = false;
@@ -1266,26 +1269,6 @@ export default {
                   });
                 });
             } else if (row.state === "已交付") {
-              this.$prompt("如果确定结束该项目，请填写备注", "提示", {
-                confirmButtonText: "确定",
-                cancelButtonText: "取消",
-                type: "warning"
-              })
-                .then(({ value }) => {
-                  ProjectSYJ.stateToEnd(row.outerId, value).then(res => {
-                    this.getProjects();
-                    this.$message({
-                      type: "success",
-                      message: "已修改!"
-                    });
-                  });
-                })
-                .catch(() => {
-                  this.$message({
-                    type: "info",
-                    message: "已取消"
-                  });
-                });
             } else if (row.state === "结束" || row.state === "已归档") {
               this.$message({
                 type: "warning",
@@ -1500,27 +1483,30 @@ export default {
     },
 
     handleDel(index, row) {
-      if (row.state !== "结束") {
+      if (row.state !== "已交付") {
         this.$message({
           type: "warning",
-          message: "项目未结束，不允许进行归档"
+          message: "项目未交付，不允许进行归档"
         });
       } else {
-        this.$confirm("确定对该项目进行归档吗?", "提示", {
+        this.$prompt("如果确定结束该项目，请填写备注", "提示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
         })
-          .then(() => {
-            this.$message({
-              type: "success",
-              message: "删除成功!"
+          .then(({ value }) => {
+            ProjectSYJ.stateToEnd(row.outerId, value).then(res => {
+              this.getProjects();
+              this.$message({
+                type: "success",
+                message: "已修改!"
+              });
             });
           })
           .catch(() => {
             this.$message({
               type: "info",
-              message: "已取消删除"
+              message: "已取消"
             });
           });
       }

@@ -8,14 +8,19 @@
         @select-suggestion="getDevice"
       >
       </Search>
-      <div style="width:20px;height=100%;"></div>
+      <!-- <div style="width:20px;height=100%;"></div> -->
 
       <!--新增-->
       <el-button
         class="add-btn"
         @click="addFormVisible = true"
         type="primary"
-        v-if="this.projectId !== undefined"
+        v-if="
+          this.projectState !== '结束' &&
+            this.projectState !== '已归档' &&
+            this.projectState !== '申请立项' &&
+            this.projectState !== '立项驳回'
+        "
         >新增</el-button
       >
     </PageHeader>
@@ -109,7 +114,17 @@
         <el-table-column label="归还日期" prop="returnDate"></el-table-column>
 
         <!---编辑和删除-->
-        <el-table-column label="操作" width="180px" prop="action">
+        <el-table-column
+          label="操作"
+          width="180px"
+          prop="action"
+          v-if="
+            this.projectState !== '结束' &&
+              this.projectState !== '已归档' &&
+              this.projectState !== '申请立项' &&
+              this.projectState !== '立项驳回'
+          "
+        >
           <template slot-scope="{ row }">
             <el-button-group>
               <el-button
@@ -170,7 +185,7 @@
             <el-option
               v-for="(item, index) in users.items"
               :key="index + '1'"
-              :label="item.realName+'('+item.username+')'"
+              :label="item.realName + '(' + item.username + ')'"
               :value="item.userId"
             ></el-option>
           </el-select>
@@ -252,7 +267,7 @@
             <el-option
               v-for="(item, index) in users.items"
               :key="index"
-             :label="item.realName+'('+item.username+')'"
+              :label="item.realName + '(' + item.username + ')'"
               :value="item.userId"
             ></el-option>
           </el-select>
@@ -311,7 +326,7 @@ export default {
       pageNo: 1,
       pageSize: 10,
       projectId: 1,
-      projectState:"",
+      projectState: "",
 
       //列表
       deviceData: [],
@@ -377,7 +392,7 @@ export default {
   },
   mounted() {
     this.projectId = this.$route.query.projectId;
-    this.projectState=this.$route.query.projectState;
+    this.projectState = this.$route.query.projectState;
     if (this.projectId === undefined) {
       this.$message({
         message: "请先选择项目！",
@@ -386,7 +401,6 @@ export default {
     } else {
       this.getDeviceList("");
     }
-    
   },
   methods: {
     //列表展示
