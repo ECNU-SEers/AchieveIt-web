@@ -53,9 +53,9 @@
 
         <!-- 多选 -->
         <el-form-item label="角色" prop="roles">
-          <el-checkbox-group v-model="addForm.roles">
-            <el-checkbox v-for="item in roles" :key="item.id" :label="item.name" :value="item.id"></el-checkbox>
-          </el-checkbox-group>
+          <el-select v-model="addForm.roles" multiple filterable placehoder="请选择成员角色">
+            <el-option v-for="item in roles" :key="item.id" :label="item.name" :value="item.id"></el-option>
+          </el-select>
         </el-form-item>
 
         <!-- 单选 -->
@@ -122,7 +122,7 @@
         <el-table-column prop="rolesStr" label="角色"></el-table-column>
         <el-table-column prop="email" label="邮件地址" show-overflow-tooltip></el-table-column>
         <el-table-column prop="department" label="所属部门"></el-table-column>
-        <el-table-column prop="leaderName" label="项目中的上级"></el-table-column>
+        <el-table-column prop="leaderRealName" label="项目中的上级"></el-table-column>
         <el-table-column prop="phoneNumber" label="电话"></el-table-column>
         <el-table-column prop="workingHours" label="总工时"></el-table-column>
         <el-table-column label="操作" width="120px">
@@ -156,9 +156,9 @@
 
         <!-- 多选 -->
         <el-form-item label="角色" prop="roles">
-          <el-checkbox-group v-model="editForm.roles">
-            <el-checkbox v-for="item in roles" :key="item.id" :label="item.name" :value="item.id"></el-checkbox>
-          </el-checkbox-group>
+          <el-select v-model="editForm.roles" multiple filterable placehoder="请选择成员角色">
+            <el-option v-for="item in roles" :key="item.id" :label="item.name" :value="item.id"></el-option>
+          </el-select>
         </el-form-item>
 
         <!-- 单选 -->
@@ -167,13 +167,13 @@
             <el-option
               v-for="item in tableData"
               :key="item.userId"
-              :label="item.username"
+              :label="item.realName"
               :value="item"
             >
-              <span style="float: left">{{ item.username }}</span>
+              <span style="float: left">{{ item.realName }}</span>
               <span style="float: right; color: #8492a6; font-size: 13px">
                 {{
-                item.userId
+                item.username
                 }}
               </span>
             </el-option>
@@ -203,6 +203,7 @@ export default {
   },
   data() {
     return {
+      state: "",
       // 分页
       page: 1,
       pageSize: 10,
@@ -232,19 +233,7 @@ export default {
         roles: [],
         leader: ""
       },
-      tableData: [
-        {
-          userId: "",
-          username: "",
-          roles: [],
-          email: "",
-          department: "",
-          leaderName: "",
-          leaderEmail: "",
-          phoneNumber: "",
-          workingHours: 0.0
-        }
-      ]
+      tableData: []
     };
   },
   methods: {
@@ -261,14 +250,22 @@ export default {
 
     // 新增项目成员
     async addMember() {
-      this.addFormVisible = true;
-      this.users = await Project.getUsers();
-      var info = await Project.getMemberList(this.projectId, 1, 999, "");
-      this.members = info.items;
-      this.roles = await Project.getRoles();
-      console.log("add:");
-      console.log(this.users);
-      console.log(this.members);
+      if (this.state === "结束" || this.state === "已归档") {
+        this.$message({
+          message: "项目已结束，不可修改！",
+          type: "warning"
+        });
+      } else {
+        this.addFormVisible = true;
+        this.users = await Project.getUsers();
+        var info = await Project.getMemberList(this.projectId, 1, 999, "");
+        this.members = info.items;
+        this.roles = await Project.getRoles();
+        console.log("add:");
+        console.log(this.users);
+        console.log(this.members);
+        console.log(this.roles);
+      }
     },
     // 提交新增成员
     async submitAddForm(form) {
@@ -287,23 +284,53 @@ export default {
         message: "已提交!"
       });
       this.addFormVisible = false;
+      // location.reload();
+      this.getMemberList(this.keyword);
     },
 
     // 编辑项目成员信息
     async handleEdit(index, row) {
-      console.log("row:")
-      console.log(row);
-      this.editFormVisible = true;
-      var info = await Project.getMemberList(this.projectId, 1, 999, "");
-      this.members = info.items;
-      this.roles = await Project.getRoles();
-      console.log(this.roles);
-      this.editForm.userId = row.userId;
-      this.editForm.username = row.username+" "+row.realName;
-      this.editForm.roles = row.roles;
-      this.editForm.leader = row.leaderName;
+      if (this.state === "结束" || this.state === "已归档") {
+        this.$message({
+          message: "项目已结束，不可修改！",
+          type: "warning"
+        });
+      } else {
+        console.log("row:");
+        console.log(row);
+        this.editFormVisible = true;
+        // 获取项目成员
+        var info = await Project.getMemberList(this.projectId, 1, 999, "");
+        this.members = info.items;
+        // 获取所有角色
+        this.roles = await Project.getRoles();
+        console.log(this.roles);
+        // 表格预设值
+        this.editForm.userId = row.userId;
+        this.editForm.username = row.username + " " + row.realName;
+
+        // 找到角色id
+        this.editForm.roles = [];
+        for(var i=0;i<row.roles.length;++i){
+          // 遍历所有角色
+          for(var j=0;j<this.roles.length;++j){
+            if(row.roles[i]===this.roles[j].name){
+              this.editForm.roles.push(this.roles[j].id);
+              break;
+            }
+          }
+        }
+
+        if (row.leaderRealName === "暂无数据") {
+          this.editForm.leader = "";
+        } else {
+          this.editForm.leader = row.leaderRealName;
+        }
+      }
     },
     async submitEditForm(form) {
+      console.log("submit editForm:");
+      console.log(this.editForm);
       var info = await Project.editMember(
         this.projectId,
         this.editForm.userId,
@@ -316,31 +343,41 @@ export default {
         message: "已提交!"
       });
       this.editFormVisible = false;
+      // location.reload();
+      this.getMemberList(this.keyword);
     },
 
     async handleDelete(index, row) {
-      var functionId = "1";
-      console.log(row);
-      this.$confirm("是否将该成员移出项目组?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      })
-        .then(async () => {
-          var info = await Project.deleteMember(functionId, row.userId);
-          this.$message({
-            type: "success",
-            message: "已移除!"
-          });
-          location.reload();
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消"
-          });
+      if (this.state === "结束" || this.state === "已归档") {
+        this.$message({
+          message: "项目已结束，不可修改！",
+          type: "warning"
         });
+      } else {
+        console.log(row);
+        this.$confirm("是否将该成员移出项目组?", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        })
+          .then(async () => {
+            var info = await Project.deleteMember(this.projectId, row.userId);
+            this.$message({
+              type: "success",
+              message: "已移除!"
+            });
+            // location.reload();
+            this.getMemberList(this.keyword);
+          })
+          .catch(() => {
+            this.$message({
+              type: "info",
+              message: "已取消"
+            });
+          });
+      }
     },
+
     // 将数组用\n拼接以便展示时换行
     showInfo() {
       for (var i = 0; i < this.tableData.length; ++i) {
@@ -363,8 +400,8 @@ export default {
         }
 
         // 上级
-        if (this.tableData[i].leaderName === null) {
-          this.tableData[i].leaderName = "暂无数据";
+        if (this.tableData[i].leaderRealName === null) {
+          this.tableData[i].leaderRealName = "暂无数据";
         }
 
         // 电话
@@ -449,6 +486,11 @@ export default {
   },
   mounted: function() {
     this.projectId = this.$route.query.projectId;
+    // 获取项目状态
+    console.log(this.$route.query);
+    this.state = this.$route.query.projectState;
+    console.log("state: " + this.state);
+
     if (this.projectId === undefined) {
       this.$message({
         message: "请先选择项目！",

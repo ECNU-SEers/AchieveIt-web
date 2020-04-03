@@ -109,7 +109,7 @@
           <el-input v-model="addForm.name" placeholder="请填写项目名称"></el-input>
         </el-form-item>
 
-        <el-form-item label="功能描述" required>
+        <el-form-item label="功能描述">
           <el-input type="textarea" v-model="addForm.description" placeholder="请填写项目描述"></el-input>
         </el-form-item>
       </el-form>
@@ -130,7 +130,7 @@
           <el-input v-model="editForm.name" placeholder="请填写项目名称"></el-input>
         </el-form-item>
 
-        <el-form-item label="项目描述" required>
+        <el-form-item label="项目描述">
           <el-input type="textarea" v-model="editForm.description" placeholder="请填写项目描述"></el-input>
         </el-form-item>
       </el-form>
@@ -155,6 +155,7 @@ export default {
   },
   data() {
     return {
+      state: "",
       // 搜索
       keyword: "",
       functionSearch: [],
@@ -200,7 +201,10 @@ export default {
           // 标记一级功能
           this.tableData[i].isSub = false;
           // 功能描述展示
-          if (this.tableData[i].description === null) {
+          if (
+            this.tableData[i].description === null ||
+            this.tableData[i].description === ""
+          ) {
             this.tableData[i].description = "暂无数据";
           }
         }
@@ -226,7 +230,7 @@ export default {
         // 标记为二级功能
         info[i].isSub = true;
         // 功能描述展示
-        if (info[i].description === null) {
+        if (info[i].description === null || info[i].description === "") {
           info[i].description = "暂无数据";
         }
       }
@@ -237,22 +241,38 @@ export default {
     },
     // 新增一级弹框
     addFirst() {
-      this.addFormVisible = true;
-      this.parentId = -1;
-    },
-    // 新增子功能弹框
-    addSubFunction(index, row) {
-      console.log(row.isSub);
-      // 二级功能无法拥有总功能
-      if (row.isSub) {
+      // 项目状态判断
+      if (this.state === "结束" || this.state === "已归档") {
         this.$message({
-          message: "二级功能无法扩展",
+          message: "项目已结束，不可修改！",
           type: "warning"
         });
       } else {
         this.addFormVisible = true;
-        this.parentId = row.id;
+        this.parentId = -1;
       }
+    },
+    // 新增子功能弹框
+    addSubFunction(index, row) {
+      // 项目状态判断
+      if (this.state === "结束" || this.state === "已归档") {
+        this.$message({
+          message: "项目已结束，不可修改！",
+          type: "warning"
+        });
+      } else {
+        // 二级功能无法拥有总功能
+        if (row.isSub) {
+          this.$message({
+            message: "二级功能无法扩展",
+            type: "warning"
+          });
+        } else {
+          this.addFormVisible = true;
+          this.parentId = row.id;
+        }
+      }
+      console.log(row.isSub);
     },
     // 提交新增功能
     async submitAddForm() {
@@ -269,40 +289,62 @@ export default {
       } catch (e) {
         console.log(e);
       }
+      this.getFunctionList(this.keyword);
     },
     // 删除功能
     async deleteFunction(index, row) {
-      var functionId = "1";
-      this.$confirm("是否确定删除?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      })
-        .then(async () => {
-          try {
-            var info = await Project.deleteFunction(functionId, row.id);
-            this.$message({
-              type: "success",
-              message: "删除成功!"
-            });
-            location.reload();
-          } catch (e) {
-            console.log(e);
-          }
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消"
-          });
+      if (this.state === "结束" || this.state === "已归档") {
+        this.$message({
+          message: "项目已结束，不可修改！",
+          type: "warning"
         });
+      } else {
+        console.log(row);
+
+        this.$confirm("是否确定删除?", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        })
+          .then(async () => {
+            try {
+              console.log("id: " + row.id);
+              var info = await Project.deleteFunction(this.projectId, row.id);
+              this.$message({
+                type: "success",
+                message: "删除成功!"
+              });
+              location.reload();
+              // this.getFunctionList(this.keyword);
+            } catch (e) {
+              console.log(e);
+            }
+          })
+          .catch(() => {
+            this.$message({
+              type: "info",
+              message: "已取消"
+            });
+          });
+      }
     },
     // 修改弹窗
     editFunction(index, row) {
-      this.editForm.name = row.name;
-      this.editForm.description = row.description;
-      this.editForm.id = row.id;
-      this.editFormVisible = true;
+      if (this.state === "结束" || this.state === "已归档") {
+        this.$message({
+          message: "项目已结束，不可修改！",
+          type: "warning"
+        });
+      } else {
+        this.editForm.name = row.name;
+        if (row.description === "暂无数据") {
+          this.editForm.description = "";
+        } else {
+          this.editForm.description = row.description;
+        }
+        this.editForm.id = row.id;
+        this.editFormVisible = true;
+      }
     },
     // 修改提交
     async submitEditForm() {
@@ -315,6 +357,7 @@ export default {
         );
         console.log("edit function list success!");
         this.editFormVisible = false;
+        this.getFunctionList(this.keyword);
       } catch (e) {
         console.log(e);
       }
@@ -384,6 +427,12 @@ export default {
   },
   mounted: function() {
     this.projectId = this.$route.query.projectId;
+    console.log("projectId: " + this.projectId);
+    // 获取项目状态
+    console.log(this.$route.query);
+    this.state = this.$route.query.projectState;
+    console.log("state: " + this.state);
+
     if (this.projectId === undefined) {
       this.$message({
         message: "请先选择项目！",
