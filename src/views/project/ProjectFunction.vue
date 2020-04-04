@@ -17,15 +17,27 @@
         type="primary"
         class="add-btn"
         @click="addFirst"
-        v-if="this.projectId !== undefined"
+        v-if="
+          this.state !== '结束' &&
+            this.state !== '已归档' &&
+            this.state !== '申请立项' &&
+            this.state !== '立项驳回' &&
+            this.permission === true
+        "
       >新增</el-button>
       <el-button
         type="primary"
         class="add-btn"
         @click="addExcelFormVisible = true"
-        v-if="this.projectId !== undefined"
+        v-if="
+          this.state !== '结束' &&
+            this.state !== '已归档' &&
+            this.state !== '申请立项' &&
+            this.state !== '立项驳回' &&
+            this.permission === true
+        "
       >导入</el-button>
-      <el-button type="primary" class="add-btn" v-if="this.projectId !== undefined">下载</el-button>
+      <el-button type="primary" class="add-btn" v-if="this.permission===true">下载</el-button>
     </PageHeader>
 
     <el-row v-if="this.projectId === undefined">
@@ -67,12 +79,24 @@
         :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
       >
         <el-table-column width="50"></el-table-column>
-        <el-table-column type="index" label="序号" width="100"></el-table-column>
+        <el-table-column type="index" label="序号" width="70"></el-table-column>
         <el-table-column prop="id" label="功能ID" width="180"></el-table-column>
         <el-table-column prop="name" label="功能名称" width="180"></el-table-column>
         <el-table-column prop="description" label="功能描述"></el-table-column>
 
-        <el-table-column fixed="right" label="操作" width="180px">
+        <el-table-column
+          fixed="right"
+          label="操作"
+          width="180px"
+          v-if="
+            this.state !== '结束' &&
+              this.state !== '已归档' &&
+              this.state !== '申请立项' &&
+              this.state !== '立项驳回' &&
+              this.permission === true
+          "
+          v-permission="'归档申请'"
+        >
           <template slot-scope="scope">
             <el-button-group>
               <el-button
@@ -147,6 +171,7 @@ import PageHeader from "../../components/common/PageHeader";
 import Search from "../../components/common/Search";
 import Pagination from "../../components/common/Pagination";
 import Project from "@/sys/models/project_htx";
+
 export default {
   components: {
     PageHeader,
@@ -156,6 +181,7 @@ export default {
   data() {
     return {
       state: "",
+      permission: false,
       // 搜索
       keyword: "",
       functionSearch: [],
@@ -182,6 +208,18 @@ export default {
     };
   },
   methods: {
+    // 获取项目权限
+    async getPermission(projectId){
+      var info =await Project.getPermissions(projectId);
+      console.log(info);
+      for(var i=0;i<info.length;++i){
+        if(info[i].name==="管理项目功能列表"){
+          this.permission=true;
+          break;
+        }
+      }
+      console.log("permission: "+ this.permission);
+    },
     showInfo() {},
     // 获取一级功能列表并展示
     async getFunctionList(keyword) {
@@ -242,7 +280,12 @@ export default {
     // 新增一级弹框
     addFirst() {
       // 项目状态判断
-      if (this.state === "结束" || this.state === "已归档") {
+      if (
+        this.state === "结束" ||
+        (this.state === "已归档" &&
+          this.state !== "申请立项" &&
+          this.state !== "立项驳回")
+      ) {
         this.$message({
           message: "项目已结束，不可修改！",
           type: "warning"
@@ -255,7 +298,12 @@ export default {
     // 新增子功能弹框
     addSubFunction(index, row) {
       // 项目状态判断
-      if (this.state === "结束" || this.state === "已归档") {
+      if (
+        this.state === "结束" ||
+        (this.state === "已归档" &&
+          this.state !== "申请立项" &&
+          this.state !== "立项驳回")
+      ) {
         this.$message({
           message: "项目已结束，不可修改！",
           type: "warning"
@@ -293,7 +341,12 @@ export default {
     },
     // 删除功能
     async deleteFunction(index, row) {
-      if (this.state === "结束" || this.state === "已归档") {
+      if (
+        this.state === "结束" ||
+        (this.state === "已归档" &&
+          this.state !== "申请立项" &&
+          this.state !== "立项驳回")
+      ) {
         this.$message({
           message: "项目已结束，不可修改！",
           type: "warning"
@@ -330,7 +383,12 @@ export default {
     },
     // 修改弹窗
     editFunction(index, row) {
-      if (this.state === "结束" || this.state === "已归档") {
+      if (
+        this.state === "结束" ||
+        (this.state === "已归档" &&
+          this.state !== "申请立项" &&
+          this.state !== "立项驳回")
+      ) {
         this.$message({
           message: "项目已结束，不可修改！",
           type: "warning"
@@ -425,11 +483,11 @@ export default {
       }
     }
   },
+
   mounted: function() {
     this.projectId = this.$route.query.projectId;
     console.log("projectId: " + this.projectId);
     // 获取项目状态
-    console.log(this.$route.query);
     this.state = this.$route.query.projectState;
     console.log("state: " + this.state);
 

@@ -9,7 +9,12 @@
     <el-card v-if="this.outerId !== undefined" class="box-card">
       <div slot="header" class="clearfix">
         <span>AchieveIt</span>
-        <el-button style="float: right; padding: 3px 0" type="text" @click="editBasic">修改</el-button>
+        <el-button
+          style="float: right; padding: 3px 0"
+          type="text"
+          @click="editBasic"
+          v-if="this.state !== '结束' && this.state !== '已归档' && this.permission===true"
+        >编辑</el-button>
 
         <!-- 修改项目信息 -->
         <el-dialog title="修改项目基本信息" :visible.sync="dialogFormVisible">
@@ -46,11 +51,7 @@
                   :value="item"
                 >
                   <span style="float: left">{{ item.company }}</span>
-                  <span style="float: right; color: #8492a6; font-size: 13px">
-                    {{
-                    item.outerId
-                    }}
-                  </span>
+                  <span style="float: right; color: #8492a6; font-size: 13px">{{ item.outerId }}</span>
                 </el-option>
               </el-select>
             </el-form-item>
@@ -171,6 +172,8 @@ export default {
     return {
       state: "",
       outerId: "",
+      projectId: "",
+      permission: false,
       // 修改弹框
       dialogFormVisible: false,
       formLabelWidth: "120px",
@@ -430,13 +433,26 @@ export default {
           this.stones = "暂无数据";
         }
 
-        console.log(this.stones);
+        // console.log(this.stones);
 
-        console.log(this.tableData);
+        // console.log(this.tableData);
       } catch (e) {
         console.log(e);
         // this.$message.error("获取设备信息失败");
       }
+    },
+
+    // 获取项目权限
+    async getPermission(projectId){
+      var info =await Project.getPermissions(projectId);
+      console.log(info);
+      for(var i=0;i<info.length;++i){
+        if(info[i].name==="修改项目信息"){
+          this.permission=true;
+          break;
+        }
+      }
+      console.log("permission: "+ this.permission);
     },
 
     // 修改弹框
@@ -450,7 +466,6 @@ export default {
       } else {
         this.dialogFormVisible = true;
 
-        
         const info = await Project.getBasic(this.outerId);
         this.editForm = {
           outerId: info.project.outerId,
@@ -462,14 +477,16 @@ export default {
           startDate: info.project.startDate,
           endDate: info.project.endDate,
           milestone: "",
-          skillNames: [],
-          
+          skillNames: []
         };
-        if(info.projectBusinessArea===null ||info.projectBusinessArea===""){
-          this.editForm.businessAreaName= "";
-        }
-        else{
-          this.editForm.businessAreaName=info.projectBusinessArea.businessAreaName;
+        if (
+          info.projectBusinessArea === null ||
+          info.projectBusinessArea === ""
+        ) {
+          this.editForm.businessAreaName = "";
+        } else {
+          this.editForm.businessAreaName =
+            info.projectBusinessArea.businessAreaName;
         }
         for (var i = 0; i < info.projectSkills.length; ++i) {
           this.editForm.skillNames.push(info.projectSkills[i].skillName);
@@ -520,6 +537,9 @@ export default {
   },
   mounted: function() {
     console.log("in mounted");
+    // 获取项目projectId
+    this.projectId = this.$route.query.projectId;
+
     // 获取outerId
     this.outerId = this.$route.query.outerId;
     console.log("outerId: " + this.outerId);
@@ -537,6 +557,8 @@ export default {
     } else {
       // 获取项目基本信息
       this.getBasic(this.outerId);
+      // 获取项目权限
+      this.getPermission(this.projectId);
     }
   }
 };

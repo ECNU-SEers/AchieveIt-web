@@ -11,16 +11,30 @@
       />
       <!-- <el-input prefix-icon="el-icon-search" v-model="search" style="width: 200px" placeholder="输入关键字搜索"></el-input> -->
       <el-button
-        v-if="this.projectId !== undefined"
+        v-if="
+          this.state !== '结束' &&
+            this.state !== '已归档' &&
+            this.state !== '申请立项' &&
+            this.state !== '立项驳回' &&
+            this.permission === true
+        "
         type="primary"
         class="add-btn"
         @click="addMember"
+        v-permission="'归档申请'"
       >新增</el-button>
       <el-button
-        v-if="this.projectId !== undefined"
+        v-if="
+          this.state !== '结束' &&
+            this.state !== '已归档' &&
+            this.state !== '申请立项' &&
+            this.state !== '立项驳回' &&
+            this.permission === true
+        "
         type="primary"
         class="add-btn"
         @click="addExcelFormVisible = true"
+        v-permission="'归档申请'"
       >导入</el-button>
     </PageHeader>
     <el-row v-if="this.projectId === undefined">
@@ -42,11 +56,7 @@
               :value="item"
             >
               <span style="float: left">{{ item.realName }}</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">
-                {{
-                item.username
-                }}
-              </span>
+              <span style="float: right; color: #8492a6; font-size: 13px">{{ item.username }}</span>
             </el-option>
           </el-select>
         </el-form-item>
@@ -68,11 +78,7 @@
               :value="item"
             >
               <span style="float: left">{{ item.realName }}</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">
-                {{
-                item.username
-                }}
-              </span>
+              <span style="float: right; color: #8492a6; font-size: 13px">{{ item.username }}</span>
             </el-option>
           </el-select>
         </el-form-item>
@@ -116,7 +122,7 @@
         stripe
         border
       >
-        <el-table-column fixed prop="userId" label="序号" width="50" type="index"></el-table-column>
+        <el-table-column fixed prop="userId" label="序号" width="70" type="index"></el-table-column>
         <el-table-column prop="username" label="员工ID"></el-table-column>
         <el-table-column prop="realName" label="姓名"></el-table-column>
         <el-table-column prop="rolesStr" label="角色"></el-table-column>
@@ -125,7 +131,17 @@
         <el-table-column prop="leaderRealName" label="项目中的上级"></el-table-column>
         <el-table-column prop="phoneNumber" label="电话"></el-table-column>
         <el-table-column prop="workingHours" label="总工时"></el-table-column>
-        <el-table-column label="操作" width="120px">
+        <el-table-column
+          label="操作"
+          width="120px"
+          v-if="
+            this.state !== '结束' &&
+              this.state !== '已归档' &&
+              this.state !== '申请立项' &&
+              this.state !== '立项驳回' &&
+              this.permission === true
+          "
+        >
           <template slot-scope="scope">
             <el-button-group>
               <el-button
@@ -171,11 +187,7 @@
               :value="item"
             >
               <span style="float: left">{{ item.realName }}</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">
-                {{
-                item.username
-                }}
-              </span>
+              <span style="float: right; color: #8492a6; font-size: 13px">{{ item.username }}</span>
             </el-option>
           </el-select>
         </el-form-item>
@@ -194,6 +206,7 @@ import PageHeader from "../../components/common/PageHeader";
 import Search from "../../components/common/Search";
 import Pagination from "../../components/common/Pagination";
 import Project from "@/sys/models/project_htx";
+import { mapGetters } from "vuex";
 
 export default {
   components: {
@@ -204,6 +217,7 @@ export default {
   data() {
     return {
       state: "",
+      permission: false,
       // 分页
       page: 1,
       pageSize: 10,
@@ -237,6 +251,18 @@ export default {
     };
   },
   methods: {
+    // 获取项目权限
+    async getPermission(projectId){
+      var info =await Project.getPermissions(projectId);
+      console.log(info);
+      for(var i=0;i<info.length;++i){
+        if(info[i].name==="管理项目成员"){
+          this.permission=true;
+          break;
+        }
+      }
+      console.log("permission: "+ this.permission);
+    },
     // 上传excel
     submitUpload() {},
     handleChange(file, fileList) {
@@ -250,7 +276,12 @@ export default {
 
     // 新增项目成员
     async addMember() {
-      if (this.state === "结束" || this.state === "已归档") {
+      if (
+        this.state === "结束" ||
+        (this.state === "已归档" &&
+          this.state !== "申请立项" &&
+          this.state !== "立项驳回")
+      ) {
         this.$message({
           message: "项目已结束，不可修改！",
           type: "warning"
@@ -290,7 +321,12 @@ export default {
 
     // 编辑项目成员信息
     async handleEdit(index, row) {
-      if (this.state === "结束" || this.state === "已归档") {
+      if (
+        this.state === "结束" ||
+        (this.state === "已归档" &&
+          this.state !== "申请立项" &&
+          this.state !== "立项驳回")
+      ) {
         this.$message({
           message: "项目已结束，不可修改！",
           type: "warning"
@@ -311,10 +347,10 @@ export default {
 
         // 找到角色id
         this.editForm.roles = [];
-        for(var i=0;i<row.roles.length;++i){
+        for (var i = 0; i < row.roles.length; ++i) {
           // 遍历所有角色
-          for(var j=0;j<this.roles.length;++j){
-            if(row.roles[i]===this.roles[j].name){
+          for (var j = 0; j < this.roles.length; ++j) {
+            if (row.roles[i] === this.roles[j].name) {
               this.editForm.roles.push(this.roles[j].id);
               break;
             }
@@ -348,7 +384,12 @@ export default {
     },
 
     async handleDelete(index, row) {
-      if (this.state === "结束" || this.state === "已归档") {
+      if (
+        this.state === "结束" ||
+        (this.state === "已归档" &&
+          this.state !== "申请立项" &&
+          this.state !== "立项驳回")
+      ) {
         this.$message({
           message: "项目已结束，不可修改！",
           type: "warning"
@@ -487,7 +528,6 @@ export default {
   mounted: function() {
     this.projectId = this.$route.query.projectId;
     // 获取项目状态
-    console.log(this.$route.query);
     this.state = this.$route.query.projectState;
     console.log("state: " + this.state);
 
@@ -499,6 +539,8 @@ export default {
     } else {
       this.keyword = "";
       this.getMemberList(this.keyword);
+      // 获取项目权限
+      this.getPermission(this.projectId);
     }
   }
 };
