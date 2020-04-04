@@ -4,17 +4,20 @@
       <!--工具条：搜索栏-->
       <Search
         v-model="riskSearch"
+        v-if="(this.projectId !== undefined)  && (this.permissions.indexOf('查询项目风险信息') > -1)"
         :query-search="querySearch"
         @select-suggestion="getRisk"
         value-key="name"
-        v-if="this.projectId !== undefined"
       ></Search>
       <div style="width:20px;height=100%;"></div>
 
       <!--新增风险信息-->
-      <el-button
+      <el-button                                                                            
         class="add-btn"
-        v-if="(this.projectId !== undefined) && (this.permissions.indexOf('新增风险')> -1)"
+        v-if="
+         (this.projectId !== undefined )&&
+            (this.permissions.indexOf('新增风险') > -1)
+        "
         @click="addFormVisible = true"
         type="primary"
         :disabled="this.projectStateTrigger == true ? false : true"
@@ -24,7 +27,10 @@
       <!--导入-->
       <el-button
         class="add-btn"
-        v-if="this.projectId !== undefined && (this.permissions.indexOf('导入风险')> -1)"
+        v-if="
+          (this.projectId !== undefined) &&
+            (this.permissions.indexOf('新增风险') > -1)
+        "
         @click="importFormVisible = true"
         type="primary"
         :disabled="this.projectStateTrigger == true ? false : true"
@@ -120,7 +126,7 @@
               <el-button
                 type="primary"
                 :disabled="this.projectStateTrigger == true ? false : true"
-                 v-if="this.permissions.indexOf('修改风险信息')> -1"
+                v-if="this.permissions.indexOf('修改风险信息') > -1"
                 icon="el-icon-edit"
                 size="medium"
                 @click="
@@ -132,7 +138,7 @@
               <el-button
                 type="danger"
                 :disabled="this.projectStateTrigger == true ? false : true"
-                v-if="this.permissions.indexOf('删除风险信息')> -1"
+                v-if="this.permissions.indexOf('修改风险信息') > -1"
                 size="medium"
                 icon="el-icon-delete"
                 @click="deleteSubmit(row)"
@@ -395,7 +401,6 @@
         </el-form-item>
 
         <!--单选-->
-        <!--单选-->
         <el-form-item label="风险跟踪频度:（单位:天/次）" prop="trackingFreq">
           <el-input v-model="editForm.trackingFreq"></el-input>
         </el-form-item>
@@ -442,7 +447,7 @@ import Search from "@/components/common/Search";
 import PageHeader from "@/components/common/PageHeader";
 import Pagination from "@/components/common/Pagination";
 import ProjectLW from "@/sys/models/project_lw";
-import { mapGetters } from "vuex";
+// import { mapGetters } from "vuex";
 
 export default {
   components: {
@@ -464,6 +469,7 @@ export default {
       relatedPersons: [],
       row: "",
       projectStateTrigger: "",
+      permissions:[],
 
       //风险级别映射
       level: [
@@ -594,9 +600,9 @@ export default {
       ]
     };
   },
-   computed: {
-    ...mapGetters(["permissions"])
-  },
+  // computed: {
+  //   ...mapGetters(["permissions"])
+  // },
   mounted() {
     this.projectId = this.$route.query.projectId;
     this.projectState = this.$route.query.projectState;
@@ -607,7 +613,6 @@ export default {
       });
     } else {
       this.getMyPermissions(this.projectId);
-    console.log("getMypermission="+this.permissions);
 
       if (
         this.projectState != "申请立项" &&
@@ -618,20 +623,22 @@ export default {
       } else {
         this.projectStateTrigger = false;
       }
-
+     if(this.permissions.indexOf('查询项目风险信息')> -1){
       this.getRiskList();
+      }
     }
   },
   methods: {
-
     //获取用户当前项目权限
-    async getMyPermissions(){
-      const res =await ProjectLW.getMyPermissions(this.projectId);
-        var tmp="";
-      res.forEach(item=>{
-          tmp=item.name;
-          this.permissions.push(tmp);
+    async getMyPermissions() {
+      const res = await ProjectLW.getMyPermissions(this.projectId);
+      var obj = "";
+      res.forEach(item => {
+        obj = item.name;
+       this.permissions.push(obj);
       });
+      
+      console.log("getMypermission=" + this.permissions);
     },
     //列表展示
     async getRiskList() {
@@ -801,7 +808,17 @@ export default {
           const res = await ProjectLW.updateRisk(
             _this.projectId,
             _this.row.id,
-            this.editForm
+            _this.editForm.name,
+            _this.editForm.type,
+            _this.editForm.level,
+            _this.editForm.impact,
+            _this.editForm.strategy,
+            _this.editForm.state,
+            _this.editForm.owner.userId,
+            _this.editForm.owner.realName, //realname or username
+            _this.editForm.trackingFreq,
+            _this.editForm.description,
+            _this.editForm.relatedPersons
           );
           // console.log(res);
           _this.editFormVisible = false;
