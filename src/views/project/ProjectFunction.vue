@@ -1,168 +1,174 @@
 <template>
   <div>
-    <!--工具条：搜索栏-->
-    <PageHeader title="功能列表">
-      <Search
-        v-if="this.projectId !== undefined"
-        placeholder="请输入功能名称"
-        :query-search="querySearch"
-        @search="searchFunctions"
-        @select-suggestion="getOne"
-      >
-        <!-- <span style="float: left">{{ item.value }}</span>
-        <span style="float: right; color: #8492a6; font-size: 13px">{{item.id}}</span>-->
-      </Search>
-      <!-- <el-input prefix-icon="el-icon-search" v-model="search" style="width: 200px" placeholder="输入关键字搜索"></el-input> -->
-      <el-button
-        type="primary"
-        class="add-btn"
-        @click="addFirst"
-        v-if="
-          this.state !== '结束' &&
-            this.state !== '已归档' &&
-            this.state !== '申请立项' &&
-            this.state !== '立项驳回' &&
-            this.permission === true
-        "
-      >新增</el-button>
-      <el-button
-        type="primary"
-        class="add-btn"
-        @click="addExcelFormVisible = true"
-        v-if="
-          this.state !== '结束' &&
-            this.state !== '已归档' &&
-            this.state !== '申请立项' &&
-            this.state !== '立项驳回' &&
-            this.permission === true
-        "
-      >导入</el-button>
-      <el-button type="primary" class="add-btn" v-if="this.permission===true">下载</el-button>
-    </PageHeader>
-
-    <el-row v-if="this.projectId === undefined">
-      <el-col :span="24">
-        <el-tag type="success" effect="dark">请选择项目</el-tag>
-      </el-col>
-    </el-row>
-
-    <!-- 导入excel -->
-    <el-dialog title="导入项目成员信息" :visible.sync="addExcelFormVisible">
-      <el-upload
-        action="https://jsonplaceholder.typicode.com/posts/"
-        :file-list="fileList"
-        accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-        :on-change="handleChange"
-        :on-success="handleSuccess"
-        :on-error="handleError"
-      >
-        <el-button size="small" type="primary">点击上传excel文件</el-button>
-      </el-upload>
-
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="addExcelFormVisible = false">取消</el-button>
-        <el-button type="primary" @click="submitUpload" :loading="submitLoading">提交</el-button>
-      </div>
-    </el-dialog>
-
-    <!-- 功能列表 -->
-    <Pagination v-if="this.projectId !== undefined">
-      <el-table
-        v-if="this.projectId !== undefined"
-        :data="tableData"
-        style="margin-bottom: 20px;"
-        row-key="id"
-        strip
-        border
-        lazy
-        :load="load"
-        :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
-      >
-        <el-table-column width="50"></el-table-column>
-        <el-table-column type="index" label="序号" width="70"></el-table-column>
-        <el-table-column prop="id" label="功能ID" width="180"></el-table-column>
-        <el-table-column prop="name" label="功能名称" width="180"></el-table-column>
-        <el-table-column prop="description" label="功能描述"></el-table-column>
-
-        <el-table-column
-          fixed="right"
-          label="操作"
-          width="180px"
+    <div v-if="this.getInfoPermission === true">
+      <!--工具条：搜索栏-->
+      <PageHeader title="功能列表">
+        <Search
+          v-if="this.projectId !== undefined"
+          placeholder="请输入功能名称"
+          :query-search="querySearch"
+          @search="searchFunctions"
+          @select-suggestion="getOne"
+        >
+          <!-- <span style="float: left">{{ item.value }}</span>
+          <span style="float: right; color: #8492a6; font-size: 13px">{{item.id}}</span>-->
+        </Search>
+        <!-- <el-input prefix-icon="el-icon-search" v-model="search" style="width: 200px" placeholder="输入关键字搜索"></el-input> -->
+        <el-button
+          type="primary"
+          class="add-btn"
+          @click="addFirst"
           v-if="
+          this.state !== '结束' &&
+            this.state !== '已归档' &&
+            this.state !== '申请立项' &&
+            this.state !== '立项驳回' &&
+            this.permission === true
+        "
+        >新增</el-button>
+        <el-button
+          type="primary"
+          class="add-btn"
+          @click="addExcelFormVisible = true"
+          v-if="
+          this.state !== '结束' &&
+            this.state !== '已归档' &&
+            this.state !== '申请立项' &&
+            this.state !== '立项驳回' &&
+            this.permission === true
+        "
+        >导入</el-button>
+        <el-button type="primary" class="add-btn" v-if="this.permission===true">下载</el-button>
+      </PageHeader>
+
+      <!-- 导入excel -->
+      <el-dialog title="导入项目成员信息" :visible.sync="addExcelFormVisible">
+        <el-upload
+          action="https://jsonplaceholder.typicode.com/posts/"
+          :file-list="fileList"
+          accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+          :on-change="handleChange"
+          :on-success="handleSuccess"
+          :on-error="handleError"
+        >
+          <el-button size="small" type="primary">点击上传excel文件</el-button>
+        </el-upload>
+
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="addExcelFormVisible = false">取消</el-button>
+          <el-button type="primary" @click="submitUpload" :loading="submitLoading">提交</el-button>
+        </div>
+      </el-dialog>
+
+      <!-- 功能列表 -->
+      <Pagination v-if="this.projectId !== undefined">
+        <el-table
+          v-if="this.projectId !== undefined"
+          :data="tableData"
+          style="margin-bottom: 20px;"
+          row-key="id"
+          strip
+          border
+          lazy
+          :load="load"
+          :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
+        >
+          <el-table-column width="50"></el-table-column>
+          <el-table-column type="index" label="序号" width="70"></el-table-column>
+          <el-table-column prop="id" label="功能ID" width="180"></el-table-column>
+          <el-table-column prop="name" label="功能名称" width="180"></el-table-column>
+          <el-table-column prop="description" label="功能描述"></el-table-column>
+
+          <el-table-column
+            fixed="right"
+            label="操作"
+            width="180px"
+            v-if="
             this.state !== '结束' &&
               this.state !== '已归档' &&
               this.state !== '申请立项' &&
               this.state !== '立项驳回' &&
               this.permission === true
           "
-          v-permission="'归档申请'"
-        >
-          <template slot-scope="scope">
-            <el-button-group>
-              <el-button
-                size="medium"
-                @click="addSubFunction(scope.$index, scope.row)"
-                icon="el-icon-plus"
-              ></el-button>
-              <el-button
-                size="medium"
-                type="primary"
-                @click="editFunction(scope.$index, scope.row)"
-                icon="el-icon-edit"
-              ></el-button>
-              <el-button
-                size="medium"
-                type="danger"
-                @click="deleteFunction(scope.$index, scope.row)"
-                icon="el-icon-delete"
-              ></el-button>
-            </el-button-group>
-          </template>
-        </el-table-column>
-      </el-table>
-    </Pagination>
+            v-permission="'归档申请'"
+          >
+            <template slot-scope="scope">
+              <el-button-group>
+                <el-button
+                  size="medium"
+                  @click="addSubFunction(scope.$index, scope.row)"
+                  icon="el-icon-plus"
+                ></el-button>
+                <el-button
+                  size="medium"
+                  type="primary"
+                  @click="editFunction(scope.$index, scope.row)"
+                  icon="el-icon-edit"
+                ></el-button>
+                <el-button
+                  size="medium"
+                  type="danger"
+                  @click="deleteFunction(scope.$index, scope.row)"
+                  icon="el-icon-delete"
+                ></el-button>
+              </el-button-group>
+            </template>
+          </el-table-column>
+        </el-table>
+      </Pagination>
 
-    <!-- 新增 -->
-    <el-dialog title="新增项目功能" :visible.sync="addFormVisible">
-      <el-form label-width="150px" class="demo-ruleForm">
-        <!-- <el-form-item label="项目ID" required>
+      <!-- 新增 -->
+      <el-dialog title="新增项目功能" :visible.sync="addFormVisible">
+        <el-form label-width="150px" class="demo-ruleForm">
+          <!-- <el-form-item label="项目ID" required>
           <el-input v-model="addForm.id" placeholder="请填写项目ID"></el-input>
-        </el-form-item>-->
+          </el-form-item>-->
 
-        <el-form-item label="功能名称" required>
-          <el-input v-model="addForm.name" placeholder="请填写项目名称"></el-input>
-        </el-form-item>
+          <el-form-item label="功能名称" required>
+            <el-input v-model="addForm.name" placeholder="请填写项目名称"></el-input>
+          </el-form-item>
 
-        <el-form-item label="功能描述">
-          <el-input type="textarea" v-model="addForm.description" placeholder="请填写项目描述"></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="addFormVisible = false">取消</el-button>
-        <el-button type="primary" @click="submitAddForm" :loading="submitLoading">提交</el-button>
-      </div>
-    </el-dialog>
+          <el-form-item label="功能描述">
+            <el-input type="textarea" v-model="addForm.description" placeholder="请填写项目描述"></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="addFormVisible = false">取消</el-button>
+          <el-button type="primary" @click="submitAddForm" :loading="submitLoading">提交</el-button>
+        </div>
+      </el-dialog>
 
-    <!-- 修改 -->
-    <el-dialog title="修改项目功能" :visible.sync="editFormVisible">
-      <el-form label-width="150px" class="demo-ruleForm">
-        <!-- <el-form-item label="项目ID" required>
+      <!-- 修改 -->
+      <el-dialog title="修改项目功能" :visible.sync="editFormVisible">
+        <el-form label-width="150px" class="demo-ruleForm">
+          <!-- <el-form-item label="项目ID" required>
           <el-input v-model="editForm.id" placeholder="请填写项目ID"></el-input>
-        </el-form-item>-->
+          </el-form-item>-->
 
-        <el-form-item label="项目名称" required>
-          <el-input v-model="editForm.name" placeholder="请填写项目名称"></el-input>
-        </el-form-item>
+          <el-form-item label="项目名称" required>
+            <el-input v-model="editForm.name" placeholder="请填写项目名称"></el-input>
+          </el-form-item>
 
-        <el-form-item label="项目描述">
-          <el-input type="textarea" v-model="editForm.description" placeholder="请填写项目描述"></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="editFormVisible = false">取消</el-button>
-        <el-button type="primary" @click="submitEditForm" :loading="submitLoading">提交</el-button>
-      </div>
-    </el-dialog>
+          <el-form-item label="项目描述">
+            <el-input type="textarea" v-model="editForm.description" placeholder="请填写项目描述"></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="editFormVisible = false">取消</el-button>
+          <el-button type="primary" @click="submitEditForm" :loading="submitLoading">提交</el-button>
+        </div>
+      </el-dialog>
+    </div>
+    <el-row v-if="this.projectId === undefined">
+      <el-col :span="24">
+        <el-tag type="success" effect="dark">请选择项目</el-tag>
+      </el-col>
+    </el-row>
+    <el-row v-if="this.projectId !== undefined && this.getInfoPermission !== true">
+      <el-col :span="24">
+        <el-tag type="success" effect="dark">无权限查看</el-tag>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
@@ -182,6 +188,7 @@ export default {
     return {
       state: "",
       permission: false,
+      getInfoPermission: false,
       // 搜索
       keyword: "",
       functionSearch: [],
@@ -209,16 +216,26 @@ export default {
   },
   methods: {
     // 获取项目权限
-    async getPermission(projectId){
-      var info =await Project.getPermissions(projectId);
+    async getPermission(projectId) {
+      var info = await Project.getPermissions(projectId);
       console.log(info);
-      for(var i=0;i<info.length;++i){
-        if(info[i].name==="管理项目功能列表"){
-          this.permission=true;
+      for (var i = 0; i < info.length; ++i) {
+        if (info[i].name === "管理项目功能列表") {
+          this.permission = true;
+          this.getInfoPermission = true;
           break;
         }
+        if(info[i].name ==="查询项目功能列表"){
+          this.getInfoPermission = true;
+        }
       }
-      console.log("permission: "+ this.permission);
+            if (this.getInfoPermission === false) {
+        this.$message({
+          message: "无权限查看！",
+          type: "warning"
+        });
+      }
+      console.log("permission: " + this.permission);
     },
     showInfo() {},
     // 获取一级功能列表并展示
