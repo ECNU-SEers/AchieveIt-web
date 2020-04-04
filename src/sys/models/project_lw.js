@@ -4,6 +4,16 @@ export default class ProjectLW {
   constructor() {
     
   }
+  /**
+   * 获取用户当前项目权限
+   * @param {number} projectId
+   */
+  static async getMyPermissions(projectId){
+    const res = await get(
+      "/project/"+projectId+"/permissions/me"
+    );
+    return res;
+  }
 
   /************设备***************/
   /**

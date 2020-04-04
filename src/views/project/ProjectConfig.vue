@@ -13,6 +13,7 @@
           style="float: right; padding: 3px 0"
           type="text"
           :disabled="this.projectStateTrigger == true ? false : true"
+           v-if="this.permissions.indexOf('管理项目配置信息')> -1"
           @click="
             editFormVisible = true;
             edit();
@@ -95,6 +96,7 @@
 import ProjectLW from "@/sys/models/project_lw";
 import PageHeader from "@/components/common/PageHeader";
 import ProjectSYJ from "@/sys/models/project_syj";
+import { mapGetters } from "vuex";
 
 export default {
   components: {
@@ -143,6 +145,9 @@ export default {
       hiddenTableHeader: false
     };
   },
+  computed: {
+    ...mapGetters(["permissions"])
+  },
   mounted() {
     this.projectId = this.$route.query.projectId;
     this.outerId = this.$route.query.outerId;
@@ -153,6 +158,9 @@ export default {
         type: "warning"
       });
     } else {
+       this.getMyPermissions(this.projectId);
+   // console.log("getMypermission="+this.permissions);
+
       if (
         this.projectState != "申请立项" &&
         this.projectState != "立项驳回" &&
@@ -169,6 +177,16 @@ export default {
     }
   },
   methods: {
+     //获取用户当前项目权限
+    async getMyPermissions(){
+      const res =await ProjectLW.getMyPermissions(this.projectId);
+        var tmp="";
+      res.forEach(item=>{
+          tmp=item.name;
+          this.permissions.push(tmp);
+      });
+    },
+
     // 信息显示
     async getConfig() {
       this.fileTrigger = true;

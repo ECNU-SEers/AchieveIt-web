@@ -16,7 +16,7 @@
         @click="addFormVisible = true"
         type="primary"
         :disabled="this.projectStateTrigger == true ? false : true"
-        v-if="this.projectId !== undefined"
+        v-if="(this.projectId !== undefined )&&  (this.permissions.indexOf('新增项目设备信息')> -1)"
         >新增</el-button
       >
     </PageHeader>
@@ -116,6 +116,7 @@
               <el-button
                 type="primary"
                 :disabled="this.projectStateTrigger == true ? false : true"
+                 v-if="this.permissions.indexOf('修改项目设备信息')> -1"
                 icon="el-icon-edit"
                 size="medium"
                 @click="
@@ -300,6 +301,7 @@ import Search from "@/components/common/Search";
 import PageHeader from "@/components/common/PageHeader";
 import Pagination from "@/components/common/Pagination";
 import ProjectLW from "@/sys/models/project_lw";
+import { mapGetters } from "vuex";
 
 export default {
   components: {
@@ -378,6 +380,9 @@ export default {
       }
     };
   },
+  computed: {
+    ...mapGetters(["permissions"])
+  },
   mounted() {
     this.projectId = this.$route.query.projectId;
     this.projectState = this.$route.query.projectState;
@@ -387,6 +392,8 @@ export default {
         type: "warning"
       });
     } else {
+      this.getMyPermissions(this.projectId);
+   // console.log("getMypermission="+this.permissions);
       if (
         this.projectState != "申请立项" &&
         this.projectState != "立项驳回" &&
@@ -400,6 +407,16 @@ export default {
     }
   },
   methods: {
+     //获取用户当前项目权限
+    async getMyPermissions(){
+      const res =await ProjectLW.getMyPermissions(this.projectId);
+        var tmp="";
+      res.forEach(item=>{
+          tmp=item.name;
+          this.permissions.push(tmp);
+      });
+    },
+
     //列表展示
     async getDeviceList(keyword) {
       const res = await ProjectLW.getDeviceList(

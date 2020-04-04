@@ -14,7 +14,7 @@
       <!--新增风险信息-->
       <el-button
         class="add-btn"
-        v-if="this.projectId !== undefined"
+        v-if="(this.projectId !== undefined) && (this.permissions.indexOf('新增风险')> -1)"
         @click="addFormVisible = true"
         type="primary"
         :disabled="this.projectStateTrigger == true ? false : true"
@@ -24,7 +24,7 @@
       <!--导入-->
       <el-button
         class="add-btn"
-        v-if="this.projectId !== undefined"
+        v-if="this.projectId !== undefined && (this.permissions.indexOf('导入风险')> -1)"
         @click="importFormVisible = true"
         type="primary"
         :disabled="this.projectStateTrigger == true ? false : true"
@@ -120,6 +120,7 @@
               <el-button
                 type="primary"
                 :disabled="this.projectStateTrigger == true ? false : true"
+                 v-if="this.permissions.indexOf('修改风险信息')> -1"
                 icon="el-icon-edit"
                 size="medium"
                 @click="
@@ -131,6 +132,7 @@
               <el-button
                 type="danger"
                 :disabled="this.projectStateTrigger == true ? false : true"
+                v-if="this.permissions.indexOf('删除风险信息')> -1"
                 size="medium"
                 icon="el-icon-delete"
                 @click="deleteSubmit(row)"
@@ -440,6 +442,7 @@ import Search from "@/components/common/Search";
 import PageHeader from "@/components/common/PageHeader";
 import Pagination from "@/components/common/Pagination";
 import ProjectLW from "@/sys/models/project_lw";
+import { mapGetters } from "vuex";
 
 export default {
   components: {
@@ -591,6 +594,9 @@ export default {
       ]
     };
   },
+   computed: {
+    ...mapGetters(["permissions"])
+  },
   mounted() {
     this.projectId = this.$route.query.projectId;
     this.projectState = this.$route.query.projectState;
@@ -600,7 +606,8 @@ export default {
         type: "warning"
       });
     } else {
-      //console.log(this.projectId);
+      this.getMyPermissions(this.projectId);
+    console.log("getMypermission="+this.permissions);
 
       if (
         this.projectState != "申请立项" &&
@@ -616,6 +623,16 @@ export default {
     }
   },
   methods: {
+
+    //获取用户当前项目权限
+    async getMyPermissions(){
+      const res =await ProjectLW.getMyPermissions(this.projectId);
+        var tmp="";
+      res.forEach(item=>{
+          tmp=item.name;
+          this.permissions.push(tmp);
+      });
+    },
     //列表展示
     async getRiskList() {
       var _this = this;
