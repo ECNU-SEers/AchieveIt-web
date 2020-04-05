@@ -9,11 +9,12 @@
         @select-suggestion="getRisk"
         value-key="name"
       ></Search>
-      <div style="width:20px;height=100%;"></div>
+      <!-- <div style="width:20px;height=100%;"></div> -->
 
       <!--新增风险信息-->
       <el-button                                                                            
         class="add-btn"
+<<<<<<< HEAD
         v-if="
          (this.projectId !== undefined )&&
             (this.permissions.indexOf('新增风险') > -1)
@@ -21,12 +22,23 @@
         @click="addFormVisible = true"
         type="primary"
         :disabled="this.projectStateTrigger == true ? false : true"
+=======
+        @click="addFormVisible = true"
+        type="primary"
+        v-if="
+          this.projectState !== '结束' &&
+            this.projectState !== '已归档' &&
+            this.projectState !== '申请立项' &&
+            this.projectState !== '立项驳回'
+        "
+>>>>>>> beb9060e57be33c2c47aad7b3cd476b34a8728d2
         >新增</el-button
       >
 
       <!--导入-->
       <el-button
         class="add-btn"
+<<<<<<< HEAD
         v-if="
           (this.projectId !== undefined) &&
             (this.permissions.indexOf('新增风险') > -1)
@@ -34,6 +46,16 @@
         @click="importFormVisible = true"
         type="primary"
         :disabled="this.projectStateTrigger == true ? false : true"
+=======
+        @click="importFormVisible = true"
+        type="primary"
+        v-if="
+          this.projectState !== '结束' &&
+            this.projectState !== '已归档' &&
+            this.projectState !== '申请立项' &&
+            this.projectState !== '立项驳回'
+        "
+>>>>>>> beb9060e57be33c2c47aad7b3cd476b34a8728d2
         >导入</el-button
       >
     </PageHeader>
@@ -105,7 +127,11 @@
             </el-form>
           </template>
         </el-table-column>
-        <el-table-column label="序号" type="index"></el-table-column>
+        <el-table-column
+          label="序号"
+          type="index"
+          width="70px"
+        ></el-table-column>
         <el-table-column label="风险 ID" prop="id"></el-table-column>
         <el-table-column label="风险名称" prop="name"></el-table-column>
         <el-table-column label="风险类型" prop="type"></el-table-column>
@@ -120,7 +146,17 @@
         <el-table-column label="风险来源" prop="source"></el-table-column>-->
 
         <!---编辑和移除-->
-        <el-table-column label="操作" width="180px" prop="action">
+        <el-table-column
+          label="操作"
+          width="180px"
+          prop="action"
+          v-if="
+            this.projectState !== '结束' &&
+              this.projectState !== '已归档' &&
+              this.projectState !== '申请立项' &&
+              this.projectState !== '立项驳回'
+          "
+        >
           <template slot-scope="{ row }">
             <el-button-group>
               <el-button

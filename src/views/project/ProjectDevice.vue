@@ -8,17 +8,25 @@
         @select-suggestion="getDevice"
       >
       </Search>
-      <div style="width:20px;height=100%;"></div>
+      <!-- <div style="width:20px;height=100%;"></div> -->
 
       <!--新增-->
       <el-button
         class="add-btn"
         @click="addFormVisible = true"
         type="primary"
+<<<<<<< HEAD
         :disabled="this.projectStateTrigger == true ? false : true"
         v-if="
           (this.projectId !== undefined )&&
             (this.permissions.indexOf('管理项目设备信息') > -1)
+=======
+        v-if="
+          this.projectState !== '结束' &&
+            this.projectState !== '已归档' &&
+            this.projectState !== '申请立项' &&
+            this.projectState !== '立项驳回'
+>>>>>>> beb9060e57be33c2c47aad7b3cd476b34a8728d2
         "
         >新增</el-button
       >
@@ -112,8 +120,18 @@
 
         <el-table-column label="归还日期" prop="returnDate"></el-table-column>
 
-        <!---编辑-->
-        <el-table-column label="操作" width="180px" prop="action">
+        <!---编辑和删除-->
+        <el-table-column
+          label="操作"
+          width="180px"
+          prop="action"
+          v-if="
+            this.projectState !== '结束' &&
+              this.projectState !== '已归档' &&
+              this.projectState !== '申请立项' &&
+              this.projectState !== '立项驳回'
+          "
+        >
           <template slot-scope="{ row }">
             <el-button-group>
               <el-button
@@ -318,9 +336,15 @@ export default {
       pageNo: 1,
       pageSize: 10,
       projectId: 1,
+<<<<<<< HEAD
       projectState: "",
       projectStateTrigger: "",
       permissions:[],
+=======
+      projectState:"",
+      projectStateTrigger:"",
+
+>>>>>>> beb9060e57be33c2c47aad7b3cd476b34a8728d2
 
       //列表
       deviceData: [],
