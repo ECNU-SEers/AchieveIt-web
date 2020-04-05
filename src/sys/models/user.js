@@ -43,17 +43,19 @@ export default class User {
    * 获取当前用户信息和所拥有的权限
    */
   static async getPermissions() {
-    const info = await get("/view/permissions/me");
-    let permissions = [];
-    Object.keys(info).forEach(key => {
+    const { permissions, user } = await get("/view/permissions/me");
+    let _permissions = [];
+    Object.keys(permissions).forEach(key => {
       let permission = {};
-      permission[key] = info[key];
-      permissions.push(permission);
+      permission[key] = permissions[key];
+      _permissions.push(permission);
     });
-    let user = { nickname: "四月科技", avatar: null };
-    user["permissions"] = permissions;
+    const _user = {
+      nickname: user.realName || user.nickname,
+      permissions: _permissions
+    };
     const storeUser = store.getters.user === null ? {} : store.getters.user;
-    return Object.assign({ ...storeUser }, user);
+    return Object.assign({ ...storeUser }, _user);
   }
 
   /**
