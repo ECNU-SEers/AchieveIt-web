@@ -6,8 +6,10 @@
     :page-change-handler="handleCurrentChange"
   >
     <el-table :data="tableData" class="table" v-loading="loading">
-      <el-table-column type="index" :index="index => index + 1" />
       <slot name="prefix"></slot>
+      <el-table-column label="序号" :width="70">
+        <span slot-scope="scope">{{ scope.$index + 1 }}</span>
+      </el-table-column>
       <el-table-column
         v-for="(item, index) in tableHeader"
         :key="index"
