@@ -344,21 +344,19 @@ export default {
       pageNo: 1,
       pageSize: 10,
       projectId: 1,
-<<<<<<< HEAD
-<<<<<<< HEAD
+
       projectState: "",
       projectStateTrigger: "",
       permissions:[],
-=======
+
       projectState:"",
       projectStateTrigger:"",
 
->>>>>>> beb9060e57be33c2c47aad7b3cd476b34a8728d2
-=======
+
       projectState: "",
       projectStateTrigger: "",
       permissions:[],
->>>>>>> 2c63d917ed95836944471bce185021f9d03770b7
+
 
       //列表
       deviceData: [],
