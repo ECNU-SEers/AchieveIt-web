@@ -16,7 +16,7 @@
         @click="addFormVisible = true"
         type="primary"
         v-if="
-          his.projectState !== '结束' &&
+          this.projectState !== '结束' &&
             this.projectState !== '已归档' &&
             this.projectState !== '申请立项' &&
             this.projectState !== '立项驳回'&&
