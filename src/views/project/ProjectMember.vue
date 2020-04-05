@@ -235,11 +235,7 @@
 
         <!-- 单选 -->
         <el-form-item label="项目中的上级">
-          <el-select
-            v-model="editForm.leader"
-            value-key="userId"
-            placeholder="请选择项目中的上级"
-          >
+          <el-select v-model="editForm.leader" value-key="userId" placeholder="请选择项目中的上级" clearable>
             <el-option
               v-for="item in tableData"
               :key="item.userId"

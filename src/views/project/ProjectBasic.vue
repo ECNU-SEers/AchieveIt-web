@@ -539,6 +539,7 @@ export default {
               message: "已提交!"
             });
             this.dialogFormVisible = false;
+            this.getBasic(this.outerId);
           });
         } else {
           console.log("error submit!!");
