@@ -22,9 +22,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/13</span>
+                <span class='fraction'>11/11</span>
             </div>
         
             
@@ -36,16 +36,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/6</span>
+                <span class='fraction'>6/6</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/13</span>
+                <span class='fraction'>11/11</span>
             </div>
         
             
@@ -54,7 +54,7 @@
             Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
         </p>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -158,10 +158,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -173,12 +173,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -188,17 +188,17 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -207,77 +207,77 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">&lt;template&gt;
-  &lt;el-dialog title="编辑角色" :visible="visibility" :before-close="close"&gt;
-    &lt;el-form v-model="form"&gt;
-      &lt;el-form-item label="角色名称"&gt;
-        &lt;el-input v-model="form.name" /&gt;
-      &lt;/el-form-item&gt;
-      &lt;el-form-item label="创建人"&gt;
-        &lt;el-input readonly disabled :value="creator" /&gt;
-      &lt;/el-form-item&gt;
-      &lt;el-form-item&gt;
-        &lt;RolePermissions
-          @updatePermissions="updatePermissions"
-          @updateAllPermissions="updateAllPermissions"
-          title="分配权限"
-          :permissions="permissions"
-        &gt;
-        &lt;/RolePermissions&gt;
-      &lt;/el-form-item&gt;
-    &lt;/el-form&gt;
-    &lt;span slot="footer"&gt;
+    &lt;el-dialog title="编辑角色" :visible="visibility" :before-close="close"&gt;
+        &lt;el-form v-model="form"&gt;
+            &lt;el-form-item label="角色名称"&gt;
+                &lt;el-input v-model="form.name"/&gt;
+            &lt;/el-form-item&gt;
+            &lt;el-form-item label="创建人"&gt;
+                &lt;el-input readonly disabled :value="creator"/&gt;
+            &lt;/el-form-item&gt;
+            &lt;el-form-item&gt;
+                &lt;RolePermissions
+                        @updatePermissions="updatePermissions"
+                        @updateAllPermissions="updateAllPermissions"
+                        title="分配权限"
+                        :permissions="permissions"
+                &gt;
+                &lt;/RolePermissions&gt;
+            &lt;/el-form-item&gt;
+        &lt;/el-form&gt;
+        &lt;span slot="footer"&gt;
       &lt;el-button @click="close"&gt;取 消&lt;/el-button&gt;
-      &lt;el-button type="primary" @click="onEditRole"&gt;确 定&lt;/el-button&gt;
+      &lt;el-button ref="btn" type="primary" @click="onEditRole"&gt;确 定&lt;/el-button&gt;
     &lt;/span&gt;
-  &lt;/el-dialog&gt;
+    &lt;/el-dialog&gt;
 &lt;/template&gt;
 &nbsp;
 &lt;script&gt;
-<span class="cstat-no" title="statement not covered" >import RolePermissions from '@/views/admin/role/RolePermissions';</span>
-<span class="cstat-no" title="statement not covered" >import { editUserRole } from '@/api/permisssion';</span>
-<span class="cstat-no" title="statement not covered" >import { permissions } from '../../../store/getters';</span>
-<span class="cstat-no" title="statement not covered" >import { dialogMixin } from '../../../util/mixin';</span>
+  import RolePermissions from '@/views/admin/role/RolePermissions';
+  import {editUserRole} from '@/api/permisssion';
+  import {permissions} from '../../../store/getters';
+  import {dialogMixin} from '../../../util/mixin';
 &nbsp;
-export default {
-  components: {
-    RolePermissions
-  },
-  props: {
-    id: Number,
-    name: String,
-    creator: String,
-    permissions: {
-      type: Array,
-<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >      default: () =&gt; []</span></span>
-    }
-  },
-  mixins: [dialogMixin],
-<span class="fstat-no" title="function not covered" >  data() {</span>
-<span class="cstat-no" title="statement not covered" >    return {</span>
-      allPermissions: [], // 所有权限
-      form: {
-        name: this.name,
-        permissions: this.permissions
+  export default {
+    components: {
+      RolePermissions
+    },
+    props: {
+      id: Number,
+      name: String,
+      creator: String,
+      permissions: {
+        type: Array,
+        default: () =&gt; []
       }
-    };
-  },
-  methods: {
-<span class="fstat-no" title="function not covered" >    updatePermissions(permissions) {</span>
-<span class="cstat-no" title="statement not covered" >      this.form.permissions = permissions;</span>
     },
-<span class="fstat-no" title="function not covered" >    updateAllPermissions(allPermissions) {</span>
-<span class="cstat-no" title="statement not covered" >      this.allPermissions = allPermissions;</span>
+    mixins: [dialogMixin],
+    data() {
+      return {
+        allPermissions: [], // 所有权限
+        form: {
+          name: this.name,
+          permissions: this.permissions
+        }
+      };
     },
-<span class="fstat-no" title="function not covered" >    onEditRole() {</span>
-<span class="cstat-no" title="statement not covered" >      const { name, permissions } = this.form;</span>
-<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >      editUserRole(this.id, name, permissions).then(() =&gt; {</span></span>
-<span class="cstat-no" title="statement not covered" >        this.$message.success('更新角色成功');</span>
-<span class="cstat-no" title="statement not covered" >        this.$emit('success');</span>
-<span class="cstat-no" title="statement not covered" >        this.close();</span>
-      });
+    methods: {
+      updatePermissions(permissions) {
+        this.form.permissions = permissions;
+      },
+      updateAllPermissions(allPermissions) {
+        this.allPermissions = allPermissions;
+      },
+      onEditRole() {
+        const {name, permissions} = this.form;
+        editUserRole(this.id, name, permissions).then(() =&gt; {
+          this.$message.success('更新角色成功');
+          // this.close();
+          // this.$emit('success');
+        });
+      }
     }
-  }
-};
+  };
 &lt;/script&gt;
 &nbsp;
 &lt;style lang="scss" scoped&gt;&lt;/style&gt;
@@ -288,7 +288,11 @@ export default {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
+<<<<<<< HEAD
                 at Fri Apr 03 2020 15:06:26 GMT+0800 (GMT+08:00)
+=======
+                at Fri Apr 03 2020 23:07:02 GMT+0800 (China Standard Time)
+>>>>>>> a59a28e3882027cd7d5d37edbd8475e8d3a7fa51
             </div>
         </div>
         <script src="..\prettify.js"></script>

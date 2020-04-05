@@ -12,16 +12,14 @@
         <el-button
           style="float: right; padding: 3px 0"
           type="text"
-          :disabled="this.projectStateTrigger==true ? false:true"
+          :disabled="this.projectStateTrigger == true ? false : true"
+           v-if="this.permissions.indexOf('管理项目配置信息') > -1 && this.projectState !== '结束' &&
+              this.projectState !== '已归档' &&
+              this.projectState !== '申请立项' &&
+              this.projectState !== '立项驳回'"
           @click="
             editFormVisible = true;
             edit();
-          "
-          v-if="
-            this.projectState !== '结束' &&
-              this.projectState !== '已归档' &&
-              this.projectState !== '申请立项' &&
-              this.projectState !== '立项驳回'
           "
           >编辑</el-button
         >
@@ -46,14 +44,14 @@
             <!-- 布尔开关 仅第一次可修改 -->
             <el-form-item label="文件服务器目录" prop="fileCatalog">
               <el-tooltip
-                :content="'当前情况: ' + editForm.fileAddValue"
+                :content="'当前情况: ' + this.editForm.fileAddValue"
                 placement="top"
               >
                 <el-switch
                   ref="file"
                   v-model="editForm.fileAddValue"
-                  active-value="true"
-                  inactive-value="false"
+                  :active-value="true"
+                  :inactive-value="false"
                   :disabled="this.fileTrigger == false ? false : true"
                 ></el-switch>
               </el-tooltip>
@@ -62,14 +60,14 @@
             <!-- 布尔开关 仅第一次可修改 -->
             <el-form-item label="邮件" prop="email">
               <el-tooltip
-                :content="'当前情况: ' + editForm.emailValue"
+                :content="'当前情况: ' + this.editForm.emailValue"
                 placement="top"
               >
                 <el-switch
                   ref="file"
                   v-model="editForm.emailValue"
-                  active-value="true"
-                  inactive-value="false"
+                  :active-value="true"
+                  :inactive-value="false"
                   :disabled="this.emailTrigger == false ? false : true"
                 ></el-switch>
               </el-tooltip>
@@ -101,6 +99,7 @@
 import ProjectLW from "@/sys/models/project_lw";
 import PageHeader from "@/components/common/PageHeader";
 import ProjectSYJ from "@/sys/models/project_syj";
+import { mapGetters } from "vuex";
 
 export default {
   components: {
@@ -114,12 +113,13 @@ export default {
       projectId: "",
       outerId: "",
       projectState: "",
-      fileTrigger: "true",
-      emailTrigger: "true",
+      fileTrigger: "",
+      emailTrigger: "",
       git: "true",
       virtual: "true",
       done: "false",
-      projectStateTrigger:"",
+      projectStateTrigger: "",
+      permissions:[],
       tableData: [
         {
           name: "Git仓库地址",
@@ -149,6 +149,9 @@ export default {
       hiddenTableHeader: false
     };
   },
+  // computed: {
+  //   ...mapGetters(["permissions"])
+  // },
   mounted() {
     this.projectId = this.$route.query.projectId;
     this.outerId = this.$route.query.outerId;
@@ -159,58 +162,80 @@ export default {
         type: "warning"
       });
     } else {
-     
-      if(this.projectState!="申请立项" && this.projectState!="立项驳回"  && this.projectState!="已归档" ){
-        this.projectStateTrigger=true;
-      }else {
-        this.projectStateTrigger=false;
+      this.getMyPermissions(this.projectId);
+      // console.log("getMypermission="+this.permissions);
+
+      if (
+        this.projectState != "申请立项" &&
+        this.projectState != "立项驳回" &&
+        this.projectState != "已归档"
+      ) {
+        this.projectStateTrigger = true;
+      } else {
+        this.projectStateTrigger = false;
       }
-      console.log("projectStateTrigger="+this.projectStateTrigger);
-      if(this.projectState!="申请立项" && this.projectState!= "立项驳回"  ){
-         this.getConfig();
+      console.log("projectStateTrigger=" + this.projectStateTrigger);
+      if (this.projectState != "申请立项" && this.projectState != "立项驳回") {
+     //   if(this.permissions.indexOf('查询项目配置信息') > -1){
+        this.getConfig();
+      //  }
       }
     }
   },
   methods: {
+   //获取用户当前项目权限
+    async getMyPermissions() {
+      const res = await ProjectLW.getMyPermissions(this.projectId);
+      var obj = "";
+      res.forEach(item => {
+        obj = item.name;
+       this.permissions.push(obj);
+      });
+      
+      console.log("getMypermission=" + this.permissions);
+    },
+
     // 信息显示
     async getConfig() {
-      this.fileTrigger = true;
-      this.emailTrigger = true;
-      this.git = true;
-      this.virtual = true;
+      var _this = this
+      _this.fileTrigger = true;
+      _this.emailTrigger = true;
+      _this.git = true;
+      _this.virtual = true;
       const res = await ProjectLW.getConfig(this.projectId);
       // console.log("res.sMailConfirmed:"+res.isMailConfirmed);
-      this.tableData[0].detail = res.gitRepoAddress;
-      this.tableData[1].detail = res.virtualMachineSpace;
-      if (res.gitRepoAddress == ("" || null)) this.git = false;
-      else this.git = true;
-      if (res.virtualMachineSpace == ("" || null)) this.virtual = false;
-      else this.virtual = true;
+      _this.tableData[0].detail = res.gitRepoAddress;
+      _this.tableData[1].detail = res.virtualMachineSpace;
+      if (res.gitRepoAddress == ("" || null)){ _this.git = false;}
+      else{ _this.git = true;}
+      if (res.virtualMachineSpace == ("" || null)){ _this.virtual = false;}
+      else{ _this.virtual = true;}
       // console.log(
       //   "res.isFileServerDirConfirmed=" + res.isFileServerDirConfirmed
       // );
       if (res.isFileServerDirConfirmed == false) {
-        this.fileTrigger = false;
-        this.tableData[2].detail = res.fileServerDir + "  ( 配置状态:未完成 )";
+        _this.fileTrigger = false;
+        _this.tableData[2].detail = res.fileServerDir + "  ( 配置状态:未完成 )";
       } else {
-        this.tableData[2].detail = res.fileServerDir;
+        _this.tableData[2].detail = res.fileServerDir;
       }
       // console.log("res.isMailConfirmed=" + res.isMailConfirmed);
       if (res.isMailConfirmed == false) {
-        this.emailTrigger = false;
-        this.tableData[3].detail = res.mail + "  ( 配置状态:未完成 )";
+        _this.emailTrigger = false;
+        _this.tableData[3].detail = res.mail + "  ( 配置状态:未完成 )";
       } else {
-        this.tableData[3].detail = res.mail;
+        _this.tableData[3].detail = res.mail;
       }
     },
 
     //编辑
     edit() {
+      var _this =this;
       this.editForm = {
-        GitAddress: this.tableData[0].detail,
-        virtualSpace: this.tableData[1].detail,
-        fileAddValue: this.fileTrigger,
-        emailValue: this.emailTrigger
+        GitAddress: _this.tableData[0].detail,
+        virtualSpace: _this.tableData[1].detail,
+        fileAddValue: _this.fileTrigger,
+        emailValue: _this.emailTrigger
       };
     },
     //确认编辑
@@ -224,21 +249,22 @@ export default {
         this.editForm.emailValue
       );
       this.editFormVisible = false;
-      this.$message.success("修改成功");
-      this.getConfig();
+       this.$message.success("修改成功");
       if (
-        this.editForm.fileAddValue === "true" &&
-        this.editForm.emailValue === "true" &&
+        this.editForm.fileAddValue == true &&
+        this.editForm.emailValue == true &&
         this.editForm.GitAddress !== (null || "") &&
         this.editForm.virtualSpace !== (null || "")
       ) {
         if (this.fileTrigger == false || this.emailTrigger == false) {
           //第1次配置完成，触发
-          // this.$message.success("配置完成");
+           this.$message.success("配置完成");
           console.log(this.outerId);
           ProjectSYJ.assignConfig(this.outerId);
         }
       }
+       this.getConfig();
+      
     }
   }
 };

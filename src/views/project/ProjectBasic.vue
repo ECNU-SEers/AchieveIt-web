@@ -84,8 +84,18 @@
 
             <!-- 文本框 -->
             <el-form-item label="主要里程碑" prop="milestone">
-              <el-input type="textarea" autosize :disabled="true" v-model="this.stones"></el-input>
-              <el-input type="textarea" autosize v-model="editForm.milestone"></el-input>
+              <el-input
+                type="textarea"
+                autosize
+                :disabled="true"
+                v-model="this.stones"
+              ></el-input>
+              <el-input
+                v-if="this.state !== '申请立项'"
+                type="textarea"
+                autosize
+                v-model="editForm.milestone"
+              ></el-input>
             </el-form-item>
 
             <!-- 多选 -->
