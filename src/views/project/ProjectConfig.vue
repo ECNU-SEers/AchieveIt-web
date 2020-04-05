@@ -13,7 +13,7 @@
           style="float: right; padding: 3px 0"
           type="text"
           :disabled="this.projectStateTrigger == true ? false : true"
-           v-if="this.permissions.indexOf('管理项目配置信息') > -1"
+          v-if="this.permissions.indexOf('管理项目配置信息') > -1"
           @click="
             editFormVisible = true;
             edit();
@@ -199,7 +199,7 @@ export default {
         obj = item.name;
        this.permissions.push(obj);
       });
-      
+
       console.log("getMypermission=" + this.permissions);
     },
 
@@ -276,7 +276,7 @@ export default {
         }
       }
        this.getConfig();
-      
+
     }
   }
 };

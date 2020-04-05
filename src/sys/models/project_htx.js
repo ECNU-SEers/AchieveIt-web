@@ -36,8 +36,10 @@ export default class Project {
    * 获取当前项目的一级功能列表
    * @param {string} projectId
    */
-  static async getFirstFunctionList(projectId,keyword) {
-    const info = await get("/project/" + projectId + "/functions?keyword="+keyword);
+  static async getFirstFunctionList(projectId, keyword) {
+    const info = await get(
+      "/project/" + projectId + "/functions?keyword=" + keyword
+    );
     console.log("interface getFirstFunction succcess");
     console.log(info);
     return info;
@@ -123,14 +125,16 @@ export default class Project {
    * @param {string} pageSize
    */
   static async getMemberList(projectId, page, pageSize, keyword) {
-
     const info = await get(
       "/project/" +
-      projectId +
-      "/members?page=" +
-      page +
-      "&pageSize=" +
-      pageSize + "&keyword=" + keyword);
+        projectId +
+        "/members?page=" +
+        page +
+        "&pageSize=" +
+        pageSize +
+        "&keyword=" +
+        keyword
+    );
     console.log("interface getMember succcess");
     console.log(info);
     return info;
@@ -267,38 +271,45 @@ export default class Project {
    * 搜索功能
    */
   static async searchFunctions(projectId, name) {
-    var info = get('/project/' + projectId + '/functions/search?name=' + name);
+    var info = get("/project/" + projectId + "/functions/search?name=" + name);
     console.log(info);
     return info;
   }
 
   /**
    * 获取单个功能
-   * @param {*} projectId 
-   * @param {*} name 
+   * @param {*} projectId
+   * @param {*} name
    */
   static async getOneFunction(projectId, functionId, keyword) {
-    return get('/project/' + projectId + '/functions/' + functionId + "?keyword=" + keyword);
+    return get(
+      "/project/" +
+        projectId +
+        "/functions/" +
+        functionId +
+        "?keyword=" +
+        keyword
+    );
   }
 
   /**
    * 搜索成员
    */
   static async searchMembers(projectId, name) {
-    return get('/project/' + projectId + '/members/search?name=' + name);
+    return get("/project/" + projectId + "/members/search?name=" + name);
   }
 
   /**
    * 获取单个成员
    */
   static async getOneMember(projectId, memberId) {
-    return get('/project/' + projectId + '/member/' + memberId);
+    return get("/project/" + projectId + "/member/" + memberId);
   }
 
   /**
    * 获取成员在项目中的权限
    */
-  static async getPermissions(projectId){
-    return get('/project/'+projectId+'/permissions/me');
+  static async getPermissions(projectId) {
+    return get("/project/" + projectId + "/permissions/me");
   }
 }

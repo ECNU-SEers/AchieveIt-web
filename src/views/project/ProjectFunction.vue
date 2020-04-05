@@ -19,26 +19,33 @@
           class="add-btn"
           @click="addFirst"
           v-if="
-          this.state !== '结束' &&
-            this.state !== '已归档' &&
-            this.state !== '申请立项' &&
-            this.state !== '立项驳回' &&
-            this.permission === true
-        "
-        >新增</el-button>
+            this.state !== '结束' &&
+              this.state !== '已归档' &&
+              this.state !== '申请立项' &&
+              this.state !== '立项驳回' &&
+              this.permission === true
+          "
+          >新增</el-button
+        >
         <el-button
           type="primary"
           class="add-btn"
           @click="addExcelFormVisible = true"
           v-if="
-          this.state !== '结束' &&
-            this.state !== '已归档' &&
-            this.state !== '申请立项' &&
-            this.state !== '立项驳回' &&
-            this.permission === true
-        "
-        >导入</el-button>
-        <el-button type="primary" class="add-btn" v-if="this.permission===true">下载</el-button>
+            this.state !== '结束' &&
+              this.state !== '已归档' &&
+              this.state !== '申请立项' &&
+              this.state !== '立项驳回' &&
+              this.permission === true
+          "
+          >导入</el-button
+        >
+        <el-button
+          type="primary"
+          class="add-btn"
+          v-if="this.permission === true"
+          >下载</el-button
+        >
       </PageHeader>
 
       <!-- 导入excel -->
@@ -56,7 +63,12 @@
 
         <div slot="footer" class="dialog-footer">
           <el-button @click="addExcelFormVisible = false">取消</el-button>
-          <el-button type="primary" @click="submitUpload" :loading="submitLoading">提交</el-button>
+          <el-button
+            type="primary"
+            @click="submitUpload"
+            :loading="submitLoading"
+            >提交</el-button
+          >
         </div>
       </el-dialog>
 
@@ -74,22 +86,37 @@
           :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
         >
           <el-table-column width="50"></el-table-column>
-          <el-table-column type="index" label="序号" width="70"></el-table-column>
-          <el-table-column prop="id" label="功能ID" width="180"></el-table-column>
-          <el-table-column prop="name" label="功能名称" width="180"></el-table-column>
-          <el-table-column prop="description" label="功能描述"></el-table-column>
+          <el-table-column
+            type="index"
+            label="序号"
+            width="70"
+          ></el-table-column>
+          <el-table-column
+            prop="id"
+            label="功能ID"
+            width="180"
+          ></el-table-column>
+          <el-table-column
+            prop="name"
+            label="功能名称"
+            width="180"
+          ></el-table-column>
+          <el-table-column
+            prop="description"
+            label="功能描述"
+          ></el-table-column>
 
           <el-table-column
             fixed="right"
             label="操作"
             width="180px"
             v-if="
-            this.state !== '结束' &&
-              this.state !== '已归档' &&
-              this.state !== '申请立项' &&
-              this.state !== '立项驳回' &&
-              this.permission === true
-          "
+              this.state !== '结束' &&
+                this.state !== '已归档' &&
+                this.state !== '申请立项' &&
+                this.state !== '立项驳回' &&
+                this.permission === true
+            "
             v-permission="'归档申请'"
           >
             <template slot-scope="scope">
@@ -125,16 +152,28 @@
           </el-form-item>-->
 
           <el-form-item label="功能名称" required>
-            <el-input v-model="addForm.name" placeholder="请填写项目名称"></el-input>
+            <el-input
+              v-model="addForm.name"
+              placeholder="请填写项目名称"
+            ></el-input>
           </el-form-item>
 
           <el-form-item label="功能描述">
-            <el-input type="textarea" v-model="addForm.description" placeholder="请填写项目描述"></el-input>
+            <el-input
+              type="textarea"
+              v-model="addForm.description"
+              placeholder="请填写项目描述"
+            ></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="addFormVisible = false">取消</el-button>
-          <el-button type="primary" @click="submitAddForm" :loading="submitLoading">提交</el-button>
+          <el-button
+            type="primary"
+            @click="submitAddForm"
+            :loading="submitLoading"
+            >提交</el-button
+          >
         </div>
       </el-dialog>
 
@@ -146,16 +185,28 @@
           </el-form-item>-->
 
           <el-form-item label="项目名称" required>
-            <el-input v-model="editForm.name" placeholder="请填写项目名称"></el-input>
+            <el-input
+              v-model="editForm.name"
+              placeholder="请填写项目名称"
+            ></el-input>
           </el-form-item>
 
           <el-form-item label="项目描述">
-            <el-input type="textarea" v-model="editForm.description" placeholder="请填写项目描述"></el-input>
+            <el-input
+              type="textarea"
+              v-model="editForm.description"
+              placeholder="请填写项目描述"
+            ></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="editFormVisible = false">取消</el-button>
-          <el-button type="primary" @click="submitEditForm" :loading="submitLoading">提交</el-button>
+          <el-button
+            type="primary"
+            @click="submitEditForm"
+            :loading="submitLoading"
+            >提交</el-button
+          >
         </div>
       </el-dialog>
     </div>
@@ -164,7 +215,9 @@
         <el-tag type="success" effect="dark">请选择项目</el-tag>
       </el-col>
     </el-row>
-    <el-row v-if="this.projectId !== undefined && this.getInfoPermission !== true">
+    <el-row
+      v-if="this.projectId !== undefined && this.getInfoPermission !== true"
+    >
       <el-col :span="24">
         <el-tag type="success" effect="dark">无权限查看</el-tag>
       </el-col>
@@ -225,11 +278,11 @@ export default {
           this.getInfoPermission = true;
           break;
         }
-        if(info[i].name ==="查询项目功能列表"){
+        if (info[i].name === "查询项目功能列表") {
           this.getInfoPermission = true;
         }
       }
-            if (this.getInfoPermission === false) {
+      if (this.getInfoPermission === false) {
         this.$message({
           message: "无权限查看！",
           type: "warning"
