@@ -10,7 +10,10 @@
     </el-row>
 
     <!--列表展示-->
-
+    <Pagination :current-page.sync="pageNo"
+      :page-size="pageSize"
+      :total="statesLength"
+      @page-change="handlePageChange">
     <el-table
       :data="stateData"
       stripe
@@ -27,7 +30,7 @@
       ></el-table-column>
 
       <el-table-column label="变更日期" prop="changeDate"></el-table-column>
-
+      <el-table-column label="变更操作" prop="operation"></el-table-column>
       <el-table-column label="变更状态" prop="latterState"></el-table-column>
       <el-table-column label="变更人姓名" prop="realName"></el-table-column>
 
@@ -47,6 +50,7 @@
         </template>
       </el-table-column> -->
     </el-table>
+    </Pagination>
 
     <!--备注-->
     <el-dialog
@@ -78,8 +82,13 @@ export default {
       projectState:"",
       remark: "",
 
+      pageNo: 1,
+      pageSize: 10,
+      statesLength: 0,
+
       //列表
       stateData: [],
+      pageData: [],
       detailFormVisible: false,
       pageTitle: "项目进展状态" + "{当前项目：" + this.projectId + "}"
     };
@@ -104,14 +113,17 @@ export default {
     //列表展示
     async getState() {
       const res = await ProjectLW.getState(this.outerId);
-      this.stateData = res;
+      this.pageData = res;
+      this.stateData = this.pageData.slice(0, this.pageSize);
       let i = 0;
+      this.statesLength = this.pageData.length;
       for (i = 0; i < this.stateData.length; i++) {
         if (this.stateData[i].changeDate !== null) {
           this.stateData[i].changeDate = moment(
             this.stateData[i].changeDate
           ).format("YYYY-MM-DD");
         }
+        this.stateData[i].latterState = this.stateData[i].formerState + '-->' + this.stateData[i].latterState;
       }
     },
 
@@ -119,6 +131,11 @@ export default {
     async getRemark() {
       const res = await ProjectLW.getRemark(this.outerId);
       this.remark = res.project.remark;
+    },
+
+    handlePageChange(val) {
+      this.pageNo = val;
+      this.stateData = this.pageData.slice(this.pageSize*(val-1), this.pageSize*val);
     }
   }
 };
