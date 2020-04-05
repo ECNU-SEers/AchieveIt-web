@@ -106,6 +106,7 @@
                 v-model="this.stones"
               ></el-input>
               <el-input
+                v-if="this.state !== '申请立项'"
                 type="textarea"
                 autosize
                 v-model="editForm.milestone"
@@ -482,7 +483,6 @@ export default {
       } else {
         this.dialogFormVisible = true;
 
-        
         const info = await Project.getBasic(this.outerId);
         this.editForm = {
           outerId: info.project.outerId,
@@ -494,14 +494,16 @@ export default {
           startDate: info.project.startDate,
           endDate: info.project.endDate,
           milestone: "",
-          skillNames: [],
-          
+          skillNames: []
         };
-        if(info.projectBusinessArea===null ||info.projectBusinessArea===""){
-          this.editForm.businessAreaName= "";
-        }
-        else{
-          this.editForm.businessAreaName=info.projectBusinessArea.businessAreaName;
+        if (
+          info.projectBusinessArea === null ||
+          info.projectBusinessArea === ""
+        ) {
+          this.editForm.businessAreaName = "";
+        } else {
+          this.editForm.businessAreaName =
+            info.projectBusinessArea.businessAreaName;
         }
         for (var i = 0; i < info.projectSkills.length; ++i) {
           this.editForm.skillNames.push(info.projectSkills[i].skillName);
