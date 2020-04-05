@@ -50,7 +50,10 @@ export default class User {
       permission[key] = permissions[key];
       _permissions.push(permission);
     });
-    const _user = {nickname: user.realName || user.nickname, permissions: _permissions};
+    const _user = {
+      nickname: user.realName || user.nickname,
+      permissions: _permissions
+    };
     const storeUser = store.getters.user === null ? {} : store.getters.user;
     return Object.assign({...storeUser}, _user);
   }
