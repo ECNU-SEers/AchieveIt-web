@@ -25,7 +25,7 @@
 =======
 >>>>>>> 2c63d917ed95836944471bce185021f9d03770b7
         v-if="
-          his.projectState !== '结束' &&
+          this.projectState !== '结束' &&
             this.projectState !== '已归档' &&
             this.projectState !== '申请立项' &&
 <<<<<<< HEAD
