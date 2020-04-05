@@ -110,6 +110,7 @@
                 v-model="this.stones"
               ></el-input>
               <el-input
+                v-if="this.state !== '申请立项'"
                 type="textarea"
                 autosize
                 v-model="editForm.milestone"

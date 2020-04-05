@@ -13,16 +13,13 @@
           style="float: right; padding: 3px 0"
           type="text"
           :disabled="this.projectStateTrigger == true ? false : true"
-          v-if="this.permissions.indexOf('管理项目配置信息') > -1"
+           v-if="this.permissions.indexOf('管理项目配置信息') > -1 && this.projectState !== '结束' &&
+              this.projectState !== '已归档' &&
+              this.projectState !== '申请立项' &&
+              this.projectState !== '立项驳回'"
           @click="
             editFormVisible = true;
             edit();
-          "
-          v-if="
-            this.projectState !== '结束' &&
-              this.projectState !== '已归档' &&
-              this.projectState !== '申请立项' &&
-              this.projectState !== '立项驳回'
           "
           >编辑</el-button
         >
@@ -117,12 +114,17 @@ export default {
       outerId: "",
       projectState: "",
 <<<<<<< HEAD
+<<<<<<< HEAD
       fileTrigger: "",
       emailTrigger: "",
 =======
       fileTrigger: "true",
       emailTrigger: "true",
 >>>>>>> beb9060e57be33c2c47aad7b3cd476b34a8728d2
+=======
+      fileTrigger: "",
+      emailTrigger: "",
+>>>>>>> 2c63d917ed95836944471bce185021f9d03770b7
       git: "true",
       virtual: "true",
       done: "false",
@@ -267,10 +269,14 @@ export default {
         if (this.fileTrigger == false || this.emailTrigger == false) {
           //第1次配置完成，触发
 <<<<<<< HEAD
+<<<<<<< HEAD
            this.$message.success("配置完成");
 =======
           // this.$message.success("配置完成");
 >>>>>>> beb9060e57be33c2c47aad7b3cd476b34a8728d2
+=======
+           this.$message.success("配置完成");
+>>>>>>> 2c63d917ed95836944471bce185021f9d03770b7
           console.log(this.outerId);
           ProjectSYJ.assignConfig(this.outerId);
         }

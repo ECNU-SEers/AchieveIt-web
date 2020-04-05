@@ -1388,8 +1388,6 @@ export default {
           this.$confirm("确认提交吗", "提示", {}).then(() => {
             this.submitLoading = true;
             const result = this.approvalForm.result;
-            console.log(this.approvalForm.outerId);
-            console.log(this.approvalForm.remark);
             if (result === "通过") {
               ProjectSYJ.acceptProject(
                 this.approvalForm.outerId,
@@ -1405,11 +1403,11 @@ export default {
                 });
               });
               const config = {};
-              config["fileServerDir"] = "root\\" + para.outerId;
-              config["mail"] = para.outerId + "-List";
+              config["fileServerDir"] = "root\\" + this.approvalForm.outerId;
+              config["mail"] = this.approvalForm.outerId + "-List";
               config["isFileServerDirConfirmed"] = 0;
               config["isMailConfirmed"] = 0;
-              ProjectSYJ.addConfigAfterAccepted(para.id, config);
+              ProjectSYJ.addConfigAfterAccepted(this.approvalForm.id, config);
             } else {
               ProjectSYJ.rejectProject(
                 his.approvalForm.outerId,

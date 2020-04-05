@@ -140,93 +140,14 @@
         </div>
       </el-dialog>
 
-      <!--项目成员列表-->
-      <Pagination v-if="this.projectId !== undefined">
-        <el-table
-          v-if="this.projectId !== undefined"
-          :data="
-            tableData.filter(
-              data =>
-                !search ||
-                data.userName.toLowerCase().includes(search.toLowerCase())
-            )
-          "
-          stripe
-          border
-        >
-          <el-table-column
-            fixed
-            prop="userId"
-            label="序号"
-            width="70"
-            type="index"
-          ></el-table-column>
-          <el-table-column prop="username" label="员工ID"></el-table-column>
-          <el-table-column prop="realName" label="姓名"></el-table-column>
-          <el-table-column prop="rolesStr" label="角色"></el-table-column>
-          <el-table-column
-            prop="email"
-            label="邮件地址"
-            show-overflow-tooltip
-          ></el-table-column>
-          <el-table-column prop="department" label="所属部门"></el-table-column>
-          <el-table-column
-            prop="leaderRealName"
-            label="项目中的上级"
-          ></el-table-column>
-          <el-table-column prop="phoneNumber" label="电话"></el-table-column>
-          <el-table-column prop="workingHours" label="总工时"></el-table-column>
-          <el-table-column
-            label="操作"
-            width="120px"
-            v-if="
-              this.state !== '结束' &&
-                this.state !== '已归档' &&
-                this.state !== '申请立项' &&
-                this.state !== '立项驳回' &&
-                this.permission === true
-            "
-          >
-            <template slot-scope="scope">
-              <el-button-group>
-                <el-button
-                  size="medium"
-                  type="primary"
-                  @click="handleEdit(scope.$index, scope.row)"
-                  icon="el-icon-edit"
-                ></el-button>
-                <el-button
-                  size="medium"
-                  type="danger"
-                  icon="el-icon-delete"
-                  @click="handleDelete(scope.$index, scope.row)"
-                ></el-button>
-              </el-button-group>
-            </template>
-          </el-table-column>
-        </el-table>
-      </Pagination>
-
-      <!-- 编辑项目成员信息 -->
-      <el-dialog title="编辑项目成员信息" :visible.sync="editFormVisible">
-        <el-form label-width="150px" class="demo-ruleForm">
-          <!-- 不可修改 -->
-          <el-form-item label="用户姓名" required>
-            <el-input
-              v-model="editForm.username"
-              :disabled="true"
-              placeholder
-              style="width:40%"
-            ></el-input>
-          </el-form-item>
-
-          <!-- 多选 -->
-          <el-form-item label="角色" prop="roles">
-            <el-select
-              v-model="editForm.roles"
-              multiple
-              filterable
-              placehoder="请选择成员角色"
+        <!-- 单选 -->
+        <el-form-item label="项目中的上级">
+          <el-select v-model="editForm.leader" value-key="userId" placeholder="请选择项目中的上级" clearable>
+            <el-option
+              v-for="item in tableData"
+              :key="item.userId"
+              :label="item.realName"
+              :value="item"
             >
               <el-option
                 v-for="item in roles"

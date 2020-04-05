@@ -15,6 +15,7 @@
       <el-button                                                                            
         class="add-btn"
 <<<<<<< HEAD
+<<<<<<< HEAD
         v-if="
          (this.projectId !== undefined )&&
             (this.permissions.indexOf('新增风险') > -1)
@@ -25,19 +26,31 @@
 =======
         @click="addFormVisible = true"
         type="primary"
+=======
+>>>>>>> 2c63d917ed95836944471bce185021f9d03770b7
         v-if="
-          this.projectState !== '结束' &&
+         this.projectState !== '结束' &&
             this.projectState !== '已归档' &&
             this.projectState !== '申请立项' &&
+<<<<<<< HEAD
             this.projectState !== '立项驳回'
         "
 >>>>>>> beb9060e57be33c2c47aad7b3cd476b34a8728d2
+=======
+            this.projectState !== '立项驳回'&&
+            (this.permissions.indexOf('新增风险') > -1)
+        "
+        @click="addFormVisible = true"
+        type="primary"
+        :disabled="this.projectStateTrigger == true ? false : true"
+>>>>>>> 2c63d917ed95836944471bce185021f9d03770b7
         >新增</el-button
       >
 
       <!--导入-->
       <el-button
         class="add-btn"
+<<<<<<< HEAD
 <<<<<<< HEAD
         v-if="
           (this.projectId !== undefined) &&
@@ -47,15 +60,24 @@
         type="primary"
         :disabled="this.projectStateTrigger == true ? false : true"
 =======
+=======
+>>>>>>> 2c63d917ed95836944471bce185021f9d03770b7
         @click="importFormVisible = true"
         type="primary"
         v-if="
           this.projectState !== '结束' &&
             this.projectState !== '已归档' &&
             this.projectState !== '申请立项' &&
+<<<<<<< HEAD
             this.projectState !== '立项驳回'
         "
 >>>>>>> beb9060e57be33c2c47aad7b3cd476b34a8728d2
+=======
+            this.projectState !== '立项驳回'&&
+            (this.permissions.indexOf('新增风险') > -1)
+        "
+        :disabled="this.projectStateTrigger == true ? false : true"
+>>>>>>> 2c63d917ed95836944471bce185021f9d03770b7
         >导入</el-button
       >
     </PageHeader>

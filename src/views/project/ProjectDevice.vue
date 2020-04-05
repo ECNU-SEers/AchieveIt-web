@@ -16,17 +16,25 @@
         @click="addFormVisible = true"
         type="primary"
 <<<<<<< HEAD
+<<<<<<< HEAD
         :disabled="this.projectStateTrigger == true ? false : true"
         v-if="
           (this.projectId !== undefined )&&
             (this.permissions.indexOf('管理项目设备信息') > -1)
 =======
+=======
+>>>>>>> 2c63d917ed95836944471bce185021f9d03770b7
         v-if="
-          this.projectState !== '结束' &&
+          his.projectState !== '结束' &&
             this.projectState !== '已归档' &&
             this.projectState !== '申请立项' &&
+<<<<<<< HEAD
             this.projectState !== '立项驳回'
 >>>>>>> beb9060e57be33c2c47aad7b3cd476b34a8728d2
+=======
+            this.projectState !== '立项驳回'&&
+            (this.permissions.indexOf('管理项目设备信息') > -1)
+>>>>>>> 2c63d917ed95836944471bce185021f9d03770b7
         "
         >新增</el-button
       >
@@ -337,6 +345,7 @@ export default {
       pageSize: 10,
       projectId: 1,
 <<<<<<< HEAD
+<<<<<<< HEAD
       projectState: "",
       projectStateTrigger: "",
       permissions:[],
@@ -345,6 +354,11 @@ export default {
       projectStateTrigger:"",
 
 >>>>>>> beb9060e57be33c2c47aad7b3cd476b34a8728d2
+=======
+      projectState: "",
+      projectStateTrigger: "",
+      permissions:[],
+>>>>>>> 2c63d917ed95836944471bce185021f9d03770b7
 
       //列表
       deviceData: [],
