@@ -19,12 +19,12 @@
     >
       <el-table-column label="角色">
         <span slot-scope="scope">
-          {{ scope.row.roles.map(item => item.name).join(" ") }}
+          {{ scope.row.roles.map(item => item.name).join("、") }}
         </span>
       </el-table-column>
       <el-table-column label="参与项目">
         <span slot-scope="scope">
-          {{ scope.row.projects.join(" ") }}
+          {{ scope.row.projects.join("、") }}
         </span>
       </el-table-column>
       <el-table-column label="操作">
@@ -52,7 +52,6 @@ import LPageTable from '../../../components/common/LPageTable';
 import { userPermissionTableHeader } from '../const';
 import { getUserList } from '@/api/permisssion';
 import { loadable, pageable } from '../../../util/mixin';
-import { isEmpty } from 'lodash';
 
 export default {
   components: {
@@ -78,8 +77,8 @@ export default {
     },
     querySearch(queryString, cb) {
       const result = this.tableData
-        .filter(item => item.username.includes(queryString))
-        .map(item => ({ value: item.username }));
+        .filter(item => item.realName && item.realName.includes(queryString))
+        .map(item => ({ value: item.realName }));
       cb(result);
     },
     onPageChange(nextPage) {

@@ -4,7 +4,10 @@
       <!--工具条：搜索栏-->
       <Search
         v-model="riskSearch"
-        v-if="(this.projectId !== undefined)  && (this.permissions.indexOf('查询项目风险信息') > -1)"
+        v-if="
+          this.projectId !== undefined &&
+          this.permissions.indexOf('查询项目风险信息') > -1
+        "
         :query-search="querySearch"
         @select-suggestion="getRisk"
         value-key="name"
@@ -12,18 +15,17 @@
       <!-- <div style="width:20px;height=100%;"></div> -->
 
       <!--新增风险信息-->
-      <el-button                                                                            
+      <el-button
         class="add-btn"
         v-if="
-         this.projectState !== '结束' &&
+          this.projectState !== '结束' &&
             this.projectState !== '已归档' &&
             this.projectState !== '申请立项' &&
-            this.projectState !== '立项驳回'&&
-            (this.permissions.indexOf('新增风险') > -1)
+            this.projectState !== '立项驳回' &&
+            this.permissions.indexOf('新增风险') > -1
         "
         @click="addFormVisible = true"
         type="primary"
-        :disabled="this.projectStateTrigger == true ? false : true"
         >新增</el-button
       >
 
@@ -36,10 +38,9 @@
           this.projectState !== '结束' &&
             this.projectState !== '已归档' &&
             this.projectState !== '申请立项' &&
-            this.projectState !== '立项驳回'&&
-            (this.permissions.indexOf('新增风险') > -1)
+            this.projectState !== '立项驳回' &&
+            this.permissions.indexOf('新增风险') > -1
         "
-        :disabled="this.projectStateTrigger == true ? false : true"
         >导入</el-button
       >
     </PageHeader>
@@ -58,7 +59,9 @@
         border
         highlight-current-row
         style="width: 100%"
-        v-if="this.projectId !== undefined"
+        v-if="this.projectId !== undefined &&
+        this.permissions.indexOf('查询项目风险信息') > -1
+        "
       >
         <el-table-column type="expand">
           <template slot-scope="props">
@@ -138,15 +141,14 @@
             this.projectState !== '结束' &&
               this.projectState !== '已归档' &&
               this.projectState !== '申请立项' &&
-              this.projectState !== '立项驳回'
+              this.projectState !== '立项驳回' &&
+              this.permissions.indexOf('修改风险信息') > -1
           "
         >
           <template slot-scope="{ row }">
             <el-button-group>
               <el-button
                 type="primary"
-                :disabled="this.projectStateTrigger == true ? false : true"
-                v-if="this.permissions.indexOf('修改风险信息') > -1"
                 icon="el-icon-edit"
                 size="medium"
                 @click="
@@ -157,8 +159,6 @@
 
               <el-button
                 type="danger"
-                :disabled="this.projectStateTrigger == true ? false : true"
-                v-if="this.permissions.indexOf('修改风险信息') > -1"
                 size="medium"
                 icon="el-icon-delete"
                 @click="deleteSubmit(row)"
@@ -294,6 +294,7 @@
       </el-form>
     </el-dialog>
 
+  
     <!--导入-->
     <el-dialog
       title="导入风险信息"
@@ -443,9 +444,9 @@
           </el-select>
         </el-form-item>
 
-        <!--资产来源-->
-        <el-form-item label="资产来源:">
-          <el-input v-model="editForm.source"></el-input>
+        <!--风险来源-->
+        <el-form-item label="风险来源:">
+          <el-input v-model="editForm.source" disabled></el-input>
         </el-form-item>
 
         <el-form-item>
@@ -468,7 +469,6 @@ import PageHeader from "@/components/common/PageHeader";
 import Pagination from "@/components/common/Pagination";
 import ProjectLW from "@/sys/models/project_lw";
 // import { mapGetters } from "vuex";
-
 export default {
   components: {
     Search,
@@ -488,9 +488,7 @@ export default {
       owner: [],
       relatedPersons: [],
       row: "",
-      projectStateTrigger: "",
-      permissions:[],
-
+      permissions: [],
       //风险级别映射
       level: [
         {},
@@ -557,14 +555,12 @@ export default {
         owner: [],
         relatedPersons: []
       },
-
       //编辑
       editFormVisible: false,
       editForm: {
         owner: [],
         relatedPersons: []
       },
-
       rules: {
         name: [{ required: true, message: "请输入风险名称", trigger: "blur" }],
         type: [
@@ -599,7 +595,6 @@ export default {
           { required: true, message: "请选择风险状态", trigger: "change" }
         ]
       },
-
       //导入
       importFormVisible: false,
       importSourceId: "",
@@ -620,9 +615,6 @@ export default {
       ]
     };
   },
-  // computed: {
-  //   ...mapGetters(["permissions"])
-  // },
   mounted() {
     this.projectId = this.$route.query.projectId;
     this.projectState = this.$route.query.projectState;
@@ -633,19 +625,8 @@ export default {
       });
     } else {
       this.getMyPermissions(this.projectId);
-
-      if (
-        this.projectState != "申请立项" &&
-        this.projectState != "立项驳回" &&
-        this.projectState != "已归档"
-      ) {
-        this.projectStateTrigger = true;
-      } else {
-        this.projectStateTrigger = false;
-      }
-     if(this.permissions.indexOf('查询项目风险信息')> -1){
-      this.getRiskList();
-      }
+        this.getRiskList();
+      
     }
   },
   methods: {
@@ -655,9 +636,9 @@ export default {
       var obj = "";
       res.forEach(item => {
         obj = item.name;
-       this.permissions.push(obj);
+        this.permissions.push(obj);
       });
-      
+
       console.log("getMypermission=" + this.permissions);
     },
     //列表展示
@@ -736,7 +717,6 @@ export default {
       });
       this.riskData = tmp;
     },
-
     //新增
     addSubmit(formName) {
       this.$refs[formName].validate(async valid => {
@@ -765,7 +745,6 @@ export default {
         }
       });
     },
-
     //Form下拉，项目成员
     async getAllMembers(callback) {
       // console.log("回调参数" + callback);
@@ -782,14 +761,12 @@ export default {
         })
         .catch(_ => {});
     },
-
     handleForm(formName) {
       if (this.$refs[formName]) {
         this.$refs[formName].clearValidate();
         this.$refs[formName].resetFields();
       }
     },
-
     //映射数字对应的中文
     find(obj, val) {
       var res;
@@ -819,7 +796,6 @@ export default {
       };
       this.row = row;
     },
-
     //确认编辑
     editSubmit(formName) {
       this.$refs[formName].validate(async valid => {
@@ -837,6 +813,7 @@ export default {
             _this.editForm.owner.userId,
             _this.editForm.owner.realName, //realname or username
             _this.editForm.trackingFreq,
+            _this.editForm.source,
             _this.editForm.description,
             _this.editForm.relatedPersons
           );
@@ -850,7 +827,6 @@ export default {
         }
       });
     },
-
     //删除
     deleteSubmit(row) {
       this.$confirm("此操作将永久删除该风险信息, 是否继续?", "提示", {
@@ -873,7 +849,6 @@ export default {
           });
         });
     },
-
     //导入
     //下拉，获取其他项目
     async getOtherProjects(callback) {
@@ -924,7 +899,6 @@ export default {
         _this.$message.error("导入失败");
       }
     },
-
     //搜索
     async querySearch(queryString, cb) {
       var tmp = [];
@@ -939,14 +913,12 @@ export default {
       console.log("tmp=" + tmp);
       cb(tmp);
     },
-
     //查询
     async getRisk(item) {
       console.log("item=" + item);
       const res = await ProjectLW.getRisk(this.projectId, item.id);
       console.log("返回查询结果=" + res);
     }
-
     // cb(this.results);
   }
 };

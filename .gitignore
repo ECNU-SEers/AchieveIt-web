@@ -1,5 +1,34 @@
+<<<<<<< HEAD
 node_modules
 node_modules
 .env.development
 .DS_Store
+<<<<<<< HEAD
 tests
+=======
+=======
+.DS_Store
+/node_modules
+/dist
+/script/.cache
+
+# local env files
+.env.local
+.env.*.local
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw*
+>>>>>>> wclong
+>>>>>>> a5d11bce03a41c78d0438207116621c2969210d8

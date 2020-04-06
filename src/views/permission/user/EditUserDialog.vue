@@ -31,8 +31,7 @@
 
 <script>
 import { userPermissionTableHeader } from '@/views/permission/const';
-import { getRoleList, editUserRole } from '@/api/permisssion';
-import { isEmpty } from 'lodash';
+import { getRoleList } from '@/api/permisssion';
 import { setUserRole } from '../../../api/permisssion';
 import { dialogMixin } from '../../../util/mixin';
 
@@ -85,7 +84,7 @@ export default {
     }));
     this.fields.push({
       label: '参与项目',
-      prop: this.projects.join(' ')
+      prop: this.projects.join(',')
     });
   }
 };

@@ -3,7 +3,10 @@
     <PageHeader title="项目设备信息">
       <!--工具条：搜索栏-->
       <Search
-        v-if="(this.projectId !== undefined) &&  (this.permissions.indexOf('查询项目设备信息') > -1)"
+        v-if="
+          this.projectId !== undefined &&
+            this.permissions.indexOf('查询项目设备信息') > -1
+        "
         :query-search="querySearch"
         @select-suggestion="getDevice"
       >
@@ -19,8 +22,8 @@
           this.projectState !== '结束' &&
             this.projectState !== '已归档' &&
             this.projectState !== '申请立项' &&
-            this.projectState !== '立项驳回'&&
-            (this.permissions.indexOf('管理项目设备信息') > -1)
+            this.projectState !== '立项驳回' &&
+            this.permissions.indexOf('管理项目设备信息') > -1
         "
         >新增</el-button
       >
@@ -35,7 +38,9 @@
     <!--列表展示-->
     <Pagination v-if="this.projectId !== undefined">
       <el-table
-        v-if="this.projectId !== undefined"
+        v-if="this.projectId !== undefined &&
+          this.permissions.indexOf('查询项目设备信息') > -1
+         "
         :data="deviceData"
         stripe
         border
@@ -45,28 +50,6 @@
         :row-key="getRowKeys"
         @expand-change="exChange"
       >
-        <!--下拉展示-->
-        <!-- <el-table-column type="expand">
-          <template slot-scope="props">
-            <el-form
-              inline="true"
-              title="检查情况"
-              label-position="left"
-              class="table-expand"
-            >
-              <el-form-item label="检查日期:">
-                <span>{{ props.row.inspectDate }}</span>
-              </el-form-item>
-              <el-form-item label="设备状态:">
-                <span>{{ props.row.intact }}</span>
-              </el-form-item>
-              <el-form-item label="备注:">
-                <span>{{ props.row.remark }}</span>
-              </el-form-item>
-            </el-form>
-          </template>
-        </el-table-column>-->
-
         <!--下拉展示-->
         <el-table-column type="expand">
           <template>
@@ -123,15 +106,14 @@
             this.projectState !== '结束' &&
               this.projectState !== '已归档' &&
               this.projectState !== '申请立项' &&
-              this.projectState !== '立项驳回'
-          "
-        >
+              this.projectState !== '立项驳回' &&
+            this.permissions.indexOf('管理项目设备信息') > -1
+            
+          ">
           <template slot-scope="{ row }">
             <el-button-group>
               <el-button
                 type="primary"
-                :disabled="this.projectStateTrigger == true ? false : true"
-                v-if="this.permissions.indexOf('管理项目设备信息') > -1"
                 icon="el-icon-edit"
                 size="medium"
                 @click="
@@ -317,7 +299,6 @@ import PageHeader from "@/components/common/PageHeader";
 import Pagination from "@/components/common/Pagination";
 import ProjectLW from "@/sys/models/project_lw";
 import { mapGetters } from "vuex";
-
 export default {
   components: {
     Search,
@@ -331,14 +312,10 @@ export default {
       pageSize: 10,
       projectId: 1,
       projectState: "",
-      projectStateTrigger: "",
-      permissions:[],
-
+      permissions: [],
       //列表
       deviceData: [],
-
       //下拉展示设备审核
-
       getRowKeys: row => {
         console.log(row);
         return row.outerId;
@@ -350,10 +327,8 @@ export default {
         //   remark:""v1
         // }
       ],
-
       //下拉管理员名单
       users: [],
-
       //编辑
       editFormVisible: false,
       editForm: {
@@ -364,7 +339,6 @@ export default {
         dueDate: "",
         state: ""
       },
-
       //新增
       addFormVisible: false,
       addForm: {
@@ -396,9 +370,6 @@ export default {
       }
     };
   },
-  // computed: {
-  //   ...mapGetters(["permissions"])
-  // },
   mounted() {
     this.projectId = this.$route.query.projectId;
     this.projectState = this.$route.query.projectState;
@@ -408,36 +379,27 @@ export default {
         type: "warning"
       });
     } else {
-      this.getMyPermissions(this.projectId);
-      // console.log("getMypermission="+this.permissions);
-      if (
-        this.projectState != "申请立项" &&
-        this.projectState != "立项驳回" &&
-        this.projectState != "已归档"
-      ) {
-        this.projectStateTrigger = true;
-      } else {
-        this.projectStateTrigger = false;
-      }
-      if(this.permissions.indexOf('查询项目设备信息') > -1){
-      this.getDeviceList("");
-      }
+        this.getMyPermissions();
+       this.getDeviceList("");
+     
     }
   },
   methods: {
-   //获取用户当前项目权限
+    //获取用户当前项目权限
     async getMyPermissions() {
+      this.permissions=[];
       const res = await ProjectLW.getMyPermissions(this.projectId);
       var obj = "";
       res.forEach(item => {
         obj = item.name;
-       this.permissions.push(obj);
+        this.permissions.push(obj);
       });
-      
-      console.log("getMypermission=" + this.permissions);
+         console.log("getMypermission="+this.permissions);
+
     },
     //列表展示
     async getDeviceList(keyword) {
+     
       const res = await ProjectLW.getDeviceList(
         this.pageNo,
         this.pageSize,
@@ -446,12 +408,11 @@ export default {
       );
       console.log(res.items);
       this.deviceData = res.items;
+     
     },
-
     //下拉展示设备审核
     async exChange(row, expandedRows) {
       console.log("exChange");
-
       var _this = this;
       if (expandedRows.length) {
         //只展开一行
@@ -468,17 +429,8 @@ export default {
         _this.expands = []; //收起
       }
     },
-
     //新增
     async addSubmit(formName) {
-      // var _id =
-      //   Math.max.apply(
-      //     null,
-      //     this.deviceData.map(function(item) {
-      //       return item.id;
-      //     })
-      //   ) + 1;
-      // id: _id;
       this.$refs[formName].validate(async valid => {
         if (valid) {
           var _this = this;
@@ -494,6 +446,7 @@ export default {
           this.addFormVisible = false;
           this.$message.success("添加成功");
           this.getDeviceList("");
+      
         } else {
           this.$message.error("请填写正确信息");
           return false;
@@ -516,14 +469,12 @@ export default {
         })
         .catch(_ => {});
     },
-
     handleForm(formName) {
       if (this.$refs[formName]) {
         this.$refs[formName].clearValidate();
         this.$refs[formName].resetFields();
       }
     },
-
     //点击“编辑” 深拷贝原信息
     updateDevice(row) {
       console.log(row.type);
@@ -536,7 +487,6 @@ export default {
         state: row.state
       };
     },
-
     //确认编辑
     editSubmit(formName) {
       this.$refs[formName].validate(async valid => {
@@ -553,7 +503,9 @@ export default {
           // console.log(res);
           _this.editFormVisible = false;
           _this.$message.success("修改成功");
-          this.getDeviceList("");
+       
+        this.getDeviceList("");
+    
           //前端修改当前行
           //   _this.row={
           //      outerId: _this.editForm.outerId,
@@ -569,7 +521,6 @@ export default {
         }
       });
     },
-
     //搜索
     async querySearch(queryString, cb) {
       var tmp = [];
@@ -583,15 +534,12 @@ export default {
       // 调用 callback 返回建议列表的数据
       cb(tmp);
     },
-
     //查询返回单个设备信息
     async getDevice(item) {
       console.log("deviceItem233=" + item.id);
-
       const res = await ProjectLW.getDevice(this.projectId, item.id.toString());
       console.log("返回查询结果=" + res);
     }
-
     // //删除
     // deleteSubmit(row) {
     //   this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {

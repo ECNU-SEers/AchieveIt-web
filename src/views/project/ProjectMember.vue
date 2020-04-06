@@ -292,7 +292,6 @@ import Search from "../../components/common/Search";
 import Pagination from "../../components/common/Pagination";
 import Project from "@/sys/models/project_htx";
 import { mapGetters } from "vuex";
-
 export default {
   components: {
     PageHeader,
@@ -370,7 +369,6 @@ export default {
     },
     handleSuccess() {},
     handleError() {},
-
     // 新增项目成员
     async addMember() {
       if (
@@ -425,7 +423,6 @@ export default {
       // location.reload();
       this.getMemberList(this.keyword);
     },
-
     // 编辑项目成员信息
     async handleEdit(index, row) {
       if (
@@ -453,7 +450,6 @@ export default {
         // 表格预设值
         this.editForm.userId = row.userId;
         this.editForm.username = row.username + " " + row.realName;
-
         // 找到角色id
         this.editForm.roles = [];
         for (var i = 0; i < row.roles.length; ++i) {
@@ -465,7 +461,6 @@ export default {
             }
           }
         }
-
         if (row.leaderRealName === "暂无数据") {
           this.editForm.leader = "";
         } else {
@@ -491,7 +486,6 @@ export default {
       // location.reload();
       this.getMemberList(this.keyword);
     },
-
     async handleDelete(index, row) {
       if (
         this.state === "结束" ||
@@ -527,7 +521,6 @@ export default {
           });
       }
     },
-
     // 将数组用\n拼接以便展示时换行
     showInfo() {
       for (var i = 0; i < this.tableData.length; ++i) {
@@ -538,22 +531,18 @@ export default {
         } else {
           this.tableData[i].rolesStr = "暂无数据";
         }
-
         // 所属部门
         if (this.tableData[i].department === null) {
           this.tableData[i].department = "暂无数据";
         }
-
         // 邮箱
         if (this.tableData[i].email === null) {
           this.tableData[i].email = "暂无数据";
         }
-
         // 上级
         if (this.tableData[i].leaderRealName === null) {
           this.tableData[i].leaderRealName = "暂无数据";
         }
-
         // 电话
         if (this.tableData[i].phoneNumber === null) {
           this.tableData[i].phoneNumber = "暂无数据";
