@@ -6,7 +6,7 @@
         v-model="riskSearch"
         v-if="
           this.projectId !== undefined &&
-          this.permissions.indexOf('查询项目风险信息') > -1
+            this.permissions.indexOf('查询项目风险信息') > -1
         "
         :query-search="querySearch"
         @select-suggestion="getRisk"
@@ -59,8 +59,9 @@
         border
         highlight-current-row
         style="width: 100%"
-        v-if="this.projectId !== undefined &&
-        this.permissions.indexOf('查询项目风险信息') > -1
+        v-if="
+          this.projectId !== undefined &&
+            this.permissions.indexOf('查询项目风险信息') > -1
         "
       >
         <el-table-column type="expand">
@@ -294,7 +295,6 @@
       </el-form>
     </el-dialog>
 
-  
     <!--导入-->
     <el-dialog
       title="导入风险信息"
@@ -625,8 +625,7 @@ export default {
       });
     } else {
       this.getMyPermissions(this.projectId);
-        this.getRiskList();
-      
+      this.getRiskList();
     }
   },
   methods: {

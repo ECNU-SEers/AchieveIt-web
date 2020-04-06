@@ -85,7 +85,11 @@
         </el-dialog>
       </div>
 
-      <el-table :data="tableData" :show-header="hiddenTableHeader" v-if="this.permissions.indexOf('查询项目配置信息')>-1">
+      <el-table
+        :data="tableData"
+        :show-header="hiddenTableHeader"
+        v-if="this.permissions.indexOf('查询项目配置信息') > -1"
+      >
         <el-table-column prop="name" label="名称" width="140"></el-table-column>
         <el-table-column prop="detail" label="详细信息"></el-table-column>
       </el-table>
