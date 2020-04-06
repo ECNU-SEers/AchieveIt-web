@@ -14,7 +14,8 @@
           this.projectState !== '结束' &&
             this.projectState !== '已归档' &&
             this.projectState !== '申请立项' &&
-            this.projectState !== '立项驳回'
+            this.projectState !== '立项驳回' && 
+            this.addPermission === true
         "
         type="primary"
         class="add-btn"
@@ -70,7 +71,8 @@
             this.projectState !== '结束' &&
               this.projectState !== '已归档' &&
               this.projectState !== '申请立项' &&
-              this.projectState !== '立项驳回'
+              this.projectState !== '立项驳回' && 
+              (this.editPermission === true || this.handlePermission === true)
           "
         >
           <template slot-scope="scope">
@@ -125,9 +127,9 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="提交人" prop="creatorName">
+        <!-- <el-form-item label="提交人" prop="creatorName">
           <el-input v-model="addForm.creatorName" disabled></el-input>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="预定日期" prop="due">
           <el-date-picker
             v-model="addForm.due"
@@ -137,6 +139,16 @@
             value-format="yyyy-MM-dd HH:mm:ss"
             :picker-options="pickerOptions"
           ></el-date-picker>
+        </el-form-item>
+        <el-form-item label="处理人" prop="handlerId">
+          <el-select v-model="addForm.handlerId" placeholder="请选择缺陷处理人">
+            <el-option
+              v-for="item in members"
+              :key="item.id"
+              :label="item.realName"
+              :value="item.id"
+            ></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="缺陷描述" prop="description">
           <el-input
@@ -235,7 +247,7 @@ export default {
   data() {
     return {
       page: 1,
-      pageSize: 5,
+      pageSize: 10,
       projectId: 1,
       userName: "管理员",
       userId: 1,
@@ -246,6 +258,12 @@ export default {
       projectState: "",
 
       defectModal: [],
+
+      // 权限相关
+      getPermission: false,
+      addPermission: false,
+      editPermission: false,
+      handlePermission: false,
 
       stateDB: [
         {
@@ -314,6 +332,7 @@ export default {
       defectNameLoading: false,
 
       // 新增缺陷
+      members: [],
       addFormVisible: false,
       submitLoading: false,
 
@@ -341,6 +360,12 @@ export default {
             triggle: "change"
           }
         ],
+        handlerId: [{
+          type: "number",
+          required: true,
+          message: "请选择缺陷处理人",
+          triggle: "blur"
+        }],
         description: [
           {
             required: true,
@@ -361,8 +386,8 @@ export default {
         name: "",
         type: "",
         level: "",
-        creatorName: "",
         due: "",
+        handlerId: "",
         description: ""
       },
 
@@ -416,9 +441,25 @@ export default {
     };
   },
   methods: {
+    async getProjectPermissions() {
+      const permissions = await ProjectSYJ.getPermission(this.projectId);
+      console.log(permissions);
+      permissions.forEach((permission) => {
+        if (permission.name === '查询项目缺陷信息') {
+          this.getPermission = true;
+        } else if (permission.name === '新增缺陷') {
+          this.addPermission = true;
+        } else if (permission.name === '修改缺陷信息') {
+          this.editPermission = true;
+        } else if (permission.name === '变更缺陷状态') {
+          this.handlePermission = true;
+        }
+      })
+    },
+
     handlePageChange(val) {
       this.page = val;
-      this.getAllDefects();
+      this.getAllDefects("");
     },
 
     async getDefectModals() {
@@ -428,11 +469,10 @@ export default {
 
     // 项目搜索框
     querySearch(queryString, cb) {
-      console.log(this.defectModal);
       var defectModal = [];
       this.defectModal.forEach(item => {
         const obj = {};
-        obj.id = item.outerId;
+        obj.id = item.id;
         obj.value = item.name;
         defectModal.push(obj);
       });
@@ -441,36 +481,15 @@ export default {
       const results = queryString
         ? defectModal.filter(item => item.value.includes(queryString))
         : defectModal;
-      // const results = [{value: '111'}];
-      // cb([{ value: "111" }]);
       cb(results);
     },
 
     async selectSearch(item) {
-      console.log("select search item-------");
-      console.log(item);
-      this.selectedDefect = item.id;
-      // this.projects = await ProjectSYJ.searchOneProject(item.id);
-      // console.log(this.projects);
+      this.selectedMember = item.id;
     },
 
     async searchDefect(keyword) {
-      this.defects = await ProjectSYJ.getProjectDefects(
-        this.page,
-        this.pageSize,
-        this.projectId,
-        keyword
-      );
-      // if(this.selectedProject !== "") {
-      //   console.log("selected search");
-      //   const res = await ProjectSYJ.searchOneProject(this.selectedProject);
-      //   const tmplist = [];
-      //   tmplist.push(res);
-      //   this.projects = tmplist;
-      // } else {
-      //   console.log("keyword search");
-      //   this.projects = await ProjectSYJ.getProjectList(this.pageNo, this.pageSize, this.userId, keyword);
-      // }
+      this.getAllDefects(keyword);
     },
 
     getNowFormatDate() {
@@ -501,9 +520,8 @@ export default {
       return this.type[typeId - 1].name;
     },
 
-    async getAllDefects() {
+    async getAllDefects(keyword) {
       this.getDefectTypeModal();
-      const keyword = "";
       const res = await ProjectSYJ.getProjectDefects(
         this.page,
         this.pageSize,
@@ -524,6 +542,10 @@ export default {
         this.defects[i].level = this.matchLevel(this.defects[i].level);
         this.defects[i].state = this.matchState(this.defects[i].state);
         this.defects[i].type = this.matchType(this.defects[i].type);
+        if(this.defects[i].handlerName === null) {
+          this.defects[i].handlerName = '暂未处理';
+        }
+        
       }
     },
 
@@ -533,10 +555,10 @@ export default {
       this.type = res;
     },
 
-    handleAdd() {
+    async handleAdd() {
       this.addFormVisible = true;
       this.getDefectTypeModal();
-      this.addForm.creatorName = this.userName;
+      this.members = await ProjectSYJ.getProjectMembers(this.projectId);
     },
 
     addDefect() {},
@@ -547,8 +569,6 @@ export default {
           this.$confirm("确定提交吗？", "提示", {}).then(() => {
             this.submitLoading = true;
             const para = Object.assign({}, this.addForm);
-            delete para.creatorName;
-            para.handlerId = this.userId;
             // para.due = util.formatDate.format(new Date(para.due), 'yyyy-MM-dd hh:mm:ss')
             console.log(para);
             ProjectSYJ.addProjectDefect(this.projectId, para).then(res => {
@@ -557,7 +577,7 @@ export default {
                 message: "提交成功！",
                 type: "success"
               });
-              this.getAllDefects();
+              this.getAllDefects("");
             });
           });
         }
@@ -565,10 +585,22 @@ export default {
     },
 
     handleEdit(index, row) {
-      this.defectId = row.id;
-      this.editFormVisible = true;
-      this.editForm = Object.assign({}, row);
-      this.getDefectTypeModal();
+      if (this.editPermission === true && this.handlePermission === true) {
+        this.defectId = row.id;
+        this.editFormVisible = true;
+        this.editForm = Object.assign({}, row);
+        this.getDefectTypeModal();
+      } else if (this.editPermission === true) {
+        this.defectId = row.id;
+        this.editFormVisible = true;
+        this.editForm = Object.assign({}, row);
+        this.getDefectTypeModal();
+      } else if (this.handlePermission === true) {
+        this.defectId = row.id;
+        this.editFormVisible = true;
+        changeDefectState(this.projectId, this.defectId);
+      }
+      
     },
 
     editDefectSubmit() {
@@ -594,7 +626,7 @@ export default {
                 message: "提交成功！",
                 type: "success"
               });
-              this.getAllDefects();
+              this.getAllDefects("");
             });
           });
         }
@@ -610,9 +642,10 @@ export default {
         type: "warning"
       });
     } else {
-      this.getAllDefects();
+      this.getAllDefects("");
       this.getDefectModals();
     }
+    this.getProjectPermissions();
   }
 };
 </script>

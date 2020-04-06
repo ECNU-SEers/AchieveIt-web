@@ -166,4 +166,16 @@ export default class ProjectSYJ {
   static async updateProjectDefect(projectId, defectId, defect) {
     return await put("/project/" + projectId + "/defect/" + defectId, defect);
   }
+
+  static async changeDefectState(projectId, defectId) {
+    return await put("/project/" + projectId + "/defect/" + defectId + "/transition");
+  }
+
+  static async getProjectMembers(projectId) {
+    return await get("/project/" + projectId + "/members/search");
+  }
+
+  static async getPermission(projectId) {
+    return await get("/project/" + projectId+ "/permissions/me");
+  }
 }
