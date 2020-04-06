@@ -32,10 +32,9 @@
           <el-button
             @click="onEditUser(scope.row)"
             type="primary"
-            plain
-            size="mini"
+            size="medium"
+            icon="el-icon-edit"
           >
-            编辑
           </el-button>
         </template>
       </el-table-column>
