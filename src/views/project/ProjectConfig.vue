@@ -13,10 +13,13 @@
           style="float: right; padding: 3px 0"
           type="text"
           :disabled="this.projectStateTrigger == true ? false : true"
-           v-if="this.permissions.indexOf('管理项目配置信息') > -1 && this.projectState !== '结束' &&
+          v-if="
+            this.permissions.indexOf('管理项目配置信息') > -1 &&
+              this.projectState !== '结束' &&
               this.projectState !== '已归档' &&
               this.projectState !== '申请立项' &&
-              this.projectState !== '立项驳回'"
+              this.projectState !== '立项驳回'
+          "
           @click="
             editFormVisible = true;
             edit();
@@ -127,7 +130,7 @@ export default {
       virtual: "true",
       done: "false",
       projectStateTrigger: "",
-      permissions:[],
+      permissions: [],
       tableData: [
         {
           name: "Git仓库地址",
@@ -184,20 +187,20 @@ export default {
       }
       console.log("projectStateTrigger=" + this.projectStateTrigger);
       if (this.projectState != "申请立项" && this.projectState != "立项驳回") {
-     //   if(this.permissions.indexOf('查询项目配置信息') > -1){
+        //   if(this.permissions.indexOf('查询项目配置信息') > -1){
         this.getConfig();
-      //  }
+        //  }
       }
     }
   },
   methods: {
-   //获取用户当前项目权限
+    //获取用户当前项目权限
     async getMyPermissions() {
       const res = await ProjectLW.getMyPermissions(this.projectId);
       var obj = "";
       res.forEach(item => {
         obj = item.name;
-       this.permissions.push(obj);
+        this.permissions.push(obj);
       });
 
       console.log("getMypermission=" + this.permissions);
@@ -205,7 +208,7 @@ export default {
 
     // 信息显示
     async getConfig() {
-      var _this = this
+      var _this = this;
       _this.fileTrigger = true;
       _this.emailTrigger = true;
       _this.git = true;
@@ -214,10 +217,16 @@ export default {
       // console.log("res.sMailConfirmed:"+res.isMailConfirmed);
       _this.tableData[0].detail = res.gitRepoAddress;
       _this.tableData[1].detail = res.virtualMachineSpace;
-      if (res.gitRepoAddress == ("" || null)){ _this.git = false;}
-      else{ _this.git = true;}
-      if (res.virtualMachineSpace == ("" || null)){ _this.virtual = false;}
-      else{ _this.virtual = true;}
+      if (res.gitRepoAddress == ("" || null)) {
+        _this.git = false;
+      } else {
+        _this.git = true;
+      }
+      if (res.virtualMachineSpace == ("" || null)) {
+        _this.virtual = false;
+      } else {
+        _this.virtual = true;
+      }
       // console.log(
       //   "res.isFileServerDirConfirmed=" + res.isFileServerDirConfirmed
       // );
@@ -238,7 +247,7 @@ export default {
 
     //编辑
     edit() {
-      var _this =this;
+      var _this = this;
       this.editForm = {
         GitAddress: _this.tableData[0].detail,
         virtualSpace: _this.tableData[1].detail,
@@ -257,7 +266,7 @@ export default {
         this.editForm.emailValue
       );
       this.editFormVisible = false;
-       this.$message.success("修改成功");
+      this.$message.success("修改成功");
       if (
         this.editForm.fileAddValue == true &&
         this.editForm.emailValue == true &&
@@ -266,13 +275,12 @@ export default {
       ) {
         if (this.fileTrigger == false || this.emailTrigger == false) {
           //第1次配置完成，触发
-           this.$message.success("配置完成");
+          this.$message.success("配置完成");
           console.log(this.outerId);
           ProjectSYJ.assignConfig(this.outerId);
         }
       }
-       this.getConfig();
-
+      this.getConfig();
     }
   }
 };

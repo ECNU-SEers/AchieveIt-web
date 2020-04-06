@@ -1,4 +1,4 @@
-<template>
+  <template>
   <div>
     <PageHeader title="项目设备信息">
       <!--工具条：搜索栏-->
@@ -15,26 +15,12 @@
         class="add-btn"
         @click="addFormVisible = true"
         type="primary"
-<<<<<<< HEAD
-<<<<<<< HEAD
-        :disabled="this.projectStateTrigger == true ? false : true"
-        v-if="
-          (this.projectId !== undefined )&&
-            (this.permissions.indexOf('管理项目设备信息') > -1)
-=======
-=======
->>>>>>> 2c63d917ed95836944471bce185021f9d03770b7
         v-if="
           this.projectState !== '结束' &&
             this.projectState !== '已归档' &&
             this.projectState !== '申请立项' &&
-<<<<<<< HEAD
-            this.projectState !== '立项驳回'
->>>>>>> beb9060e57be33c2c47aad7b3cd476b34a8728d2
-=======
             this.projectState !== '立项驳回'&&
             (this.permissions.indexOf('管理项目设备信息') > -1)
->>>>>>> 2c63d917ed95836944471bce185021f9d03770b7
         "
         >新增</el-button
       >
@@ -331,7 +317,6 @@ import PageHeader from "@/components/common/PageHeader";
 import Pagination from "@/components/common/Pagination";
 import ProjectLW from "@/sys/models/project_lw";
 import { mapGetters } from "vuex";
-
 export default {
   components: {
     Search,
@@ -344,25 +329,12 @@ export default {
       pageNo: 1,
       pageSize: 10,
       projectId: 1,
-
       projectState: "",
       projectStateTrigger: "",
       permissions:[],
-
-      projectState:"",
-      projectStateTrigger:"",
-
-
-      projectState: "",
-      projectStateTrigger: "",
-      permissions:[],
-
-
       //列表
       deviceData: [],
-
       //下拉展示设备审核
-
       getRowKeys: row => {
         console.log(row);
         return row.outerId;
@@ -374,10 +346,8 @@ export default {
         //   remark:""v1
         // }
       ],
-
       //下拉管理员名单
       users: [],
-
       //编辑
       editFormVisible: false,
       editForm: {
@@ -388,7 +358,6 @@ export default {
         dueDate: "",
         state: ""
       },
-
       //新增
       addFormVisible: false,
       addForm: {
@@ -471,11 +440,9 @@ export default {
       console.log(res.items);
       this.deviceData = res.items;
     },
-
     //下拉展示设备审核
     async exChange(row, expandedRows) {
       console.log("exChange");
-
       var _this = this;
       if (expandedRows.length) {
         //只展开一行
@@ -492,7 +459,6 @@ export default {
         _this.expands = []; //收起
       }
     },
-
     //新增
     async addSubmit(formName) {
       // var _id =
@@ -540,14 +506,12 @@ export default {
         })
         .catch(_ => {});
     },
-
     handleForm(formName) {
       if (this.$refs[formName]) {
         this.$refs[formName].clearValidate();
         this.$refs[formName].resetFields();
       }
     },
-
     //点击“编辑” 深拷贝原信息
     updateDevice(row) {
       console.log(row.type);
@@ -560,7 +524,6 @@ export default {
         state: row.state
       };
     },
-
     //确认编辑
     editSubmit(formName) {
       this.$refs[formName].validate(async valid => {
@@ -593,7 +556,6 @@ export default {
         }
       });
     },
-
     //搜索
     async querySearch(queryString, cb) {
       var tmp = [];
@@ -607,15 +569,12 @@ export default {
       // 调用 callback 返回建议列表的数据
       cb(tmp);
     },
-
     //查询返回单个设备信息
     async getDevice(item) {
       console.log("deviceItem233=" + item.id);
-
       const res = await ProjectLW.getDevice(this.projectId, item.id.toString());
       console.log("返回查询结果=" + res);
     }
-
     // //删除
     // deleteSubmit(row) {
     //   this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
@@ -658,3 +617,4 @@ export default {
   width: 80px;
 }
 </style>
+

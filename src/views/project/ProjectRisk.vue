@@ -1,3 +1,4 @@
+
 <template>
   <div>
     <PageHeader title="风险信息">
@@ -14,70 +15,32 @@
       <!--新增风险信息-->
       <el-button                                                                            
         class="add-btn"
-<<<<<<< HEAD
-<<<<<<< HEAD
-        v-if="
-         (this.projectId !== undefined )&&
-            (this.permissions.indexOf('新增风险') > -1)
-        "
-        @click="addFormVisible = true"
-        type="primary"
-        :disabled="this.projectStateTrigger == true ? false : true"
-=======
-        @click="addFormVisible = true"
-        type="primary"
-=======
->>>>>>> 2c63d917ed95836944471bce185021f9d03770b7
         v-if="
          this.projectState !== '结束' &&
             this.projectState !== '已归档' &&
             this.projectState !== '申请立项' &&
-<<<<<<< HEAD
-            this.projectState !== '立项驳回'
-        "
->>>>>>> beb9060e57be33c2c47aad7b3cd476b34a8728d2
-=======
             this.projectState !== '立项驳回'&&
             (this.permissions.indexOf('新增风险') > -1)
         "
         @click="addFormVisible = true"
         type="primary"
         :disabled="this.projectStateTrigger == true ? false : true"
->>>>>>> 2c63d917ed95836944471bce185021f9d03770b7
         >新增</el-button
       >
 
       <!--导入-->
       <el-button
         class="add-btn"
-<<<<<<< HEAD
-<<<<<<< HEAD
-        v-if="
-          (this.projectId !== undefined) &&
-            (this.permissions.indexOf('新增风险') > -1)
-        "
-        @click="importFormVisible = true"
-        type="primary"
-        :disabled="this.projectStateTrigger == true ? false : true"
-=======
-=======
->>>>>>> 2c63d917ed95836944471bce185021f9d03770b7
         @click="importFormVisible = true"
         type="primary"
         v-if="
           this.projectState !== '结束' &&
             this.projectState !== '已归档' &&
             this.projectState !== '申请立项' &&
-<<<<<<< HEAD
-            this.projectState !== '立项驳回'
-        "
->>>>>>> beb9060e57be33c2c47aad7b3cd476b34a8728d2
-=======
             this.projectState !== '立项驳回'&&
             (this.permissions.indexOf('新增风险') > -1)
         "
         :disabled="this.projectStateTrigger == true ? false : true"
->>>>>>> 2c63d917ed95836944471bce185021f9d03770b7
         >导入</el-button
       >
     </PageHeader>
@@ -506,7 +469,6 @@ import PageHeader from "@/components/common/PageHeader";
 import Pagination from "@/components/common/Pagination";
 import ProjectLW from "@/sys/models/project_lw";
 // import { mapGetters } from "vuex";
-
 export default {
   components: {
     Search,
@@ -528,7 +490,6 @@ export default {
       row: "",
       projectStateTrigger: "",
       permissions:[],
-
       //风险级别映射
       level: [
         {},
@@ -595,14 +556,12 @@ export default {
         owner: [],
         relatedPersons: []
       },
-
       //编辑
       editFormVisible: false,
       editForm: {
         owner: [],
         relatedPersons: []
       },
-
       rules: {
         name: [{ required: true, message: "请输入风险名称", trigger: "blur" }],
         type: [
@@ -637,7 +596,6 @@ export default {
           { required: true, message: "请选择风险状态", trigger: "change" }
         ]
       },
-
       //导入
       importFormVisible: false,
       importSourceId: "",
@@ -671,7 +629,6 @@ export default {
       });
     } else {
       this.getMyPermissions(this.projectId);
-
       if (
         this.projectState != "申请立项" &&
         this.projectState != "立项驳回" &&
@@ -774,7 +731,6 @@ export default {
       });
       this.riskData = tmp;
     },
-
     //新增
     addSubmit(formName) {
       this.$refs[formName].validate(async valid => {
@@ -803,7 +759,6 @@ export default {
         }
       });
     },
-
     //Form下拉，项目成员
     async getAllMembers(callback) {
       // console.log("回调参数" + callback);
@@ -820,14 +775,12 @@ export default {
         })
         .catch(_ => {});
     },
-
     handleForm(formName) {
       if (this.$refs[formName]) {
         this.$refs[formName].clearValidate();
         this.$refs[formName].resetFields();
       }
     },
-
     //映射数字对应的中文
     find(obj, val) {
       var res;
@@ -857,7 +810,6 @@ export default {
       };
       this.row = row;
     },
-
     //确认编辑
     editSubmit(formName) {
       this.$refs[formName].validate(async valid => {
@@ -888,7 +840,6 @@ export default {
         }
       });
     },
-
     //删除
     deleteSubmit(row) {
       this.$confirm("此操作将永久删除该风险信息, 是否继续?", "提示", {
@@ -911,7 +862,6 @@ export default {
           });
         });
     },
-
     //导入
     //下拉，获取其他项目
     async getOtherProjects(callback) {
@@ -962,7 +912,6 @@ export default {
         _this.$message.error("导入失败");
       }
     },
-
     //搜索
     async querySearch(queryString, cb) {
       var tmp = [];
@@ -977,14 +926,12 @@ export default {
       console.log("tmp=" + tmp);
       cb(tmp);
     },
-
     //查询
     async getRisk(item) {
       console.log("item=" + item);
       const res = await ProjectLW.getRisk(this.projectId, item.id);
       console.log("返回查询结果=" + res);
     }
-
     // cb(this.results);
   }
 };

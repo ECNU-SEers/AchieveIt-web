@@ -13,32 +13,30 @@
         <!-- <el-input prefix-icon="el-icon-search" v-model="search" style="width: 200px" placeholder="输入关键字搜索"></el-input> -->
         <el-button
           v-if="
-            this.state !== '结束' &&
-              this.state !== '已归档' &&
-              this.state !== '申请立项' &&
-              this.state !== '立项驳回' &&
-              this.permission === true
-          "
+          this.state !== '结束' &&
+            this.state !== '已归档' &&
+            this.state !== '申请立项' &&
+            this.state !== '立项驳回' &&
+            this.permission === true
+        "
           type="primary"
           class="add-btn"
           @click="addMember"
           v-permission="'归档申请'"
-          >新增</el-button
-        >
+        >新增</el-button>
         <el-button
           v-if="
-            this.state !== '结束' &&
-              this.state !== '已归档' &&
-              this.state !== '申请立项' &&
-              this.state !== '立项驳回' &&
-              this.permission === true
-          "
+          this.state !== '结束' &&
+            this.state !== '已归档' &&
+            this.state !== '申请立项' &&
+            this.state !== '立项驳回' &&
+            this.permission === true
+        "
           type="primary"
           class="add-btn"
           @click="addExcelFormVisible = true"
           v-permission="'归档申请'"
-          >导入</el-button
-        >
+        >导入</el-button>
       </PageHeader>
 
       <!-- 新增项目成员 -->
@@ -46,12 +44,7 @@
         <el-form label-width="150px" class="demo-ruleForm">
           <!-- 单选 -->
           <el-form-item label="用户姓名" required>
-            <el-select
-              v-model="addForm.user"
-              value-key="userId"
-              placeholder="请选择成员"
-              filterable
-            >
+            <el-select v-model="addForm.user" value-key="userId" placeholder="请选择成员" filterable>
               <el-option
                 v-for="item in users"
                 :key="item.userId"
@@ -59,27 +52,15 @@
                 :value="item"
               >
                 <span style="float: left">{{ item.realName }}</span>
-                <span style="float: right; color: #8492a6; font-size: 13px">{{
-                  item.username
-                }}</span>
+                <span style="float: right; color: #8492a6; font-size: 13px">{{ item.username }}</span>
               </el-option>
             </el-select>
           </el-form-item>
 
           <!-- 多选 -->
           <el-form-item label="角色" prop="roles">
-            <el-select
-              v-model="addForm.roles"
-              multiple
-              filterable
-              placehoder="请选择成员角色"
-            >
-              <el-option
-                v-for="item in roles"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-              ></el-option>
+            <el-select v-model="addForm.roles" multiple filterable placehoder="请选择成员角色">
+              <el-option v-for="item in roles" :key="item.id" :label="item.name" :value="item.id"></el-option>
             </el-select>
           </el-form-item>
 
@@ -98,21 +79,14 @@
                 :value="item"
               >
                 <span style="float: left">{{ item.realName }}</span>
-                <span style="float: right; color: #8492a6; font-size: 13px">{{
-                  item.username
-                }}</span>
+                <span style="float: right; color: #8492a6; font-size: 13px">{{ item.username }}</span>
               </el-option>
             </el-select>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="addFormVisible = false">取消</el-button>
-          <el-button
-            type="primary"
-            @click="submitAddForm('addForm')"
-            :loading="submitLoading"
-            >提交</el-button
-          >
+          <el-button type="primary" @click="submitAddForm('addForm')" :loading="submitLoading">提交</el-button>
         </div>
       </el-dialog>
 
@@ -131,30 +105,76 @@
 
         <div slot="footer" class="dialog-footer">
           <el-button @click="addExcelFormVisible = false">取消</el-button>
-          <el-button
-            type="primary"
-            @click="submitUpload"
-            :loading="submitLoading"
-            >提交</el-button
-          >
+          <el-button type="primary" @click="submitUpload" :loading="submitLoading">提交</el-button>
         </div>
       </el-dialog>
 
-        <!-- 单选 -->
-        <el-form-item label="项目中的上级">
-          <el-select v-model="editForm.leader" value-key="userId" placeholder="请选择项目中的上级" clearable>
-            <el-option
-              v-for="item in tableData"
-              :key="item.userId"
-              :label="item.realName"
-              :value="item"
-            >
-              <el-option
-                v-for="item in roles"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-              ></el-option>
+      <!--项目成员列表-->
+      <Pagination v-if="this.projectId !== undefined">
+        <el-table
+          v-if="this.projectId !== undefined"
+          :data="
+          tableData.filter(
+            data =>
+              !search ||
+              data.userName.toLowerCase().includes(search.toLowerCase())
+          )
+        "
+          stripe
+          border
+        >
+          <el-table-column fixed prop="userId" label="序号" width="70" type="index"></el-table-column>
+          <el-table-column prop="username" label="员工ID"></el-table-column>
+          <el-table-column prop="realName" label="姓名"></el-table-column>
+          <el-table-column prop="rolesStr" label="角色"></el-table-column>
+          <el-table-column prop="email" label="邮件地址" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="department" label="所属部门"></el-table-column>
+          <el-table-column prop="leaderRealName" label="项目中的上级"></el-table-column>
+          <el-table-column prop="phoneNumber" label="电话"></el-table-column>
+          <el-table-column prop="workingHours" label="总工时"></el-table-column>
+          <el-table-column
+            label="操作"
+            width="120px"
+            v-if="
+            this.state !== '结束' &&
+              this.state !== '已归档' &&
+              this.state !== '申请立项' &&
+              this.state !== '立项驳回' &&
+              this.permission === true
+          "
+          >
+            <template slot-scope="scope">
+              <el-button-group>
+                <el-button
+                  size="medium"
+                  type="primary"
+                  @click="handleEdit(scope.$index, scope.row)"
+                  icon="el-icon-edit"
+                ></el-button>
+                <el-button
+                  size="medium"
+                  type="danger"
+                  icon="el-icon-delete"
+                  @click="handleDelete(scope.$index, scope.row)"
+                ></el-button>
+              </el-button-group>
+            </template>
+          </el-table-column>
+        </el-table>
+      </Pagination>
+
+      <!-- 编辑项目成员信息 -->
+      <el-dialog title="编辑项目成员信息" :visible.sync="editFormVisible">
+        <el-form label-width="150px" class="demo-ruleForm">
+          <!-- 不可修改 -->
+          <el-form-item label="用户姓名" required>
+            <el-input v-model="editForm.username" :disabled="true" placeholder style="width:40%"></el-input>
+          </el-form-item>
+
+          <!-- 多选 -->
+          <el-form-item label="角色" prop="roles">
+            <el-select v-model="editForm.roles" multiple filterable placehoder="请选择成员角色">
+              <el-option v-for="item in roles" :key="item.id" :label="item.name" :value="item.id"></el-option>
             </el-select>
           </el-form-item>
 
@@ -173,9 +193,7 @@
                 :value="item"
               >
                 <span style="float: left">{{ item.realName }}</span>
-                <span style="float: right; color: #8492a6; font-size: 13px">{{
-                  item.username
-                }}</span>
+                <span style="float: right; color: #8492a6; font-size: 13px">{{ item.username }}</span>
               </el-option>
             </el-select>
           </el-form-item>
@@ -183,12 +201,7 @@
 
         <div slot="footer" class="dialog-footer">
           <el-button @click="editFormVisible = false">取消</el-button>
-          <el-button
-            type="primary"
-            @click="submitEditForm('editForm')"
-            :loading="submitLoading"
-            >提交</el-button
-          >
+          <el-button type="primary" @click="submitEditForm('editForm')" :loading="submitLoading">提交</el-button>
         </div>
       </el-dialog>
     </div>
@@ -197,9 +210,7 @@
         <el-tag type="success" effect="dark">请选择项目</el-tag>
       </el-col>
     </el-row>
-    <el-row
-      v-if="this.projectId !== undefined && this.getInfoPermission !== true"
-    >
+    <el-row v-if="this.projectId !== undefined && this.getInfoPermission !== true">
       <el-col :span="24">
         <el-tag type="success" effect="dark">无权限查看</el-tag>
       </el-col>
@@ -213,7 +224,6 @@ import Search from "../../components/common/Search";
 import Pagination from "../../components/common/Pagination";
 import Project from "@/sys/models/project_htx";
 import { mapGetters } from "vuex";
-
 export default {
   components: {
     PageHeader,
@@ -230,7 +240,6 @@ export default {
       pageSize: 10,
       keyword: "",
       projectId: "",
-
       selectedMember: "",
       memberSearch: "",
       users: [],
@@ -290,7 +299,6 @@ export default {
     },
     handleSuccess() {},
     handleError() {},
-
     // 新增项目成员
     async addMember() {
       if (
@@ -318,7 +326,6 @@ export default {
     // 提交新增成员
     async submitAddForm(form) {
       console.log(this.addForm);
-
       var info = await Project.addMember(
         this.projectId,
         this.addForm.user.userId,
@@ -335,7 +342,6 @@ export default {
       // location.reload();
       this.getMemberList(this.keyword);
     },
-
     // 编辑项目成员信息
     async handleEdit(index, row) {
       if (
@@ -361,7 +367,6 @@ export default {
         // 表格预设值
         this.editForm.userId = row.userId;
         this.editForm.username = row.username + " " + row.realName;
-
         // 找到角色id
         this.editForm.roles = [];
         for (var i = 0; i < row.roles.length; ++i) {
@@ -373,7 +378,6 @@ export default {
             }
           }
         }
-
         if (row.leaderRealName === "暂无数据") {
           this.editForm.leader = "";
         } else {
@@ -399,7 +403,6 @@ export default {
       // location.reload();
       this.getMemberList(this.keyword);
     },
-
     async handleDelete(index, row) {
       if (
         this.state === "结束" ||
@@ -435,7 +438,6 @@ export default {
           });
       }
     },
-
     // 将数组用\n拼接以便展示时换行
     showInfo() {
       for (var i = 0; i < this.tableData.length; ++i) {
@@ -446,22 +448,18 @@ export default {
         } else {
           this.tableData[i].rolesStr = "暂无数据";
         }
-
         // 所属部门
         if (this.tableData[i].department === null) {
           this.tableData[i].department = "暂无数据";
         }
-
         // 邮箱
         if (this.tableData[i].email === null) {
           this.tableData[i].email = "暂无数据";
         }
-
         // 上级
         if (this.tableData[i].leaderRealName === null) {
           this.tableData[i].leaderRealName = "暂无数据";
         }
-
         // 电话
         if (this.tableData[i].phoneNumber === null) {
           this.tableData[i].phoneNumber = "暂无数据";
@@ -547,7 +545,6 @@ export default {
     // 获取项目状态
     this.state = this.$route.query.projectState;
     console.log("state: " + this.state);
-
     if (this.projectId === undefined) {
       this.$message({
         message: "请先选择项目！",
@@ -574,3 +571,4 @@ export default {
   white-space: pre-line;
 }
 </style>
+
