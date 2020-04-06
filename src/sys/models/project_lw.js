@@ -119,6 +119,14 @@ export default class ProjectLW {
     );
     return res;
   }
+  /**
+   * 归还设备
+   * @param {number} projectId 
+   * @param {string} deviceOuterId
+   */
+  static returnDevice(projectId,deviceOuterId){
+   return put("/device/return?deviceOuterId="+deviceOuterId+"&projectId="+projectId);
+  }
 
   /***********风险***************/
   /**
