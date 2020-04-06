@@ -294,4 +294,11 @@ export default class Project {
   static async getOneMember(projectId, memberId) {
     return get('/project/' + projectId + '/member/' + memberId);
   }
+
+  /**
+   * 获取成员在项目中的权限
+   */
+  static async getPermissions(projectId){
+    return get('/project/'+projectId+'/permissions/me');
+  }
 }

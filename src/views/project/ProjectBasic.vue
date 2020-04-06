@@ -13,8 +13,13 @@
           style="float: right; padding: 3px 0"
           type="text"
           @click="editBasic"
-          v-if="this.state !== '结束' && this.state !== '已归档'"
-        >编辑</el-button>
+          v-if="
+            this.state !== '结束' &&
+              this.state !== '已归档' &&
+              this.permission === true
+          "
+          >编辑</el-button
+        >
 
         <!-- 修改项目信息 -->
         <el-dialog title="修改项目基本信息" :visible.sync="dialogFormVisible">
@@ -27,12 +32,20 @@
           >
             <!-- 不可修改 -->
             <el-form-item label="项目ID">
-              <el-input v-model="editForm.outerId" :disabled="true" placeholder></el-input>
+              <el-input
+                v-model="editForm.outerId"
+                :disabled="true"
+                placeholder
+              ></el-input>
             </el-form-item>
 
             <!-- 输入框 -->
             <el-form-item label="项目名称" prop="name">
-              <el-input v-model="editForm.name" placeholder="请输入项目名称" clearable></el-input>
+              <el-input
+                v-model="editForm.name"
+                placeholder="请输入项目名称"
+                clearable
+              ></el-input>
             </el-form-item>
 
             <!-- 下拉单选 -->
@@ -51,7 +64,9 @@
                   :value="item"
                 >
                   <span style="float: left">{{ item.company }}</span>
-                  <span style="float: right; color: #8492a6; font-size: 13px">{{ item.outerId }}</span>
+                  <span style="float: right; color: #8492a6; font-size: 13px">{{
+                    item.outerId
+                  }}</span>
                 </el-option>
               </el-select>
             </el-form-item>
@@ -79,12 +94,21 @@
 
             <!-- 不可修改 -->
             <el-form-item label="项目上级" prop="leader">
-              <el-input v-model="tableData[5].detail" :disabled="true" placeholder></el-input>
+              <el-input
+                v-model="tableData[5].detail"
+                :disabled="true"
+                placeholder
+              ></el-input>
             </el-form-item>
 
             <!-- 文本框 -->
             <el-form-item label="主要里程碑" prop="milestone">
-              <el-input type="textarea" autosize :disabled="true" v-model="this.stones"></el-input>
+              <el-input
+                type="textarea"
+                autosize
+                :disabled="true"
+                v-model="this.stones"
+              ></el-input>
               <el-input
                 v-if="this.state !== '申请立项'"
                 type="textarea"
@@ -95,7 +119,12 @@
 
             <!-- 多选 -->
             <el-form-item label="采用技术" prop="skillNames">
-              <el-select v-model="editForm.skillNames" multiple filterable placehoder="请选择采用的技术">
+              <el-select
+                v-model="editForm.skillNames"
+                multiple
+                filterable
+                placehoder="请选择采用的技术"
+              >
                 <el-option
                   v-for="item in skills"
                   :key="item.id"
@@ -120,12 +149,14 @@
             <!-- 文本框 -->
             <!-- <el-form-item label="主要功能" prop="function">
               <el-input type="textarea" v-model="editForm.function"></el-input>
-            </el-form-item>-->     
+            </el-form-item>-->
           </el-form>
           <div slot="footer" class="dialog-footer">
-              <el-button @click="dialogFormVisible = false">取消</el-button>
-              <el-button type="primary" @click="submitForm('editForm')">提交</el-button>      
-            </div>
+            <el-button @click="dialogFormVisible = false">取消</el-button>
+            <el-button type="primary" @click="submitForm('editForm')"
+              >提交</el-button
+            >
+          </div>
         </el-dialog>
       </div>
 
@@ -176,6 +207,8 @@ export default {
     return {
       state: "",
       outerId: "",
+      projectId: "",
+      permission: false,
       // 修改弹框
       dialogFormVisible: false,
       formLabelWidth: "120px",
@@ -444,6 +477,19 @@ export default {
       }
     },
 
+    // 获取项目权限
+    async getPermission(projectId) {
+      var info = await Project.getPermissions(projectId);
+      console.log(info);
+      for (var i = 0; i < info.length; ++i) {
+        if (info[i].name === "修改项目信息") {
+          this.permission = true;
+          break;
+        }
+      }
+      console.log("permission: " + this.permission);
+    },
+
     // 修改弹框
     async editBasic() {
       // 项目状态判断
@@ -526,6 +572,9 @@ export default {
   },
   mounted: function() {
     // console.log("in mounted");
+    // 获取项目projectId
+    this.projectId = this.$route.query.projectId;
+
     // 获取outerId
     this.outerId = this.$route.query.outerId;
     // console.log("outerId: " + this.outerId);
@@ -543,6 +592,8 @@ export default {
     } else {
       // 获取项目基本信息
       this.getBasic(this.outerId);
+      // 获取项目权限
+      this.getPermission(this.projectId);
     }
   }
 };
