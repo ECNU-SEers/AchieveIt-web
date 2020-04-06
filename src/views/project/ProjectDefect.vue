@@ -14,7 +14,7 @@
           this.projectState !== '结束' &&
             this.projectState !== '已归档' &&
             this.projectState !== '申请立项' &&
-            this.projectState !== '立项驳回' && 
+            this.projectState !== '立项驳回' &&
             this.addPermission === true
         "
         type="primary"
@@ -66,22 +66,30 @@
         <el-table-column
           fixed="right"
           label="操作"
-          width="100px"
+          width="140px"
           v-if="
             this.projectState !== '结束' &&
               this.projectState !== '已归档' &&
               this.projectState !== '申请立项' &&
-              this.projectState !== '立项驳回' && 
+              this.projectState !== '立项驳回' &&
               (this.editPermission === true || this.handlePermission === true)
           "
         >
           <template slot-scope="scope">
-            <el-button
-              size="medium"
-              type="primary"
-              @click.stop="handleEdit(scope.$index, scope.row)"
-              icon="el-icon-edit"
-            ></el-button>
+            <el-button-group>
+              <el-button
+                size="medium"
+                type="primary"
+                @click.stop="handleEdit(scope.$index, scope.row)"
+                icon="el-icon-edit"
+              ></el-button>
+              <el-button
+                size="medium"
+                type="success"
+                @click.stop="handleChangeState(scope.$index, scope.row)"
+                icon="el-icon-check"
+              ></el-button>
+            </el-button-group>
           </template>
         </el-table-column>
       </el-table>
@@ -237,6 +245,7 @@ import Pagination from "../../components/common/Pagination";
 import ProjectSYJ from "@/sys/models/project_syj";
 import moment from "moment";
 import util from "../../util/dateformat";
+import { mapGetters } from "vuex";
 
 export default {
   components: {
@@ -249,7 +258,7 @@ export default {
       page: 1,
       pageSize: 10,
       projectId: 1,
-      userName: "管理员",
+      username: "",
       userId: 1,
       defects: [],
       defectsLength: 0,
@@ -360,12 +369,14 @@ export default {
             triggle: "change"
           }
         ],
-        handlerId: [{
-          type: "number",
-          required: true,
-          message: "请选择缺陷处理人",
-          triggle: "blur"
-        }],
+        handlerId: [
+          {
+            type: "number",
+            required: true,
+            message: "请选择缺陷处理人",
+            triggle: "blur"
+          }
+        ],
         description: [
           {
             required: true,
@@ -444,17 +455,17 @@ export default {
     async getProjectPermissions() {
       const permissions = await ProjectSYJ.getPermission(this.projectId);
       console.log(permissions);
-      permissions.forEach((permission) => {
-        if (permission.name === '查询项目缺陷信息') {
+      permissions.forEach(permission => {
+        if (permission.name === "查询项目缺陷信息") {
           this.getPermission = true;
-        } else if (permission.name === '新增缺陷') {
+        } else if (permission.name === "新增缺陷") {
           this.addPermission = true;
-        } else if (permission.name === '修改缺陷信息') {
+        } else if (permission.name === "修改缺陷信息") {
           this.editPermission = true;
-        } else if (permission.name === '变更缺陷状态') {
+        } else if (permission.name === "变更缺陷状态") {
           this.handlePermission = true;
         }
-      })
+      });
     },
 
     handlePageChange(val) {
@@ -542,10 +553,9 @@ export default {
         this.defects[i].level = this.matchLevel(this.defects[i].level);
         this.defects[i].state = this.matchState(this.defects[i].state);
         this.defects[i].type = this.matchType(this.defects[i].type);
-        if(this.defects[i].handlerName === null) {
-          this.defects[i].handlerName = '暂未处理';
+        if (this.defects[i].handlerName === null) {
+          this.defects[i].handlerName = "暂未处理";
         }
-        
       }
     },
 
@@ -585,22 +595,42 @@ export default {
     },
 
     handleEdit(index, row) {
-      if (this.editPermission === true && this.handlePermission === true) {
+      if (this.editPermission === true) {
         this.defectId = row.id;
         this.editFormVisible = true;
         this.editForm = Object.assign({}, row);
         this.getDefectTypeModal();
-      } else if (this.editPermission === true) {
-        this.defectId = row.id;
-        this.editFormVisible = true;
-        this.editForm = Object.assign({}, row);
-        this.getDefectTypeModal();
-      } else if (this.handlePermission === true) {
-        this.defectId = row.id;
-        this.editFormVisible = true;
-        changeDefectState(this.projectId, this.defectId);
+      } else {
+        this.$message({
+          type: "warning",
+          message: "无权限编辑"
+        });
       }
-      
+    },
+
+    handleChangeState(index, row) {
+      if (
+        this.handlePermission === true &&
+        row.state === "已修复" &&
+        this.username === row.creatorName
+      ) {
+        this.$confirm("确定关闭该缺陷吗", "提示", {}).then(() => {
+          changeDefectState(this.projectId, this.defectId);
+        });
+      } else if (
+        this.handlePermission === true &&
+        row.state === "已分派" &&
+        this.username === row.handlerName
+      ) {
+        this.$confirm("确定已修复该缺陷吗", "提示", {}).then(() => {
+          changeDefectState(this.projectId, this.defectId);
+        });
+      } else {
+        this.$message({
+          type: "warning",
+          message: "无权限更改状态"
+        });
+      }
     },
 
     editDefectSubmit() {
@@ -633,7 +663,11 @@ export default {
       });
     }
   },
+  computed: {
+    ...mapGetters(["user"])
+  },
   mounted() {
+    this.username = this.user.username;
     this.projectId = this.$route.query.projectId;
     this.projectState = this.$route.query.projectState;
     if (this.projectId === undefined) {

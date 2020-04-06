@@ -2,7 +2,7 @@
   <div>
     <div v-if="this.getInfoPermission === true">
       <!--工具条：搜索栏-->
-      <PageHeader title="功能列表">
+      <PageHeader title="项目功能列表">
         <Search
           v-if="this.projectId !== undefined"
           placeholder="请输入功能名称"

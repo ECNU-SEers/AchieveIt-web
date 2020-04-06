@@ -1,6 +1,6 @@
 <template>
   <div>
-    <PageHeader title="基本信息"></PageHeader>
+    <PageHeader title="项目基本信息"></PageHeader>
     <el-row v-if="this.outerId === undefined">
       <el-col :span="24">
         <el-tag type="success" effect="dark">请选择项目</el-tag>
@@ -150,16 +150,6 @@
             <!-- <el-form-item label="主要功能" prop="function">
               <el-input type="textarea" v-model="editForm.function"></el-input>
             </el-form-item>-->
-<<<<<<< HEAD
-
-            <el-form-item>
-              <el-button type="primary" @click="submitForm('editForm')"
-                >提交</el-button
-              >
-              <el-button @click="resetForm('editForm')">重置</el-button>
-            </el-form-item>
-=======
->>>>>>> 0f193b49b5830efb060ec448bd571394275dd568
           </el-form>
           <div slot="footer" class="dialog-footer">
             <el-button @click="dialogFormVisible = false">取消</el-button>

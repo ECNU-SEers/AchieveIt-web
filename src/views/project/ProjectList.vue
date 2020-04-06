@@ -1034,8 +1034,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["permissions"]),
-    ...mapGetters(["user"])
+    ...mapGetters(["permissions"])
   },
   mounted() {
     this.getProjects();
