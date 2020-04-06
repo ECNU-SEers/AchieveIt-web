@@ -1,5 +1,5 @@
-import _axios, { post, get, put } from "@/sys/plugins/axios";
-import { saveTokens } from "../utils/token";
+import _axios, {post, get, put} from "@/sys/plugins/axios";
+import {saveTokens} from "../utils/token";
 import store from "@/store";
 
 export default class User {
@@ -36,14 +36,14 @@ export default class User {
   static async getInformation() {
     const info = await get("cms/user/information");
     const storeUser = store.getters.user === null ? {} : store.getters.user;
-    return Object.assign({ ...storeUser }, info);
+    return Object.assign({...storeUser}, info);
   }
 
   /**
    * 获取当前用户信息和所拥有的权限
    */
   static async getPermissions() {
-    const { permissions, user } = await get("/view/permissions/me");
+    const {permissions, user} = await get("/view/permissions/me");
     let _permissions = [];
     Object.keys(permissions).forEach(key => {
       let permission = {};
@@ -51,11 +51,12 @@ export default class User {
       _permissions.push(permission);
     });
     const _user = {
-      nickname: user.realName || user.nickname,
+      nickname: user.realName,
+      username: user.username,
       permissions: _permissions
     };
     const storeUser = store.getters.user === null ? {} : store.getters.user;
-    return Object.assign({ ...storeUser }, _user);
+    return Object.assign({...storeUser}, _user);
   }
 
   /**
@@ -64,7 +65,7 @@ export default class User {
    * @param {string} confirmPassword 确认新密码
    * @param {string} oldPassword 旧密码
    */
-  static updatePassword({ old_password, new_password, confirm_password }) {
+  static updatePassword({old_password, new_password, confirm_password}) {
     return put("cms/user/change_password", {
       new_password,
       confirm_password,
