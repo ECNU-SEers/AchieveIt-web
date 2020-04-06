@@ -1034,12 +1034,13 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["permissions"])
+    ...mapGetters(["permissions"]),
+    ...mapGetters(["user"])
   },
   mounted() {
     this.getProjects();
     this.getProjectModals();
-    console.log(this.permissions);
+    console.log(this.user);
   },
   methods: {
     refresh() {
