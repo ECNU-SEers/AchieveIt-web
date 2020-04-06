@@ -38,7 +38,9 @@
     <!--列表展示-->
     <Pagination v-if="this.projectId !== undefined">
       <el-table
-        v-if="this.projectId !== undefined"
+        v-if="this.projectId !== undefined &&
+          this.permissions.indexOf('查询项目设备信息') > -1
+         "
         :data="deviceData"
         stripe
         border
@@ -48,28 +50,6 @@
         :row-key="getRowKeys"
         @expand-change="exChange"
       >
-        <!--下拉展示-->
-        <!-- <el-table-column type="expand">
-          <template slot-scope="props">
-            <el-form
-              inline="true"
-              title="检查情况"
-              label-position="left"
-              class="table-expand"
-            >
-              <el-form-item label="检查日期:">
-                <span>{{ props.row.inspectDate }}</span>
-              </el-form-item>
-              <el-form-item label="设备状态:">
-                <span>{{ props.row.intact }}</span>
-              </el-form-item>
-              <el-form-item label="备注:">
-                <span>{{ props.row.remark }}</span>
-              </el-form-item>
-            </el-form>
-          </template>
-        </el-table-column>-->
-
         <!--下拉展示-->
         <el-table-column type="expand">
           <template>
@@ -126,15 +106,14 @@
             this.projectState !== '结束' &&
               this.projectState !== '已归档' &&
               this.projectState !== '申请立项' &&
-              this.projectState !== '立项驳回'
-          "
-        >
+              this.projectState !== '立项驳回' &&
+            this.permissions.indexOf('管理项目设备信息') > -1
+            
+          ">
           <template slot-scope="{ row }">
             <el-button-group>
               <el-button
                 type="primary"
-                :disabled="this.projectStateTrigger == true ? false : true"
-                v-if="this.permissions.indexOf('管理项目设备信息') > -1"
                 icon="el-icon-edit"
                 size="medium"
                 @click="
@@ -333,7 +312,6 @@ export default {
       pageSize: 10,
       projectId: 1,
       projectState: "",
-      projectStateTrigger: "",
       permissions: [],
       //列表
       deviceData: [],
@@ -392,9 +370,6 @@ export default {
       }
     };
   },
-  // computed: {
-  //   ...mapGetters(["permissions"])
-  // },
   mounted() {
     this.projectId = this.$route.query.projectId;
     this.projectState = this.$route.query.projectState;
@@ -404,36 +379,27 @@ export default {
         type: "warning"
       });
     } else {
-      this.getMyPermissions(this.projectId);
-      // console.log("getMypermission="+this.permissions);
-      if (
-        this.projectState != "申请立项" &&
-        this.projectState != "立项驳回" &&
-        this.projectState != "已归档"
-      ) {
-        this.projectStateTrigger = true;
-      } else {
-        this.projectStateTrigger = false;
-      }
-      if (this.permissions.indexOf("查询项目设备信息") > -1) {
-        this.getDeviceList("");
-      }
+        this.getMyPermissions();
+       this.getDeviceList("");
+     
     }
   },
   methods: {
     //获取用户当前项目权限
     async getMyPermissions() {
+      this.permissions=[];
       const res = await ProjectLW.getMyPermissions(this.projectId);
       var obj = "";
       res.forEach(item => {
         obj = item.name;
         this.permissions.push(obj);
       });
+         console.log("getMypermission="+this.permissions);
 
-      console.log("getMypermission=" + this.permissions);
     },
     //列表展示
     async getDeviceList(keyword) {
+     
       const res = await ProjectLW.getDeviceList(
         this.pageNo,
         this.pageSize,
@@ -442,6 +408,7 @@ export default {
       );
       console.log(res.items);
       this.deviceData = res.items;
+     
     },
     //下拉展示设备审核
     async exChange(row, expandedRows) {
@@ -464,14 +431,6 @@ export default {
     },
     //新增
     async addSubmit(formName) {
-      // var _id =
-      //   Math.max.apply(
-      //     null,
-      //     this.deviceData.map(function(item) {
-      //       return item.id;
-      //     })
-      //   ) + 1;
-      // id: _id;
       this.$refs[formName].validate(async valid => {
         if (valid) {
           var _this = this;
@@ -487,6 +446,7 @@ export default {
           this.addFormVisible = false;
           this.$message.success("添加成功");
           this.getDeviceList("");
+      
         } else {
           this.$message.error("请填写正确信息");
           return false;
@@ -543,7 +503,9 @@ export default {
           // console.log(res);
           _this.editFormVisible = false;
           _this.$message.success("修改成功");
-          this.getDeviceList("");
+       
+        this.getDeviceList("");
+    
           //前端修改当前行
           //   _this.row={
           //      outerId: _this.editForm.outerId,

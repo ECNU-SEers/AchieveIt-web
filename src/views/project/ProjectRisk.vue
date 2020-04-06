@@ -6,7 +6,7 @@
         v-model="riskSearch"
         v-if="
           this.projectId !== undefined &&
-            this.permissions.indexOf('查询项目风险信息') > -1
+          this.permissions.indexOf('查询项目风险信息') > -1
         "
         :query-search="querySearch"
         @select-suggestion="getRisk"
@@ -26,7 +26,6 @@
         "
         @click="addFormVisible = true"
         type="primary"
-        :disabled="this.projectStateTrigger == true ? false : true"
         >新增</el-button
       >
 
@@ -42,7 +41,6 @@
             this.projectState !== '立项驳回' &&
             this.permissions.indexOf('新增风险') > -1
         "
-        :disabled="this.projectStateTrigger == true ? false : true"
         >导入</el-button
       >
     </PageHeader>
@@ -61,7 +59,9 @@
         border
         highlight-current-row
         style="width: 100%"
-        v-if="this.projectId !== undefined"
+        v-if="this.projectId !== undefined &&
+        this.permissions.indexOf('查询项目风险信息') > -1
+        "
       >
         <el-table-column type="expand">
           <template slot-scope="props">
@@ -141,15 +141,14 @@
             this.projectState !== '结束' &&
               this.projectState !== '已归档' &&
               this.projectState !== '申请立项' &&
-              this.projectState !== '立项驳回'
+              this.projectState !== '立项驳回' &&
+              this.permissions.indexOf('修改风险信息') > -1
           "
         >
           <template slot-scope="{ row }">
             <el-button-group>
               <el-button
                 type="primary"
-                :disabled="this.projectStateTrigger == true ? false : true"
-                v-if="this.permissions.indexOf('修改风险信息') > -1"
                 icon="el-icon-edit"
                 size="medium"
                 @click="
@@ -160,8 +159,6 @@
 
               <el-button
                 type="danger"
-                :disabled="this.projectStateTrigger == true ? false : true"
-                v-if="this.permissions.indexOf('修改风险信息') > -1"
                 size="medium"
                 icon="el-icon-delete"
                 @click="deleteSubmit(row)"
@@ -297,6 +294,7 @@
       </el-form>
     </el-dialog>
 
+  
     <!--导入-->
     <el-dialog
       title="导入风险信息"
@@ -446,9 +444,9 @@
           </el-select>
         </el-form-item>
 
-        <!--资产来源-->
-        <el-form-item label="资产来源:">
-          <el-input v-model="editForm.source"></el-input>
+        <!--风险来源-->
+        <el-form-item label="风险来源:">
+          <el-input v-model="editForm.source" disabled></el-input>
         </el-form-item>
 
         <el-form-item>
@@ -490,7 +488,6 @@ export default {
       owner: [],
       relatedPersons: [],
       row: "",
-      projectStateTrigger: "",
       permissions: [],
       //风险级别映射
       level: [
@@ -618,9 +615,6 @@ export default {
       ]
     };
   },
-  // computed: {
-  //   ...mapGetters(["permissions"])
-  // },
   mounted() {
     this.projectId = this.$route.query.projectId;
     this.projectState = this.$route.query.projectState;
@@ -631,18 +625,8 @@ export default {
       });
     } else {
       this.getMyPermissions(this.projectId);
-      if (
-        this.projectState != "申请立项" &&
-        this.projectState != "立项驳回" &&
-        this.projectState != "已归档"
-      ) {
-        this.projectStateTrigger = true;
-      } else {
-        this.projectStateTrigger = false;
-      }
-      if (this.permissions.indexOf("查询项目风险信息") > -1) {
         this.getRiskList();
-      }
+      
     }
   },
   methods: {
@@ -829,6 +813,7 @@ export default {
             _this.editForm.owner.userId,
             _this.editForm.owner.realName, //realname or username
             _this.editForm.trackingFreq,
+            _this.editForm.source,
             _this.editForm.description,
             _this.editForm.relatedPersons
           );

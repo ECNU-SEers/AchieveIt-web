@@ -85,7 +85,7 @@
         </el-dialog>
       </div>
 
-      <el-table :data="tableData" :show-header="hiddenTableHeader">
+      <el-table :data="tableData" :show-header="hiddenTableHeader" v-if="this.permissions.indexOf('查询项目配置信息')>-1">
         <el-table-column prop="name" label="名称" width="140"></el-table-column>
         <el-table-column prop="detail" label="详细信息"></el-table-column>
       </el-table>
@@ -182,9 +182,7 @@ export default {
       }
       console.log("projectStateTrigger=" + this.projectStateTrigger);
       if (this.projectState != "申请立项" && this.projectState != "立项驳回") {
-        //   if(this.permissions.indexOf('查询项目配置信息') > -1){
         this.getConfig();
-        //  }
       }
     }
   },
@@ -210,16 +208,16 @@ export default {
       _this.virtual = true;
       const res = await ProjectLW.getConfig(this.projectId);
       // console.log("res.sMailConfirmed:"+res.isMailConfirmed);
-      _this.tableData[0].detail = res.gitRepoAddress;
-      _this.tableData[1].detail = res.virtualMachineSpace;
       if (res.gitRepoAddress == ("" || null)) {
         _this.git = false;
       } else {
+        _this.tableData[0].detail = res.gitRepoAddress;
         _this.git = true;
       }
       if (res.virtualMachineSpace == ("" || null)) {
         _this.virtual = false;
       } else {
+        _this.tableData[1].detail = res.virtualMachineSpace;
         _this.virtual = true;
       }
       // console.log(
