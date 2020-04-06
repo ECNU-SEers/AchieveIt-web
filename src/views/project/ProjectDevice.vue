@@ -129,7 +129,7 @@
                 "
               ></el-button>
 
-              <!-- <el-button type="danger" size="medium" icon="el-icon-delete" @click="deleteSubmit"></el-button> -->
+               <el-button type="success" size="medium" icon="el-icon-check"  @click="checkSubmit(row)"></el-button> 
             </el-button-group>
           </template>
         </el-table-column>
@@ -501,7 +501,8 @@ export default {
             _this.projectId,
             _this.editForm.managerId,
             _this.editForm.startDate,
-            _this.editForm.dueDate
+            _this.editForm.dueDate,
+            _this.editForm.returnDate
           );
           // console.log(res);
           _this.editFormVisible = false;
@@ -544,31 +545,34 @@ export default {
 
     async searchDevice(keyword) {
       this.getDeviceList(keyword);
+    },
+    //确认归还
+    checkSubmit(row) {
+      this.$confirm("确认归还该设备？", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(async() => {
+          if (row.state == "已领取") {
+            console.log("row.outerId="+row.outerId);
+            const res =  await ProjectLW.returnDevice(this.projectId,row.outerId);
+            this.getDeviceList("");
+            this.$message({
+              type: "success",
+              message: "归还成功!"
+            });
+          }else {
+            this.$message.error("设备已归还!");
+          }
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
+        });
     }
-    // //删除
-    // deleteSubmit(row) {
-    //   this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
-    //     confirmButtonText: "确定",
-    //     cancelButtonText: "取消",
-    //     type: "warning"
-    //   })
-    //     .then(() => {
-    //       if (row.state === "已归还") {
-    //         this.$message({
-    //           type: "success",
-    //           message: "删除成功!"
-    //         });
-    //       }else {
-    //         this.$message.error("设备未归还，不能删除");
-    //       }
-    //     })
-    //     .catch(() => {
-    //       this.$message({
-    //         type: "info",
-    //         message: "已取消删除"
-    //       });
-    //     });
-    // }
   }
 };
 </script>
