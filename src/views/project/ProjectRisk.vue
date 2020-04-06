@@ -1,11 +1,13 @@
-
 <template>
   <div>
     <PageHeader title="风险信息">
       <!--工具条：搜索栏-->
       <Search
         v-model="riskSearch"
-        v-if="(this.projectId !== undefined)  && (this.permissions.indexOf('查询项目风险信息') > -1)"
+        v-if="
+          this.projectId !== undefined &&
+            this.permissions.indexOf('查询项目风险信息') > -1
+        "
         :query-search="querySearch"
         @select-suggestion="getRisk"
         value-key="name"
@@ -13,14 +15,14 @@
       <!-- <div style="width:20px;height=100%;"></div> -->
 
       <!--新增风险信息-->
-      <el-button                                                                            
+      <el-button
         class="add-btn"
         v-if="
-         this.projectState !== '结束' &&
+          this.projectState !== '结束' &&
             this.projectState !== '已归档' &&
             this.projectState !== '申请立项' &&
-            this.projectState !== '立项驳回'&&
-            (this.permissions.indexOf('新增风险') > -1)
+            this.projectState !== '立项驳回' &&
+            this.permissions.indexOf('新增风险') > -1
         "
         @click="addFormVisible = true"
         type="primary"
@@ -37,8 +39,8 @@
           this.projectState !== '结束' &&
             this.projectState !== '已归档' &&
             this.projectState !== '申请立项' &&
-            this.projectState !== '立项驳回'&&
-            (this.permissions.indexOf('新增风险') > -1)
+            this.projectState !== '立项驳回' &&
+            this.permissions.indexOf('新增风险') > -1
         "
         :disabled="this.projectStateTrigger == true ? false : true"
         >导入</el-button
@@ -489,7 +491,7 @@ export default {
       relatedPersons: [],
       row: "",
       projectStateTrigger: "",
-      permissions:[],
+      permissions: [],
       //风险级别映射
       level: [
         {},
@@ -638,8 +640,8 @@ export default {
       } else {
         this.projectStateTrigger = false;
       }
-     if(this.permissions.indexOf('查询项目风险信息')> -1){
-      this.getRiskList();
+      if (this.permissions.indexOf("查询项目风险信息") > -1) {
+        this.getRiskList();
       }
     }
   },
@@ -650,9 +652,9 @@ export default {
       var obj = "";
       res.forEach(item => {
         obj = item.name;
-       this.permissions.push(obj);
+        this.permissions.push(obj);
       });
-      
+
       console.log("getMypermission=" + this.permissions);
     },
     //列表展示

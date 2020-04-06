@@ -1,9 +1,12 @@
-  <template>
+<template>
   <div>
     <PageHeader title="项目设备信息">
       <!--工具条：搜索栏-->
       <Search
-        v-if="(this.projectId !== undefined) &&  (this.permissions.indexOf('查询项目设备信息') > -1)"
+        v-if="
+          this.projectId !== undefined &&
+            this.permissions.indexOf('查询项目设备信息') > -1
+        "
         :query-search="querySearch"
         @select-suggestion="getDevice"
       >
@@ -19,8 +22,8 @@
           this.projectState !== '结束' &&
             this.projectState !== '已归档' &&
             this.projectState !== '申请立项' &&
-            this.projectState !== '立项驳回'&&
-            (this.permissions.indexOf('管理项目设备信息') > -1)
+            this.projectState !== '立项驳回' &&
+            this.permissions.indexOf('管理项目设备信息') > -1
         "
         >新增</el-button
       >
@@ -331,7 +334,7 @@ export default {
       projectId: 1,
       projectState: "",
       projectStateTrigger: "",
-      permissions:[],
+      permissions: [],
       //列表
       deviceData: [],
       //下拉展示设备审核
@@ -412,21 +415,21 @@ export default {
       } else {
         this.projectStateTrigger = false;
       }
-      if(this.permissions.indexOf('查询项目设备信息') > -1){
-      this.getDeviceList("");
+      if (this.permissions.indexOf("查询项目设备信息") > -1) {
+        this.getDeviceList("");
       }
     }
   },
   methods: {
-   //获取用户当前项目权限
+    //获取用户当前项目权限
     async getMyPermissions() {
       const res = await ProjectLW.getMyPermissions(this.projectId);
       var obj = "";
       res.forEach(item => {
         obj = item.name;
-       this.permissions.push(obj);
+        this.permissions.push(obj);
       });
-      
+
       console.log("getMypermission=" + this.permissions);
     },
     //列表展示
@@ -617,4 +620,3 @@ export default {
   width: 80px;
 }
 </style>
-
