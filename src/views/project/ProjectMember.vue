@@ -5,7 +5,7 @@
       <PageHeader title="项目成员信息">
         <Search
           v-if="this.projectId !== undefined"
-          placeholder="请输入功能名称"
+          placeholder="请输入成员姓名"
           :query-search="querySearch"
           @search="searchMembers"
           @select-suggestion="selectSearch"
@@ -25,7 +25,7 @@
           v-permission="'归档申请'"
           >新增</el-button
         >
-        <el-button
+        <!-- <el-button
           v-if="
             this.state !== '结束' &&
               this.state !== '已归档' &&
@@ -38,7 +38,7 @@
           @click="addExcelFormVisible = true"
           v-permission="'归档申请'"
           >导入</el-button
-        >
+        > -->
       </PageHeader>
 
       <!-- 新增项目成员 -->
@@ -141,9 +141,13 @@
       </el-dialog>
 
       <!--项目成员列表-->
-      <Pagination v-if="this.projectId !== undefined">
+      <Pagination
+        :current-page.sync="page"
+        :page-size="pageSize"
+        :total="membersLength"
+        @page-change="handlePageChange"
+      >
         <el-table
-          v-if="this.projectId !== undefined"
           :data="
             tableData.filter(
               data =>
@@ -164,11 +168,7 @@
           <el-table-column prop="username" label="员工ID"></el-table-column>
           <el-table-column prop="realName" label="姓名"></el-table-column>
           <el-table-column prop="rolesStr" label="角色"></el-table-column>
-          <el-table-column
-            prop="email"
-            label="邮件地址"
-            show-overflow-tooltip
-          ></el-table-column>
+          <el-table-column prop="email" label="邮件地址"></el-table-column>
           <el-table-column prop="department" label="所属部门"></el-table-column>
           <el-table-column
             prop="leaderRealName"
@@ -309,6 +309,7 @@ export default {
       pageSize: 10,
       keyword: "",
       projectId: "",
+      membersLength: 0,
 
       selectedMember: "",
       memberSearch: "",
@@ -384,26 +385,36 @@ export default {
         });
       } else {
         this.addFormVisible = true;
-        this.users = await Project.getUsers();
-        var info = await Project.getMemberList(this.projectId, 1, 999, "");
+        const allUser = await Project.getUsers();
+        // this.users = allUser.filter(item => item.);
+        const hasUsers = await Project.searchMembers(this.projectId, "");
+        const hasUserIds = [];
+        hasUsers.forEach(user => {
+          hasUserIds.push(user.id);
+        });
+        allUser.forEach(user => {
+          if (hasUserIds.indexOf(user.userId) === -1) {
+            this.users.push(user);
+          }
+        });
+        var info = await Project.getMemberList(
+          this.projectId,
+          this.page,
+          this.pageSize,
+          ""
+        );
         this.members = info.items;
         this.roles = await Project.getRoles();
-        console.log("add:");
-        console.log(this.users);
-        console.log(this.members);
-        console.log(this.roles);
       }
     },
     // 提交新增成员
     async submitAddForm(form) {
-      console.log(this.addForm);
-
       var info = await Project.addMember(
         this.projectId,
         this.addForm.user.userId,
         this.addForm.user.username,
         this.addForm.leader.userId,
-        this.addForm.leader.userName,
+        this.addForm.leader.username,
         this.addForm.roles
       );
       this.$message({
@@ -428,15 +439,17 @@ export default {
           type: "warning"
         });
       } else {
-        console.log("row:");
-        console.log(row);
         this.editFormVisible = true;
         // 获取项目成员
-        var info = await Project.getMemberList(this.projectId, 1, 999, "");
+        var info = await Project.getMemberList(
+          this.projectId,
+          this.page,
+          this.pageSize,
+          ""
+        );
         this.members = info.items;
         // 获取所有角色
         this.roles = await Project.getRoles();
-        console.log(this.roles);
         // 表格预设值
         this.editForm.userId = row.userId;
         this.editForm.username = row.username + " " + row.realName;
@@ -566,15 +579,28 @@ export default {
         console.log(e);
       }
     },
-    // 搜索
-    async querySearch(queryString, cb) {
-      console.log(queryString);
-      var tmp = [];
+
+    // 分页
+    handlePageChange(val) {
+      this.page = val;
+      this.getMemberList("");
+    },
+
+    async getSearchSuggestion(queryString) {
       this.memberSearch = await Project.searchMembers(
         this.projectId,
         queryString
       );
+      this.membersLength = this.memberSearch.length;
+      console.log(this.membersLength);
       console.log(this.memberSearch);
+    },
+
+    // 搜索
+    async querySearch(queryString, cb) {
+      console.log(queryString);
+      var tmp = [];
+      await this.getSearchSuggestion(queryString);
       // 下拉显示的数据
       this.memberSearch.forEach(item => {
         const obj = {};
@@ -590,22 +616,13 @@ export default {
     async selectSearch(item) {
       console.log("select search item-------");
       console.log(item);
-      this.selectedMember = item.id;
+      // this.getOne(item);
       // this.projects = await ProjectSYJ.searchOneProject(item.id);
       // console.log(this.projects);
     },
     searchMembers(keyword) {
-      this.getMemberList(this.keyword);
-      // if(this.selectedMember !== "") {
-      // console.log("selected search");
-      // const res = await ProjectSYJ.searchOneProject(this.selectedProject);
-      // const tmplist = [];
-      // tmplist.push(res);
-      // this.projects = tmplist;
-      // } else {
-      //   console.log("keyword search");
-      // this.projects = await ProjectSYJ.getProjectList(this.pageNo, this.pageSize, this.userId, keyword);
-      // }
+      console.log("keyword:" + keyword);
+      this.getMemberList(keyword);
     },
     async getOne(item) {
       console.log(item);
@@ -626,6 +643,7 @@ export default {
     // 获取项目状态
     this.state = this.$route.query.projectState;
     console.log("state: " + this.state);
+    this.getSearchSuggestion();
 
     if (this.projectId === undefined) {
       this.$message({
