@@ -1,14 +1,9 @@
 <template>
   <div>
     <PageHeader title="项目配置信息" style="height:40px;"></PageHeader>
-    <el-row v-if="this.projectId === undefined">
-      <el-col :span="24">
-        <el-tag type="success" effect="dark">请选择项目</el-tag>
-      </el-col>
-    </el-row>
     <el-card class="box-card" v-if="this.projectId !== undefined">
       <div slot="header" class="clearfix">
-        <span>当前项目ID: {{ this.projectId }}</span>
+        <span>当前项目ID: {{ this.outerId }}</span>
         <el-button
           style="float: right; padding: 3px 0"
           type="text"

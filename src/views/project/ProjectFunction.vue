@@ -276,10 +276,12 @@ export default {
         if (info[i].name === "管理项目功能列表") {
           this.permission = true;
           this.getInfoPermission = true;
+
           break;
         }
         if (info[i].name === "查询项目功能列表") {
           this.getInfoPermission = true;
+          console.log("permission：查询");
         }
       }
       if (this.getInfoPermission === false) {
@@ -569,6 +571,8 @@ export default {
     } else {
       this.keyword = "";
       this.getFunctionList(this.keyword);
+      // 获取项目权限
+      this.getPermission(this.projectId);
     }
   }
 };
