@@ -162,7 +162,7 @@
             <el-input
               type="textarea"
               v-model="addForm.description"
-              placeholder="请填写项目描述"
+              placeholder="请填写功能描述"
             ></el-input>
           </el-form-item>
         </el-form>
@@ -521,15 +521,6 @@ export default {
       });
       this.functionSearch = tmp;
       cb(tmp);
-    },
-    createFilter(queryString) {
-      return functionSearch => {
-        return (
-          functionSearch.name
-            .toLowerCase()
-            .indexOf(queryString.toLowerCase()) === 0
-        );
-      };
     },
     searchFunctions(item) {
       console.log(item);

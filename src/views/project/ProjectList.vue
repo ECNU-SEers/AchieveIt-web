@@ -1034,12 +1034,13 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["permissions"])
+    ...mapGetters(["permissions"]),
+    ...mapGetters(["user"])
   },
   mounted() {
     this.getProjects();
     this.getProjectModals();
-    console.log(this.permissions);
+    console.log(this.user);
   },
   methods: {
     refresh() {
@@ -1105,14 +1106,7 @@ export default {
     async selectSearch(item) {
       console.log("select search item-------");
       console.log(item);
-      this.selectedProject = item.id;
-      // this.projects = await ProjectSYJ.searchOneProject(item.id);
-      // console.log(this.projects);
-      console.log("selected search");
-      const res = await ProjectSYJ.searchOneProject(this.selectedProject);
-      const tmplist = [];
-      tmplist.push(res);
-      this.projects = tmplist;
+      this.selectedMember = item.id;
     },
 
     async searchProject(keyword) {

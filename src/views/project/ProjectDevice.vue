@@ -7,10 +7,11 @@
           this.projectId !== undefined &&
             this.permissions.indexOf('查询项目设备信息') > -1
         "
+        placeholder="请输入设备名称"
         :query-search="querySearch"
-        @select-suggestion="getDevice"
-      >
-      </Search>
+        @search="searchDevice"
+        @select-suggestion="selectSearch"
+      ></Search>
       <!-- <div style="width:20px;height=100%;"></div> -->
 
       <!--新增-->
@@ -36,7 +37,12 @@
     </el-row>
 
     <!--列表展示-->
-    <Pagination v-if="this.projectId !== undefined">
+    <Pagination
+      :current-page.sync="pageNo"
+      :page-size="pageSize"
+      :total="devicesLength"
+      @page-change="handlePageChange"
+    >
       <el-table
         v-if="
           this.projectId !== undefined &&
@@ -52,7 +58,7 @@
         @expand-change="exChange"
       >
         <!--下拉展示-->
-        <el-table-column type="expand">
+        <!-- <el-table-column type="expand">
           <template>
             <el-table
               :data="inspectData"
@@ -76,7 +82,7 @@
               ></el-table-column>
             </el-table>
           </template>
-        </el-table-column>
+        </el-table-column>-->
 
         <!--列表展示-->
         <el-table-column
@@ -201,17 +207,11 @@
             :disabled="true"
           ></el-input>
         </el-form-item>
-
-        <el-form-item>
-          <el-button
-            type="primary"
-            @click="addSubmit('addForm')"
-            style="margin-right:8%;"
-            >添加</el-button
-          >
-          <el-button @click="addFormVisible = false">取消</el-button>
-        </el-form-item>
       </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="addFormVisible = false">取消</el-button>
+        <el-button type="primary" @click="addSubmit('addForm')">提交</el-button>
+      </div>
     </el-dialog>
 
     <!--编辑-->
@@ -279,17 +279,13 @@
         <el-form-item label="资产状态:">
           <el-input placeholder="已领取" :disabled="true"></el-input>
         </el-form-item>
-
-        <el-form-item>
-          <el-button
-            type="primary"
-            @click="editSubmit('editForm')"
-            style="margin-right:8%;"
-            >修改</el-button
-          >
-          <el-button @click="editFormVisible = false">取消</el-button>
-        </el-form-item>
       </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="editFormVisible = false">取消</el-button>
+        <el-button type="primary" @click="editSubmit('editForm')"
+          >提交</el-button
+        >
+      </div>
     </el-dialog>
   </div>
 </template>
@@ -311,6 +307,7 @@ export default {
       //分页
       pageNo: 1,
       pageSize: 10,
+      devicesLength: 0,
       projectId: 1,
       projectState: "",
       permissions: [],
@@ -318,7 +315,6 @@ export default {
       deviceData: [],
       //下拉展示设备审核
       getRowKeys: row => {
-        console.log(row);
         return row.outerId;
       },
       inspectData: [
@@ -382,9 +378,20 @@ export default {
     } else {
       this.getMyPermissions();
       this.getDeviceList("");
+      this.getDeviceLength();
     }
   },
   methods: {
+    handlePageChange(val) {
+      this.pageNo = val;
+      this.getDeviceList("");
+    },
+
+    async getDeviceLength() {
+      const results = await ProjectLW.searchDevice(this.projectId, "");
+      this.devicesLength = results.length;
+    },
+
     //获取用户当前项目权限
     async getMyPermissions() {
       this.permissions = [];
@@ -531,10 +538,12 @@ export default {
       cb(tmp);
     },
     //查询返回单个设备信息
-    async getDevice(item) {
-      console.log("deviceItem233=" + item.id);
-      const res = await ProjectLW.getDevice(this.projectId, item.id.toString());
-      console.log("返回查询结果=" + res);
+    async selectSearch(item) {
+      this.selectedMember = item.id;
+    },
+
+    async searchDevice(keyword) {
+      this.getDeviceList(keyword);
     }
     // //删除
     // deleteSubmit(row) {
