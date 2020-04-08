@@ -10,7 +10,13 @@
       >
       </Search>
       <el-button
-        v-if="this.projectId !== undefined"
+        v-if="
+          this.projectState !== '结束' &&
+            this.projectState !== '已归档' &&
+            this.projectState !== '申请立项' &&
+            this.projectState !== '立项驳回' &&
+            this.addPermission === true
+        "
         type="primary"
         class="add-btn"
         @click="handleAdd"
@@ -57,14 +63,33 @@
         <el-table-column label="创建日期" prop="createdAt"></el-table-column>
         <el-table-column label="预定日期" prop="due"></el-table-column>
         <el-table-column label="更新日期" prop="updatedAt"></el-table-column>
-        <el-table-column fixed="right" label="操作" width="100px">
+        <el-table-column
+          fixed="right"
+          label="操作"
+          width="140px"
+          v-if="
+            this.projectState !== '结束' &&
+              this.projectState !== '已归档' &&
+              this.projectState !== '申请立项' &&
+              this.projectState !== '立项驳回' &&
+              (this.editPermission === true || this.handlePermission === true)
+          "
+        >
           <template slot-scope="scope">
-            <el-button
-              size="medium"
-              type="primary"
-              @click.stop="handleEdit(scope.$index, scope.row)"
-              icon="el-icon-edit"
-            ></el-button>
+            <el-button-group>
+              <el-button
+                size="medium"
+                type="primary"
+                @click.stop="handleEdit(scope.$index, scope.row)"
+                icon="el-icon-edit"
+              ></el-button>
+              <el-button
+                size="medium"
+                type="success"
+                @click.stop="handleChangeState(scope.$index, scope.row)"
+                icon="el-icon-check"
+              ></el-button>
+            </el-button-group>
           </template>
         </el-table-column>
       </el-table>
@@ -110,9 +135,9 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="提交人" prop="creatorName">
+        <!-- <el-form-item label="提交人" prop="creatorName">
           <el-input v-model="addForm.creatorName" disabled></el-input>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="预定日期" prop="due">
           <el-date-picker
             v-model="addForm.due"
@@ -122,6 +147,16 @@
             value-format="yyyy-MM-dd HH:mm:ss"
             :picker-options="pickerOptions"
           ></el-date-picker>
+        </el-form-item>
+        <el-form-item label="处理人" prop="handlerId">
+          <el-select v-model="addForm.handlerId" placeholder="请选择缺陷处理人">
+            <el-option
+              v-for="item in members"
+              :key="item.id"
+              :label="item.realName"
+              :value="item.id"
+            ></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="缺陷描述" prop="description">
           <el-input
@@ -210,6 +245,7 @@ import Pagination from "../../components/common/Pagination";
 import ProjectSYJ from "@/sys/models/project_syj";
 import moment from "moment";
 import util from "../../util/dateformat";
+import { mapGetters } from "vuex";
 
 export default {
   components: {
@@ -220,16 +256,23 @@ export default {
   data() {
     return {
       page: 1,
-      pageSize: 5,
+      pageSize: 10,
       projectId: 1,
-      userName: "管理员",
+      username: "",
       userId: 1,
       defects: [],
       defectsLength: 0,
       type: [],
       selectedDefect: "",
+      projectState: "",
 
       defectModal: [],
+
+      // 权限相关
+      getPermission: false,
+      addPermission: false,
+      editPermission: false,
+      handlePermission: false,
 
       stateDB: [
         {
@@ -298,6 +341,7 @@ export default {
       defectNameLoading: false,
 
       // 新增缺陷
+      members: [],
       addFormVisible: false,
       submitLoading: false,
 
@@ -325,6 +369,14 @@ export default {
             triggle: "change"
           }
         ],
+        handlerId: [
+          {
+            type: "number",
+            required: true,
+            message: "请选择缺陷处理人",
+            triggle: "blur"
+          }
+        ],
         description: [
           {
             required: true,
@@ -345,8 +397,8 @@ export default {
         name: "",
         type: "",
         level: "",
-        creatorName: "",
         due: "",
+        handlerId: "",
         description: ""
       },
 
@@ -400,9 +452,25 @@ export default {
     };
   },
   methods: {
+    async getProjectPermissions() {
+      const permissions = await ProjectSYJ.getPermission(this.projectId);
+      console.log(permissions);
+      permissions.forEach(permission => {
+        if (permission.name === "查询项目缺陷信息") {
+          this.getPermission = true;
+        } else if (permission.name === "新增缺陷") {
+          this.addPermission = true;
+        } else if (permission.name === "修改缺陷信息") {
+          this.editPermission = true;
+        } else if (permission.name === "变更缺陷状态") {
+          this.handlePermission = true;
+        }
+      });
+    },
+
     handlePageChange(val) {
       this.page = val;
-      this.getAllDefects();
+      this.getAllDefects("");
     },
 
     async getDefectModals() {
@@ -412,11 +480,10 @@ export default {
 
     // 项目搜索框
     querySearch(queryString, cb) {
-      console.log(this.defectModal);
       var defectModal = [];
       this.defectModal.forEach(item => {
         const obj = {};
-        obj.id = item.outerId;
+        obj.id = item.id;
         obj.value = item.name;
         defectModal.push(obj);
       });
@@ -425,36 +492,15 @@ export default {
       const results = queryString
         ? defectModal.filter(item => item.value.includes(queryString))
         : defectModal;
-      // const results = [{value: '111'}];
-      // cb([{ value: "111" }]);
       cb(results);
     },
 
     async selectSearch(item) {
-      console.log("select search item-------");
-      console.log(item);
-      this.selectedDefect = item.id;
-      // this.projects = await ProjectSYJ.searchOneProject(item.id);
-      // console.log(this.projects);
+      this.selectedMember = item.id;
     },
 
     async searchDefect(keyword) {
-      this.defects = await ProjectSYJ.getProjectDefects(
-        this.page,
-        this.pageSize,
-        this.projectId,
-        keyword
-      );
-      // if(this.selectedProject !== "") {
-      //   console.log("selected search");
-      //   const res = await ProjectSYJ.searchOneProject(this.selectedProject);
-      //   const tmplist = [];
-      //   tmplist.push(res);
-      //   this.projects = tmplist;
-      // } else {
-      //   console.log("keyword search");
-      //   this.projects = await ProjectSYJ.getProjectList(this.pageNo, this.pageSize, this.userId, keyword);
-      // }
+      this.getAllDefects(keyword);
     },
 
     getNowFormatDate() {
@@ -485,9 +531,8 @@ export default {
       return this.type[typeId - 1].name;
     },
 
-    async getAllDefects() {
+    async getAllDefects(keyword) {
       this.getDefectTypeModal();
-      const keyword = "";
       const res = await ProjectSYJ.getProjectDefects(
         this.page,
         this.pageSize,
@@ -508,6 +553,9 @@ export default {
         this.defects[i].level = this.matchLevel(this.defects[i].level);
         this.defects[i].state = this.matchState(this.defects[i].state);
         this.defects[i].type = this.matchType(this.defects[i].type);
+        if (this.defects[i].handlerName === null) {
+          this.defects[i].handlerName = "暂未处理";
+        }
       }
     },
 
@@ -517,10 +565,10 @@ export default {
       this.type = res;
     },
 
-    handleAdd() {
+    async handleAdd() {
       this.addFormVisible = true;
       this.getDefectTypeModal();
-      this.addForm.creatorName = this.userName;
+      this.members = await ProjectSYJ.getProjectMembers(this.projectId);
     },
 
     addDefect() {},
@@ -531,8 +579,6 @@ export default {
           this.$confirm("确定提交吗？", "提示", {}).then(() => {
             this.submitLoading = true;
             const para = Object.assign({}, this.addForm);
-            delete para.creatorName;
-            para.handlerId = this.userId;
             // para.due = util.formatDate.format(new Date(para.due), 'yyyy-MM-dd hh:mm:ss')
             console.log(para);
             ProjectSYJ.addProjectDefect(this.projectId, para).then(res => {
@@ -541,7 +587,7 @@ export default {
                 message: "提交成功！",
                 type: "success"
               });
-              this.getAllDefects();
+              this.getAllDefects("");
             });
           });
         }
@@ -549,10 +595,42 @@ export default {
     },
 
     handleEdit(index, row) {
-      this.defectId = row.id;
-      this.editFormVisible = true;
-      this.editForm = Object.assign({}, row);
-      this.getDefectTypeModal();
+      if (this.editPermission === true) {
+        this.defectId = row.id;
+        this.editFormVisible = true;
+        this.editForm = Object.assign({}, row);
+        this.getDefectTypeModal();
+      } else {
+        this.$message({
+          type: "warning",
+          message: "无权限编辑"
+        });
+      }
+    },
+
+    handleChangeState(index, row) {
+      if (
+        this.handlePermission === true &&
+        row.state === "已修复" &&
+        this.username === row.creatorName
+      ) {
+        this.$confirm("确定关闭该缺陷吗", "提示", {}).then(() => {
+          changeDefectState(this.projectId, this.defectId);
+        });
+      } else if (
+        this.handlePermission === true &&
+        row.state === "已分派" &&
+        this.username === row.handlerName
+      ) {
+        this.$confirm("确定已修复该缺陷吗", "提示", {}).then(() => {
+          changeDefectState(this.projectId, this.defectId);
+        });
+      } else {
+        this.$message({
+          type: "warning",
+          message: "无权限更改状态"
+        });
+      }
     },
 
     editDefectSubmit() {
@@ -578,24 +656,30 @@ export default {
                 message: "提交成功！",
                 type: "success"
               });
-              this.getAllDefects();
+              this.getAllDefects("");
             });
           });
         }
       });
     }
   },
+  computed: {
+    ...mapGetters(["user"])
+  },
   mounted() {
+    this.username = this.user.username;
     this.projectId = this.$route.query.projectId;
+    this.projectState = this.$route.query.projectState;
     if (this.projectId === undefined) {
       this.$message({
         message: "请先选择项目！",
         type: "warning"
       });
     } else {
-      this.getAllDefects();
+      this.getAllDefects("");
       this.getDefectModals();
     }
+    this.getProjectPermissions();
   }
 };
 </script>

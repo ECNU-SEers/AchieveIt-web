@@ -3,19 +3,29 @@
     <PageHeader title="项目设备信息">
       <!--工具条：搜索栏-->
       <Search
-        v-if="this.projectId !== undefined"
+        v-if="
+          this.projectId !== undefined &&
+            this.permissions.indexOf('查询项目设备信息') > -1
+        "
+        placeholder="请输入设备名称"
         :query-search="querySearch"
-        @select-suggestion="getDevice"
-      >
-      </Search>
-      <div style="width:20px;height=100%;"></div>
+        @search="searchDevice"
+        @select-suggestion="selectSearch"
+      ></Search>
+      <!-- <div style="width:20px;height=100%;"></div> -->
 
       <!--新增-->
       <el-button
         class="add-btn"
         @click="addFormVisible = true"
         type="primary"
-        v-if="this.projectId !== undefined"
+        v-if="
+          this.projectState !== '结束' &&
+            this.projectState !== '已归档' &&
+            this.projectState !== '申请立项' &&
+            this.projectState !== '立项驳回' &&
+            this.permissions.indexOf('管理项目设备信息') > -1
+        "
         >新增</el-button
       >
     </PageHeader>
@@ -27,9 +37,17 @@
     </el-row>
 
     <!--列表展示-->
-    <Pagination v-if="this.projectId !== undefined">
+    <Pagination
+      :current-page.sync="pageNo"
+      :page-size="pageSize"
+      :total="devicesLength"
+      @page-change="handlePageChange"
+    >
       <el-table
-        v-if="this.projectId !== undefined"
+        v-if="
+          this.projectId !== undefined &&
+            this.permissions.indexOf('查询项目设备信息') > -1
+        "
         :data="deviceData"
         stripe
         border
@@ -41,28 +59,6 @@
       >
         <!--下拉展示-->
         <!-- <el-table-column type="expand">
-          <template slot-scope="props">
-            <el-form
-              inline="true"
-              title="检查情况"
-              label-position="left"
-              class="table-expand"
-            >
-              <el-form-item label="检查日期:">
-                <span>{{ props.row.inspectDate }}</span>
-              </el-form-item>
-              <el-form-item label="设备状态:">
-                <span>{{ props.row.intact }}</span>
-              </el-form-item>
-              <el-form-item label="备注:">
-                <span>{{ props.row.remark }}</span>
-              </el-form-item>
-            </el-form>
-          </template>
-        </el-table-column>-->
-
-        <!--下拉展示-->
-        <el-table-column type="expand">
           <template>
             <el-table
               :data="inspectData"
@@ -86,7 +82,7 @@
               ></el-table-column>
             </el-table>
           </template>
-        </el-table-column>
+        </el-table-column>-->
 
         <!--列表展示-->
         <el-table-column
@@ -109,7 +105,18 @@
         <el-table-column label="归还日期" prop="returnDate"></el-table-column>
 
         <!---编辑和删除-->
-        <el-table-column label="操作" width="180px" prop="action">
+        <el-table-column
+          label="操作"
+          width="180px"
+          prop="action"
+          v-if="
+            this.projectState !== '结束' &&
+              this.projectState !== '已归档' &&
+              this.projectState !== '申请立项' &&
+              this.projectState !== '立项驳回' &&
+              this.permissions.indexOf('管理项目设备信息') > -1
+          "
+        >
           <template slot-scope="{ row }">
             <el-button-group>
               <el-button
@@ -122,7 +129,7 @@
                 "
               ></el-button>
 
-              <!-- <el-button type="danger" size="medium" icon="el-icon-delete" @click="deleteSubmit"></el-button> -->
+               <el-button type="success" size="medium" icon="el-icon-check"  @click="checkSubmit(row)"></el-button> 
             </el-button-group>
           </template>
         </el-table-column>
@@ -170,7 +177,7 @@
             <el-option
               v-for="(item, index) in users.items"
               :key="index + '1'"
-              :label="item.realName+'('+item.username+')'"
+              :label="item.realName + '(' + item.username + ')'"
               :value="item.userId"
             ></el-option>
           </el-select>
@@ -200,17 +207,11 @@
             :disabled="true"
           ></el-input>
         </el-form-item>
-
-        <el-form-item>
-          <el-button
-            type="primary"
-            @click="addSubmit('addForm')"
-            style="margin-right:8%;"
-            >添加</el-button
-          >
-          <el-button @click="addFormVisible = false">取消</el-button>
-        </el-form-item>
       </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="addFormVisible = false">取消</el-button>
+        <el-button type="primary" @click="addSubmit('addForm')">提交</el-button>
+      </div>
     </el-dialog>
 
     <!--编辑-->
@@ -252,7 +253,7 @@
             <el-option
               v-for="(item, index) in users.items"
               :key="index"
-             :label="item.realName+'('+item.username+')'"
+              :label="item.realName + '(' + item.username + ')'"
               :value="item.userId"
             ></el-option>
           </el-select>
@@ -278,17 +279,13 @@
         <el-form-item label="资产状态:">
           <el-input placeholder="已领取" :disabled="true"></el-input>
         </el-form-item>
-
-        <el-form-item>
-          <el-button
-            type="primary"
-            @click="editSubmit('editForm')"
-            style="margin-right:8%;"
-            >修改</el-button
-          >
-          <el-button @click="editFormVisible = false">取消</el-button>
-        </el-form-item>
       </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="editFormVisible = false">取消</el-button>
+        <el-button type="primary" @click="editSubmit('editForm')"
+          >提交</el-button
+        >
+      </div>
     </el-dialog>
   </div>
 </template>
@@ -298,7 +295,7 @@ import Search from "@/components/common/Search";
 import PageHeader from "@/components/common/PageHeader";
 import Pagination from "@/components/common/Pagination";
 import ProjectLW from "@/sys/models/project_lw";
-
+import { mapGetters } from "vuex";
 export default {
   components: {
     Search,
@@ -310,16 +307,14 @@ export default {
       //分页
       pageNo: 1,
       pageSize: 10,
+      devicesLength: 0,
       projectId: 1,
-      projectState:"",
-
+      projectState: "",
+      permissions: [],
       //列表
       deviceData: [],
-
       //下拉展示设备审核
-
       getRowKeys: row => {
-        console.log(row);
         return row.outerId;
       },
       inspectData: [
@@ -329,10 +324,8 @@ export default {
         //   remark:""v1
         // }
       ],
-
       //下拉管理员名单
       users: [],
-
       //编辑
       editFormVisible: false,
       editForm: {
@@ -343,7 +336,6 @@ export default {
         dueDate: "",
         state: ""
       },
-
       //新增
       addFormVisible: false,
       addForm: {
@@ -377,18 +369,40 @@ export default {
   },
   mounted() {
     this.projectId = this.$route.query.projectId;
-    this.projectState=this.$route.query.projectState;
+    this.projectState = this.$route.query.projectState;
     if (this.projectId === undefined) {
       this.$message({
         message: "请先选择项目！",
         type: "warning"
       });
     } else {
+      this.getMyPermissions();
       this.getDeviceList("");
+      this.getDeviceLength();
     }
-    
   },
   methods: {
+    handlePageChange(val) {
+      this.pageNo = val;
+      this.getDeviceList("");
+    },
+
+    async getDeviceLength() {
+      const results = await ProjectLW.searchDevice(this.projectId, "");
+      this.devicesLength = results.length;
+    },
+
+    //获取用户当前项目权限
+    async getMyPermissions() {
+      this.permissions = [];
+      const res = await ProjectLW.getMyPermissions(this.projectId);
+      var obj = "";
+      res.forEach(item => {
+        obj = item.name;
+        this.permissions.push(obj);
+      });
+      console.log("getMypermission=" + this.permissions);
+    },
     //列表展示
     async getDeviceList(keyword) {
       const res = await ProjectLW.getDeviceList(
@@ -400,11 +414,9 @@ export default {
       console.log(res.items);
       this.deviceData = res.items;
     },
-
     //下拉展示设备审核
     async exChange(row, expandedRows) {
       console.log("exChange");
-
       var _this = this;
       if (expandedRows.length) {
         //只展开一行
@@ -421,17 +433,8 @@ export default {
         _this.expands = []; //收起
       }
     },
-
     //新增
     async addSubmit(formName) {
-      // var _id =
-      //   Math.max.apply(
-      //     null,
-      //     this.deviceData.map(function(item) {
-      //       return item.id;
-      //     })
-      //   ) + 1;
-      // id: _id;
       this.$refs[formName].validate(async valid => {
         if (valid) {
           var _this = this;
@@ -469,14 +472,12 @@ export default {
         })
         .catch(_ => {});
     },
-
     handleForm(formName) {
       if (this.$refs[formName]) {
         this.$refs[formName].clearValidate();
         this.$refs[formName].resetFields();
       }
     },
-
     //点击“编辑” 深拷贝原信息
     updateDevice(row) {
       console.log(row.type);
@@ -489,7 +490,6 @@ export default {
         state: row.state
       };
     },
-
     //确认编辑
     editSubmit(formName) {
       this.$refs[formName].validate(async valid => {
@@ -501,12 +501,15 @@ export default {
             _this.projectId,
             _this.editForm.managerId,
             _this.editForm.startDate,
-            _this.editForm.dueDate
+            _this.editForm.dueDate,
+            _this.editForm.returnDate
           );
           // console.log(res);
           _this.editFormVisible = false;
           _this.$message.success("修改成功");
+
           this.getDeviceList("");
+
           //前端修改当前行
           //   _this.row={
           //      outerId: _this.editForm.outerId,
@@ -522,7 +525,6 @@ export default {
         }
       });
     },
-
     //搜索
     async querySearch(queryString, cb) {
       var tmp = [];
@@ -536,39 +538,41 @@ export default {
       // 调用 callback 返回建议列表的数据
       cb(tmp);
     },
-
     //查询返回单个设备信息
-    async getDevice(item) {
-      console.log("deviceItem233=" + item.id);
+    async selectSearch(item) {
+      this.selectedMember = item.id;
+    },
 
-      const res = await ProjectLW.getDevice(this.projectId, item.id.toString());
-      console.log("返回查询结果=" + res);
+    async searchDevice(keyword) {
+      this.getDeviceList(keyword);
+    },
+    //确认归还
+    checkSubmit(row) {
+      this.$confirm("确认归还该设备？", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(async() => {
+          if (row.state == "已领取") {
+            console.log("row.outerId="+row.outerId);
+            const res =  await ProjectLW.returnDevice(this.projectId,row.outerId);
+            this.getDeviceList("");
+            this.$message({
+              type: "success",
+              message: "归还成功!"
+            });
+          }else {
+            this.$message.error("设备已归还!");
+          }
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
+        });
     }
-
-    // //删除
-    // deleteSubmit(row) {
-    //   this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
-    //     confirmButtonText: "确定",
-    //     cancelButtonText: "取消",
-    //     type: "warning"
-    //   })
-    //     .then(() => {
-    //       if (row.state === "已归还") {
-    //         this.$message({
-    //           type: "success",
-    //           message: "删除成功!"
-    //         });
-    //       }else {
-    //         this.$message.error("设备未归还，不能删除");
-    //       }
-    //     })
-    //     .catch(() => {
-    //       this.$message({
-    //         type: "info",
-    //         message: "已取消删除"
-    //       });
-    //     });
-    // }
   }
 };
 </script>

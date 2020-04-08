@@ -9,13 +9,15 @@ export default class ProjectSYJ {
    * @param {页面大小} pageSize
    * @param {用户id} userId
    */
-  static async getProjectList(pageNo, pageSize, userId, keyword) {
-    return await get("/project/show/all/projects", {
-      pageNo,
-      pageSize,
-      userId,
-      keyword
-    });
+  static async getProjectList(pageNo, pageSize, keyword) {
+    return await get(
+      "/project/show/all/projects?pageNo=" +
+        pageNo +
+        "&pageSize=" +
+        pageSize +
+        "&keyword=" +
+        keyword
+    );
   }
 
   static async searchOneProject(outerId) {
@@ -54,9 +56,9 @@ export default class ProjectSYJ {
     return await get("/project/id/all");
   }
 
-  static async getProjectModal(userId) {
+  static async getProjectModal() {
     let keyword = "";
-    return await get("/project/search", { userId, keyword });
+    return await get("/project/search?keyword=" + keyword);
   }
 
   static async addProject(project) {
@@ -68,7 +70,13 @@ export default class ProjectSYJ {
   }
 
   static async acceptProject(projectOuterId, remark) {
-    return await put("/project/accept?" + "projectOuterId=" + projectOuterId + "&remark=" + remark);
+    return await put(
+      "/project/accept?" +
+        "projectOuterId=" +
+        projectOuterId +
+        "&remark=" +
+        remark
+    );
   }
 
   static async addConfigAfterAccepted(projectId, config) {
@@ -76,7 +84,13 @@ export default class ProjectSYJ {
   }
 
   static async rejectProject(projectOuterId, remark) {
-    return await put("/project/reject"+ "projectOuterId=" + projectOuterId + "&remark=" + remark);
+    return await put(
+      "/project/reject" +
+        "projectOuterId=" +
+        projectOuterId +
+        "&remark=" +
+        remark
+    );
   }
 
   static async getAllUser() {
@@ -92,23 +106,31 @@ export default class ProjectSYJ {
   }
 
   static async assignConfig(config) {
-    return await put("/project/assign/config?outerId="+config);
+    return await put("/project/assign/config?outerId=" + config);
   }
 
   static async stateToRun(outerId, remark) {
-    return await put("/project/set/config?" + "outerId=" + outerId + "&remark=" + remark);
+    return await put(
+      "/project/set/config?" + "outerId=" + outerId + "&remark=" + remark
+    );
   }
 
   static async stateToDeliver(outerId, remark) {
-    return await put("/project/deliver?"  + "outerId=" + outerId + "&remark=" + remark);
+    return await put(
+      "/project/deliver?" + "outerId=" + outerId + "&remark=" + remark
+    );
   }
 
   static async stateToEnd(outerId, remark) {
-    return await put("/project/end?" + "outerId=" + outerId + "&remark=" + remark);
+    return await put(
+      "/project/end?" + "outerId=" + outerId + "&remark=" + remark
+    );
   }
 
   static async approvalArchive(outerId, remark) {
-    return await put("/project/approve/archive?"+ "outerId=" + outerId + "&remark=" + remark);
+    return await put(
+      "/project/approve/archive?" + "outerId=" + outerId + "&remark=" + remark
+    );
   }
 
   static async getProjectByKeyword(pageNo, pageSize, userId, keyword) {
@@ -143,5 +165,17 @@ export default class ProjectSYJ {
 
   static async updateProjectDefect(projectId, defectId, defect) {
     return await put("/project/" + projectId + "/defect/" + defectId, defect);
+  }
+
+  static async changeDefectState(projectId, defectId) {
+    return await put("/project/" + projectId + "/defect/" + defectId + "/transition");
+  }
+
+  static async getProjectMembers(projectId) {
+    return await get("/project/" + projectId + "/members/search");
+  }
+
+  static async getPermission(projectId) {
+    return await get("/project/" + projectId+ "/permissions/me");
   }
 }

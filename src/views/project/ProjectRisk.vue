@@ -1,31 +1,48 @@
 <template>
   <div>
-    <PageHeader title="风险信息">
+    <PageHeader title="项目风险信息">
       <!--工具条：搜索栏-->
       <Search
         v-model="riskSearch"
+        v-if="
+          this.projectId !== undefined &&
+            this.permissions.indexOf('查询项目风险信息') > -1
+        "
         :query-search="querySearch"
         @select-suggestion="getRisk"
         value-key="name"
-        v-if="this.projectId !== undefined"
       ></Search>
-      <div style="width:20px;height=100%;"></div>
+      <!-- <div style="width:20px;height=100%;"></div> -->
 
       <!--新增风险信息-->
       <el-button
         class="add-btn"
-        v-if="this.projectId !== undefined"
+        v-if="
+          this.projectState !== '结束' &&
+            this.projectState !== '已归档' &&
+            this.projectState !== '申请立项' &&
+            this.projectState !== '立项驳回' &&
+            this.permissions.indexOf('新增风险') > -1
+        "
         @click="addFormVisible = true"
         type="primary"
-      >新增</el-button>
+        >新增</el-button
+      >
 
       <!--导入-->
       <el-button
         class="add-btn"
-        v-if="this.projectId !== undefined"
         @click="importFormVisible = true"
         type="primary"
-      >导入</el-button>
+        v-if="
+          this.projectState !== '结束' &&
+            this.projectState !== '已归档' &&
+            this.projectState !== '申请立项' &&
+            this.projectState !== '立项驳回' &&
+            this.permissions.indexOf('新增风险') > -1
+        "
+        >导入</el-button
+      >
     </PageHeader>
 
     <el-row v-if="this.projectId === undefined">
@@ -42,7 +59,10 @@
         border
         highlight-current-row
         style="width: 100%"
-        v-if="this.projectId !== undefined"
+        v-if="
+          this.projectId !== undefined &&
+            this.permissions.indexOf('查询项目风险信息') > -1
+        "
       >
         <el-table-column type="expand">
           <template slot-scope="props">
@@ -81,13 +101,13 @@
               <el-form-item label="跟踪频度(单位:次/天)">
                 <span>{{ props.row.trackingFreq }}</span>
               </el-form-item>
-              <el-form-item label="相关者" 
-             >
-                <span 
+              <el-form-item label="相关者">
+                <span
                   v-for="person in props.row.riskRelatedPeople"
                   :key="person.id"
-                >{{ person.username }}</span>
-                <span v-if=" props.row.riskRelatedPeople==null">暂无</span>
+                  >{{ person.username }}</span
+                >
+                <span v-if="props.row.riskRelatedPeople == null">暂无</span>
               </el-form-item>
               <el-form-item label="风险来源">
                 <span>{{ props.row.source }}</span>
@@ -95,7 +115,11 @@
             </el-form>
           </template>
         </el-table-column>
-        <el-table-column label="序号" type="index"></el-table-column>
+        <el-table-column
+          label="序号"
+          type="index"
+          width="70px"
+        ></el-table-column>
         <el-table-column label="风险 ID" prop="id"></el-table-column>
         <el-table-column label="风险名称" prop="name"></el-table-column>
         <el-table-column label="风险类型" prop="type"></el-table-column>
@@ -110,7 +134,18 @@
         <el-table-column label="风险来源" prop="source"></el-table-column>-->
 
         <!---编辑和移除-->
-        <el-table-column label="操作" width="180px" prop="action">
+        <el-table-column
+          label="操作"
+          width="180px"
+          prop="action"
+          v-if="
+            this.projectState !== '结束' &&
+              this.projectState !== '已归档' &&
+              this.projectState !== '申请立项' &&
+              this.projectState !== '立项驳回' &&
+              this.permissions.indexOf('修改风险信息') > -1
+          "
+        >
           <template slot-scope="{ row }">
             <el-button-group>
               <el-button
@@ -143,7 +178,12 @@
       @open="handleForm('addForm')"
       :append-to-body="true"
     >
-      <el-form :model="addForm" :rules="rules" ref="addForm" label-width="120px">
+      <el-form
+        :model="addForm"
+        :rules="rules"
+        ref="addForm"
+        label-width="120px"
+      >
         <!--文本框-->
         <el-form-item label="风险名称:" prop="name">
           <el-input v-model="addForm.name"></el-input>
@@ -184,7 +224,12 @@
 
         <!--文本域-->
         <el-form-item label="风险应对策略:" prop="strategy">
-          <el-input type="textarea" :row="3" placeholder="请输入风险应对策略" v-model="addForm.strategy"></el-input>
+          <el-input
+            type="textarea"
+            :row="3"
+            placeholder="请输入风险应对策略"
+            v-model="addForm.strategy"
+          ></el-input>
         </el-form-item>
 
         <!--单选-->
@@ -204,7 +249,7 @@
             <el-option
               v-for="item in users.items"
               :key="item.userId"
-              :label="item.realName+'('+item.username+')'"
+              :label="item.realName + '(' + item.username + ')'"
               :value="item"
             ></el-option>
           </el-select>
@@ -227,7 +272,7 @@
             <el-option
               v-for="item in users.items"
               :key="item.userId"
-              :label="item.realName+'('+item.username+')'"
+              :label="item.realName + '(' + item.username + ')'"
               :value="item.userId"
             ></el-option>
           </el-select>
@@ -239,7 +284,12 @@
         </el-form-item>
 
         <el-form-item>
-          <el-button type="primary" @click="addSubmit('addForm')" style="margin-right:8%;">添加</el-button>
+          <el-button
+            type="primary"
+            @click="addSubmit('addForm')"
+            style="margin-right:8%;"
+            >添加</el-button
+          >
           <el-button @click="addFormVisible = false">取消</el-button>
         </el-form-item>
       </el-form>
@@ -254,8 +304,12 @@
       :append-to-body="true"
       center
     >
-      <div style="text-align:center;margin:-20px auto 0 auto;color:red;font-size:1px;">
-        <span>(提示：若从其他项目导入，可直接搜索项目名称，所选项目所有风险将会被导入)</span>
+      <div
+        style="text-align:center;margin:-20px auto 0 auto;color:red;font-size:1px;"
+      >
+        <span
+          >(提示：若从其他项目导入，可直接搜索项目名称，所选项目所有风险将会被导入)</span
+        >
         <div style="padding-top:30px;">
           <el-cascader
             ref="cascader"
@@ -269,7 +323,12 @@
           ></el-cascader>
         </div>
         <div style="padding-top:30px;">
-          <el-button type="primary" @click="importSubmit()" style="margin-right:8%;">导入</el-button>
+          <el-button
+            type="primary"
+            @click="importSubmit()"
+            style="margin-right:8%;"
+            >导入</el-button
+          >
           <el-button @click="importFormVisible = false">取消</el-button>
         </div>
       </div>
@@ -283,7 +342,12 @@
       @open="handleForm('editForm')"
       :append-to-body="true"
     >
-      <el-form :model="editForm" :rules="rules" ref="editForm" label-width="120px">
+      <el-form
+        :model="editForm"
+        :rules="rules"
+        ref="editForm"
+        label-width="120px"
+      >
         <!--文本框-->
         <el-form-item label="风险名称:" prop="name">
           <el-input v-model="editForm.name"></el-input>
@@ -324,7 +388,12 @@
 
         <!--文本域-->
         <el-form-item label="风险应对策略:" prop="strategy">
-          <el-input type="textarea" :row="3" placeholder="请输入风险应对策略" v-model="editForm.strategy"></el-input>
+          <el-input
+            type="textarea"
+            :row="3"
+            placeholder="请输入风险应对策略"
+            v-model="editForm.strategy"
+          ></el-input>
         </el-form-item>
 
         <!--单选-->
@@ -346,13 +415,12 @@
             <el-option
               v-for="item in users.items"
               :key="item.userId"
-              :label="item.realName+'('+item.username+')'"
+              :label="item.realName + '(' + item.username + ')'"
               :value="item"
             ></el-option>
           </el-select>
         </el-form-item>
 
-        <!--单选-->
         <!--单选-->
         <el-form-item label="风险跟踪频度:（单位:天/次）" prop="trackingFreq">
           <el-input v-model="editForm.trackingFreq"></el-input>
@@ -370,19 +438,24 @@
             <el-option
               v-for="item in users.items"
               :key="item.userId"
-              :label="item.realName+'('+item.username+')'"
+              :label="item.realName + '(' + item.username + ')'"
               :value="item.userId"
             ></el-option>
           </el-select>
         </el-form-item>
 
-        <!--资产来源-->
-        <el-form-item label="资产来源:">
-          <el-input v-model="editForm.source"></el-input>
+        <!--风险来源-->
+        <el-form-item label="风险来源:">
+          <el-input v-model="editForm.source" disabled></el-input>
         </el-form-item>
 
         <el-form-item>
-          <el-button type="primary" @click="editSubmit('editForm')" style="margin-right:8%;">添加</el-button>
+          <el-button
+            type="primary"
+            @click="editSubmit('editForm')"
+            style="margin-right:8%;"
+            >添加</el-button
+          >
           <el-button @click="addFormVisible = false">取消</el-button>
         </el-form-item>
       </el-form>
@@ -395,7 +468,7 @@ import Search from "@/components/common/Search";
 import PageHeader from "@/components/common/PageHeader";
 import Pagination from "@/components/common/Pagination";
 import ProjectLW from "@/sys/models/project_lw";
-
+// import { mapGetters } from "vuex";
 export default {
   components: {
     Search,
@@ -415,65 +488,65 @@ export default {
       owner: [],
       relatedPersons: [],
       row: "",
-
+      permissions: [],
       //风险级别映射
-      level:[
+      level: [
         {},
         {
-          name:"低",
-          value:1
+          name: "低",
+          value: 1
         },
         {
-          name:"中",
-          value:2
+          name: "中",
+          value: 2
         },
         {
-          name:"高",
-          value:3
+          name: "高",
+          value: 3
         }
       ],
       //风险影响度映射
-      impact:[
+      impact: [
         {},
-         {
-          name:"低",
-          value:1
+        {
+          name: "低",
+          value: 1
         },
         {
-          name:"中",
-          value:2
+          name: "中",
+          value: 2
         },
         {
-          name:"高",
-          value:3
+          name: "高",
+          value: 3
         }
       ],
-    //风险状态映射
-      state:[
+      //风险状态映射
+      state: [
         {},
-      {
-      name:"仍存在",
-      value:1
-      },
-     {
-       name:"已排除",
-       value:2
-       }
+        {
+          name: "仍存在",
+          value: 1
+        },
+        {
+          name: "已排除",
+          value: 2
+        }
       ],
-    //风险来源映射
-      source:[
+      //风险来源映射
+      source: [
         {},
         {
-       name : "项目自身识别",
-       value : 1
+          name: "项目自身识别",
+          value: 1
         },
         {
-       name : "从其它项目导入",
-       value : 2
+          name: "从其它项目导入",
+          value: 2
         },
         {
-       name :"从组织风险标准库导入",
-       value : 3
+          name: "从组织风险标准库导入",
+          value: 3
         }
       ],
       //新增
@@ -482,14 +555,12 @@ export default {
         owner: [],
         relatedPersons: []
       },
-
       //编辑
       editFormVisible: false,
       editForm: {
         owner: [],
         relatedPersons: []
       },
-
       rules: {
         name: [{ required: true, message: "请输入风险名称", trigger: "blur" }],
         type: [
@@ -524,7 +595,6 @@ export default {
           { required: true, message: "请选择风险状态", trigger: "change" }
         ]
       },
-
       //导入
       importFormVisible: false,
       importSourceId: "",
@@ -546,7 +616,7 @@ export default {
     };
   },
   mounted() {
-   this.projectId = this.$route.query.projectId;
+    this.projectId = this.$route.query.projectId;
     this.projectState = this.$route.query.projectState;
     if (this.projectId === undefined) {
       this.$message({
@@ -554,12 +624,22 @@ export default {
         type: "warning"
       });
     } else {
-      //console.log(this.projectId);
+      this.getMyPermissions(this.projectId);
       this.getRiskList();
     }
-  
   },
   methods: {
+    //获取用户当前项目权限
+    async getMyPermissions() {
+      const res = await ProjectLW.getMyPermissions(this.projectId);
+      var obj = "";
+      res.forEach(item => {
+        obj = item.name;
+        this.permissions.push(obj);
+      });
+
+      console.log("getMypermission=" + this.permissions);
+    },
     //列表展示
     async getRiskList() {
       var _this = this;
@@ -629,14 +709,13 @@ export default {
         if (JSON.stringify(item.riskRelatedPeople) == "{}") {
           obj.riskRelatedPeople = null;
         } else {
-         // console.log("there are riskRelatedPeople! and item.id="+item.id);
+          // console.log("there are riskRelatedPeople! and item.id="+item.id);
           obj.riskRelatedPeople = item.riskRelatedPeople;
         }
         tmp.push(obj);
       });
       this.riskData = tmp;
     },
-
     //新增
     addSubmit(formName) {
       this.$refs[formName].validate(async valid => {
@@ -650,7 +729,7 @@ export default {
             this.addForm.impact,
             this.addForm.strategy,
             this.addForm.owner.userId,
-            this.addForm.owner.realName,//realname or username
+            this.addForm.owner.realName, //realname or username
             this.addForm.trackingFreq,
             this.addForm.description,
             this.addForm.relatedPersons
@@ -665,7 +744,6 @@ export default {
         }
       });
     },
-
     //Form下拉，项目成员
     async getAllMembers(callback) {
       // console.log("回调参数" + callback);
@@ -682,22 +760,20 @@ export default {
         })
         .catch(_ => {});
     },
-
     handleForm(formName) {
       if (this.$refs[formName]) {
         this.$refs[formName].clearValidate();
         this.$refs[formName].resetFields();
       }
     },
-
     //映射数字对应的中文
-     find(obj,val) { 
+    find(obj, val) {
       var res;
-      obj.forEach(item=>{
-        if(item.name==val){
-          res=item.value;
+      obj.forEach(item => {
+        if (item.name == val) {
+          res = item.value;
         }
-      })
+      });
       //console.log(val+"深拷贝:"+res);
       return res;
     },
@@ -705,21 +781,20 @@ export default {
     updateRisk(row) {
       var _this = this;
       this.editForm = {
-        name: row.name==="暂无数据"? "":row.name,
-        type: row.type==="暂无数据"? "":row.type,
-        level: this.$options.methods.find(_this.level,row.level),
-        impact: this.$options.methods.find(_this.impact,row.impact),
-        strategy: row.strategy==="暂无数据"? "":row.strategy,
-        owner: row.ownerName==="暂无数据"? "":row.ownerName,
-        trackingFreq: row.trackingFreq==="暂无数据"? "":row.trackingFreq,
+        name: row.name === "暂无数据" ? "" : row.name,
+        type: row.type === "暂无数据" ? "" : row.type,
+        level: this.$options.methods.find(_this.level, row.level),
+        impact: this.$options.methods.find(_this.impact, row.impact),
+        strategy: row.strategy === "暂无数据" ? "" : row.strategy,
+        owner: row.ownerName === "暂无数据" ? "" : row.ownerName,
+        trackingFreq: row.trackingFreq === "暂无数据" ? "" : row.trackingFreq,
         source: row.source,
-        description: row.description==="暂无数据"? "":row.description,
+        description: row.description === "暂无数据" ? "" : row.description,
         relatedPersons: JSON.stringify(row.riskRelatedPeople),
-        state: this.$options.methods.find(_this.state,row.state)
+        state: this.$options.methods.find(_this.state, row.state)
       };
       this.row = row;
     },
-
     //确认编辑
     editSubmit(formName) {
       this.$refs[formName].validate(async valid => {
@@ -727,8 +802,19 @@ export default {
         if (valid) {
           const res = await ProjectLW.updateRisk(
             _this.projectId,
-             _this.row.id,
-            this.editForm
+            _this.row.id,
+            _this.editForm.name,
+            _this.editForm.type,
+            _this.editForm.level,
+            _this.editForm.impact,
+            _this.editForm.strategy,
+            _this.editForm.state,
+            _this.editForm.owner.userId,
+            _this.editForm.owner.realName, //realname or username
+            _this.editForm.trackingFreq,
+            _this.editForm.source,
+            _this.editForm.description,
+            _this.editForm.relatedPersons
           );
           // console.log(res);
           _this.editFormVisible = false;
@@ -740,7 +826,6 @@ export default {
         }
       });
     },
-
     //删除
     deleteSubmit(row) {
       this.$confirm("此操作将永久删除该风险信息, 是否继续?", "提示", {
@@ -763,7 +848,6 @@ export default {
           });
         });
     },
-
     //导入
     //下拉，获取其他项目
     async getOtherProjects(callback) {
@@ -794,23 +878,26 @@ export default {
       }
     },
     //确定“导入”
-    async importSubmit(){
-         var importSourceId=this.importSourceId;
-         var _this = this;
-         try{if(importSourceId===-1){
-           const res = await ProjectLW.importRisksFromStdLib(this.projectId);
-           _this.$message.success("导入成功");
-         }else{
-          const res = await ProjectLW.importRisksFromOtherProject(this.projectId,importSourceId);
+    async importSubmit() {
+      var importSourceId = this.importSourceId;
+      var _this = this;
+      try {
+        if (importSourceId === -1) {
+          const res = await ProjectLW.importRisksFromStdLib(this.projectId);
           _this.$message.success("导入成功");
-         }
-         this.getRiskList();
-         this.importFormVisible=false;
-         }catch(e){
-           _this.$message.error("导入失败");
-         }
+        } else {
+          const res = await ProjectLW.importRisksFromOtherProject(
+            this.projectId,
+            importSourceId
+          );
+          _this.$message.success("导入成功");
+        }
+        this.getRiskList();
+        this.importFormVisible = false;
+      } catch (e) {
+        _this.$message.error("导入失败");
+      }
     },
-
     //搜索
     async querySearch(queryString, cb) {
       var tmp = [];
@@ -825,14 +912,12 @@ export default {
       console.log("tmp=" + tmp);
       cb(tmp);
     },
-
     //查询
     async getRisk(item) {
       console.log("item=" + item);
       const res = await ProjectLW.getRisk(this.projectId, item.id);
       console.log("返回查询结果=" + res);
     }
-
     // cb(this.results);
   }
 };

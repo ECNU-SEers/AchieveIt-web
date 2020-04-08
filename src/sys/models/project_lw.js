@@ -1,8 +1,14 @@
 import { post, get, put, _delete } from "@/sys/plugins/axios";
 
 export default class ProjectLW {
-  constructor() {
-    
+  constructor() {}
+  /**
+   * 获取用户当前项目权限
+   * @param {number} projectId
+   */
+  static async getMyPermissions(projectId) {
+    const res = await get("/project/" + projectId + "/permissions/me");
+    return res;
   }
 
   /************设备***************/
@@ -85,7 +91,9 @@ export default class ProjectLW {
    * 项目中成员作为可选 设备/风险 的 管理员/相关人员
    */
   static async getAllMembers(projectId) {
-    const res = await get("/project/" + projectId + "/members?page=1&pageSize=100");
+    const res = await get(
+      "/project/" + projectId + "/members?page=1&pageSize=100"
+    );
     return res;
   }
 
@@ -110,6 +118,14 @@ export default class ProjectLW {
       "/show/detail?projectId=" + projectId + "&outerId=" + deviceId
     );
     return res;
+  }
+  /**
+   * 归还设备
+   * @param {number} projectId 
+   * @param {string} deviceOuterId
+   */
+  static returnDevice(projectId,deviceOuterId){
+   return put("/device/return?deviceOuterId="+deviceOuterId+"&projectId="+projectId);
   }
 
   /***********风险***************/
@@ -179,7 +195,7 @@ export default class ProjectLW {
    * @param {number} level;
    * @param {number} impact;
    * @param {string} strategy;
-   * @param {number} state;  
+   * @param {number} state;
    * @param {number} ownerId;
    * @param {number} trackingFreq;
    * @param {string}  source;
@@ -189,7 +205,6 @@ export default class ProjectLW {
   static updateRisk(
     projectId,
     riskId,
-    {
       name,
       type,
       level,
@@ -197,11 +212,11 @@ export default class ProjectLW {
       strategy,
       state,
       ownerId,
+      ownerName,
       trackingFreq,
       source,
       description,
       relatedPersons
-    }
   ) {
     // console.log("owner" + ownerId);
     // console.log("riskId" + riskId);
@@ -212,6 +227,7 @@ export default class ProjectLW {
       impact,
       strategy,
       ownerId,
+      ownerName,
       trackingFreq,
       source,
       description,
@@ -254,26 +270,31 @@ export default class ProjectLW {
   /**
    * 导入时，下拉获取其他项目projectOuterId
    */
-  static async getOtherProjects(){
-    const res =await get("/project/all");
+  static async getOtherProjects() {
+    const res = await get("/project/all");
     return res;
   }
   /**
    * 从标准库导入
-   * @param {number} projectId 
+   * @param {number} projectId
    */
-  static async importRisksFromStdLib(projectId){
-    const res = await post("/project/"+projectId+"/risk/import/std",{projectId});
+  static async importRisksFromStdLib(projectId) {
+    const res = await post("/project/" + projectId + "/risk/import/std", {
+      projectId
+    });
     return res;
   }
 
   /**
    * 从其他项目导入
-   *  @param {number} projectId 
-   *  @param {number} otherProjectId 
+   *  @param {number} projectId
+   *  @param {number} otherProjectId
    */
-    static async importRisksFromOtherProject(projectId,otherProjectId){
-    const res = await post("/project/"+projectId+"/risk/import/other",{projectId,otherProjectId});
+  static async importRisksFromOtherProject(projectId, otherProjectId) {
+    const res = await post("/project/" + projectId + "/risk/import/other", {
+      projectId,
+      otherProjectId
+    });
     return res;
   }
 

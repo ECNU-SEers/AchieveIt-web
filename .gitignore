@@ -3,6 +3,9 @@ node_modules
 node_modules
 .env.development
 .DS_Store
+<<<<<<< HEAD
+tests
+=======
 =======
 .DS_Store
 /node_modules
@@ -28,3 +31,4 @@ yarn-error.log*
 *.sln
 *.sw*
 >>>>>>> wclong
+>>>>>>> a5d11bce03a41c78d0438207116621c2969210d8

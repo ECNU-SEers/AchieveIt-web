@@ -1,6 +1,6 @@
 <template>
   <div>
-    <PageHeader title="基本信息"></PageHeader>
+    <PageHeader title="项目基本信息"></PageHeader>
     <el-row v-if="this.outerId === undefined">
       <el-col :span="24">
         <el-tag type="success" effect="dark">请选择项目</el-tag>
@@ -8,8 +8,18 @@
     </el-row>
     <el-card v-if="this.outerId !== undefined" class="box-card">
       <div slot="header" class="clearfix">
-        <span>AchieveIt</span>
-        <el-button style="float: right; padding: 3px 0" type="text" @click="editBasic">修改</el-button>
+        <span>当前项目ID: {{ this.outerId }}</span>
+        <el-button
+          style="float: right; padding: 3px 0"
+          type="text"
+          @click="editBasic"
+          v-if="
+            this.state !== '结束' &&
+              this.state !== '已归档' &&
+              this.permission === true
+          "
+          >编辑</el-button
+        >
 
         <!-- 修改项目信息 -->
         <el-dialog title="修改项目基本信息" :visible.sync="dialogFormVisible">
@@ -22,12 +32,20 @@
           >
             <!-- 不可修改 -->
             <el-form-item label="项目ID">
-              <el-input v-model="editForm.outerId" :disabled="true" placeholder></el-input>
+              <el-input
+                v-model="editForm.outerId"
+                :disabled="true"
+                placeholder
+              ></el-input>
             </el-form-item>
 
             <!-- 输入框 -->
             <el-form-item label="项目名称" prop="name">
-              <el-input v-model="editForm.name" placeholder="请输入项目名称" clearable></el-input>
+              <el-input
+                v-model="editForm.name"
+                placeholder="请输入项目名称"
+                clearable
+              ></el-input>
             </el-form-item>
 
             <!-- 下拉单选 -->
@@ -46,11 +64,9 @@
                   :value="item"
                 >
                   <span style="float: left">{{ item.company }}</span>
-                  <span style="float: right; color: #8492a6; font-size: 13px">
-                    {{
+                  <span style="float: right; color: #8492a6; font-size: 13px">{{
                     item.outerId
-                    }}
-                  </span>
+                  }}</span>
                 </el-option>
               </el-select>
             </el-form-item>
@@ -78,18 +94,37 @@
 
             <!-- 不可修改 -->
             <el-form-item label="项目上级" prop="leader">
-              <el-input v-model="tableData[5].detail" :disabled="true" placeholder></el-input>
+              <el-input
+                v-model="tableData[5].detail"
+                :disabled="true"
+                placeholder
+              ></el-input>
             </el-form-item>
 
             <!-- 文本框 -->
             <el-form-item label="主要里程碑" prop="milestone">
-              <el-input type="textarea" autosize :disabled="true" v-model="this.stones"></el-input>
-              <el-input type="textarea" autosize v-model="editForm.milestone"></el-input>
+              <el-input
+                type="textarea"
+                autosize
+                :disabled="true"
+                v-model="this.stones"
+              ></el-input>
+              <el-input
+                v-if="this.state !== '申请立项'"
+                type="textarea"
+                autosize
+                v-model="editForm.milestone"
+              ></el-input>
             </el-form-item>
 
             <!-- 多选 -->
             <el-form-item label="采用技术" prop="skillNames">
-              <el-select v-model="editForm.skillNames" multiple filterable placehoder="请选择采用的技术">
+              <el-select
+                v-model="editForm.skillNames"
+                multiple
+                filterable
+                placehoder="请选择采用的技术"
+              >
                 <el-option
                   v-for="item in skills"
                   :key="item.id"
@@ -115,12 +150,13 @@
             <!-- <el-form-item label="主要功能" prop="function">
               <el-input type="textarea" v-model="editForm.function"></el-input>
             </el-form-item>-->
-
-            <el-form-item>
-              <el-button type="primary" @click="submitForm('editForm')">提交</el-button>
-              <el-button @click="resetForm('editForm')">重置</el-button>
-            </el-form-item>
           </el-form>
+          <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogFormVisible = false">取消</el-button>
+            <el-button type="primary" @click="submitForm('editForm')"
+              >提交</el-button
+            >
+          </div>
         </el-dialog>
       </div>
 
@@ -171,6 +207,8 @@ export default {
     return {
       state: "",
       outerId: "",
+      projectId: "",
+      permission: false,
       // 修改弹框
       dialogFormVisible: false,
       formLabelWidth: "120px",
@@ -223,12 +261,12 @@ export default {
           name: "业务领域",
           detail: "暂无数据",
           isExpend: 0
-        },
-        {
-          name: "主要功能",
-          detail: "暂无数据",
-          isExpend: 0
         }
+        // {
+        //   name: "主要功能",
+        //   detail: "暂无数据",
+        //   isExpend: 0
+        // }
       ],
 
       // 修改框
@@ -313,11 +351,11 @@ export default {
 
     // 获取项目详细信息
     async getBasic(outerId) {
-      console.log("try to get basic info");
+      // console.log("try to get basic info");
       try {
         // 尝试获取项目详细信息
         const info = await Project.getBasic(outerId);
-        console.log("get basic success!");
+        // console.log("get basic success!");
 
         // 表格取值
         this.tableData[0].detail = info.project.outerId;
@@ -396,15 +434,15 @@ export default {
         }
 
         // 功能
-        if (info.projectFunctions.length > 0) {
-          var str = "";
-          for (var i = 0; i < info.projectFunctions.length; ++i) {
-            str = str + info.projectFunctions[i].name + " \n ";
-          }
-          this.tableData[9].detail = str;
-        } else {
-          this.tableData[9].detail = "暂无数据";
-        }
+        // if (info.projectFunctions.length > 0) {
+        //   var str = "";
+        //   for (var i = 0; i < info.projectFunctions.length; ++i) {
+        //     str = str + info.projectFunctions[i].name + " \n ";
+        //   }
+        //   this.tableData[9].detail = str;
+        // } else {
+        //   this.tableData[9].detail = "暂无数据";
+        // }
 
         // 获取修改框中的预设值（下拉选项和不可修改的显示）
         // 客户
@@ -430,13 +468,26 @@ export default {
           this.stones = "暂无数据";
         }
 
-        console.log(this.stones);
+        // console.log(this.stones);
 
-        console.log(this.tableData);
+        // console.log(this.tableData);
       } catch (e) {
         console.log(e);
         // this.$message.error("获取设备信息失败");
       }
+    },
+
+    // 获取项目权限
+    async getPermission(projectId) {
+      var info = await Project.getPermissions(projectId);
+      console.log(info);
+      for (var i = 0; i < info.length; ++i) {
+        if (info[i].name === "修改项目信息") {
+          this.permission = true;
+          break;
+        }
+      }
+      console.log("permission: " + this.permission);
     },
 
     // 修改弹框
@@ -450,8 +501,7 @@ export default {
       } else {
         this.dialogFormVisible = true;
 
-        var outerId = "P01";
-        const info = await Project.getBasic(outerId);
+        const info = await Project.getBasic(this.outerId);
         this.editForm = {
           outerId: info.project.outerId,
           name: info.project.name,
@@ -462,27 +512,35 @@ export default {
           startDate: info.project.startDate,
           endDate: info.project.endDate,
           milestone: "",
-          skillNames: [],
-          businessAreaName: info.projectBusinessArea.businessAreaName
+          skillNames: []
         };
+        if (
+          info.projectBusinessArea === null ||
+          info.projectBusinessArea === ""
+        ) {
+          this.editForm.businessAreaName = "";
+        } else {
+          this.editForm.businessAreaName =
+            info.projectBusinessArea.businessAreaName;
+        }
         for (var i = 0; i < info.projectSkills.length; ++i) {
           this.editForm.skillNames.push(info.projectSkills[i].skillName);
         }
 
         // this.editForm.businessAreaName = info.projectBusinessArea;
         // this.editForm.skillNames = info.projectSkills;
-        console.log(this.editForm);
+        // console.log(this.editForm);
       }
     },
     // 提交表单
     submitForm(formName) {
-      console.log(formName);
-      console.log(this.editForm);
+      // console.log(formName);
+      // console.log(this.editForm);
       // var stones = this.editForm.milestone.split("\n");
       // console.log(stones);
       this.$refs[formName].validate(valid => {
         if (valid) {
-          console.log("valid");
+          // console.log("valid");
           Project.updateBasic(
             this.editForm.outerId,
             this.editForm.name,
@@ -499,6 +557,7 @@ export default {
               message: "已提交!"
             });
             this.dialogFormVisible = false;
+            this.getBasic(this.outerId);
           });
         } else {
           console.log("error submit!!");
@@ -512,15 +571,18 @@ export default {
     }
   },
   mounted: function() {
-    console.log("in mounted");
+    // console.log("in mounted");
+    // 获取项目projectId
+    this.projectId = this.$route.query.projectId;
+
     // 获取outerId
     this.outerId = this.$route.query.outerId;
-    console.log("outerId: " + this.outerId);
+    // console.log("outerId: " + this.outerId);
 
     // 获取项目状态
-    console.log(this.$route.query);
+    // console.log(this.$route.query);
     this.state = this.$route.query.projectState;
-    console.log("state: " + this.state);
+    // console.log("state: " + this.state);
 
     if (this.outerId === undefined) {
       this.$message({
@@ -530,6 +592,8 @@ export default {
     } else {
       // 获取项目基本信息
       this.getBasic(this.outerId);
+      // 获取项目权限
+      this.getPermission(this.projectId);
     }
   }
 };
