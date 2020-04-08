@@ -32,18 +32,16 @@
           <el-button
             @click="onEditRole(scope.row)"
             type="primary"
-            plain
-            size="mini"
+            size="medium"
+            icon="el-icon-edit"
           >
-            编辑
           </el-button>
           <el-button
             @click="onDeleteRole(scope.row)"
+            size="medium"
             type="danger"
-            size="mini"
-            plain
+            icon="el-icon-delete"
           >
-            删除
           </el-button>
         </template>
       </el-table-column>

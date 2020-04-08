@@ -1,4 +1,9 @@
 # AchieveIt-web
+### 使用方法
+- git clone https://github.com/ECNU-SEers/AchieveIt-web.git
+- npm install
+- 在主目录下新建.env.development文件，写入后端的base_url
+- npm run serve
 
 ### 目录结构
 ├───public // 公共资源目录，该目录webpack原封打包 <br>

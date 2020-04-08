@@ -34,21 +34,20 @@
         <span slot-scope="scope">
           {{ scope.row.projects.join("、") }}
         </span>
-            </el-table-column>
-            <el-table-column label="操作">
-                <template slot-scope="scope">
-                    <el-button
-                            @click="onEditUser(scope.row)"
-                            type="primary"
-                            plain
-                            size="mini"
-                    >
-                        编辑
-                    </el-button>
-                </template>
-            </el-table-column>
-        </LPageTable>
-    </div>
+      </el-table-column>
+      <el-table-column label="操作">
+        <template slot-scope="scope">
+          <el-button
+            @click="onEditUser(scope.row)"
+            type="primary"
+            size="medium"
+            icon="el-icon-edit"
+          >
+          </el-button>
+        </template>
+      </el-table-column>
+    </LPageTable>
+  </div>
 </template>
 
 <script>
