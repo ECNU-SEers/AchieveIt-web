@@ -35,26 +35,18 @@
           class="add-btn"
           @click="addExcelFormVisible = true"
         >导入</el-button>
-        <download-excel :data="json_data" :fields="json_fields" name="项目成员信息.xls">
-          <!-- 上面可以自定义自己的样式，还可以引用其他组件button -->
-          <el-button
-            type="primary"
-            class="add-btn"
-            v-if="
+        <el-button
+          type="primary"
+          class="add-btn"
+          v-if="
             this.state !== '结束' &&
               this.state !== '已归档' &&
               this.state !== '申请立项' &&
               this.state !== '立项驳回' &&
               this.permission === true
           "
-          >模板</el-button>
-        </download-excel>
-        <!-- <el-button
-          
-          type="primary"
-          class="add-btn"
           @click="exportExcel"
-        >导出模板</el-button>-->
+        >模板</el-button>
       </PageHeader>
 
       <!-- 新增项目成员 -->
@@ -301,27 +293,9 @@ export default {
 
       // 导入excel
       uploadMember: [],
-      submitUploadfailed: false,
+      submitUploadfailed: false
 
       // 导出excel
-      json_fields: {
-        成员工号: "username",
-        项目上级工号: "leaderName"
-      },
-      json_data: [
-        {
-          username: "xxx",
-          leaderName: "xxx"
-        }
-      ],
-      json_meta: [
-        [
-          {
-            key: "charset",
-            value: "utf-8"
-          }
-        ]
-      ]
     };
   },
   methods: {
@@ -658,8 +632,75 @@ export default {
       } catch (e) {
         console.log(e);
       }
-    }   
+    },
+
+    sheet2blob(sheet, sheetName) {
+      sheetName = sheetName || "sheet1";
+      var workbook = {
+        SheetNames: [sheetName],
+        Sheets: {}
+      };
+      workbook.Sheets[sheetName] = sheet;
+      // 生成excel的配置项
+      var wopts = {
+        bookType: "xlsx", // 要生成的文件类型
+        bookSST: false, // 是否生成Shared String Table，官方解释是，如果开启生成速度会下降，但在低版本IOS设备上有更好的兼容性
+        type: "binary"
+      };
+      var wbout = XLSX.write(workbook, wopts);
+      var blob = new Blob([s2ab(wbout)], { type: "application/octet-stream" });
+      // 字符串转ArrayBuffer
+      function s2ab(s) {
+        var buf = new ArrayBuffer(s.length);
+        var view = new Uint8Array(buf);
+        for (var i = 0; i != s.length; ++i) view[i] = s.charCodeAt(i) & 0xff;
+        return buf;
+      }
+      return blob;
+    },
+
+    openDownloadDialog(url, saveName) {
+      if (typeof url == "object" && url instanceof Blob) {
+        url = URL.createObjectURL(url); // 创建blob地址
+      }
+      var aLink = document.createElement("a");
+      aLink.href = url;
+      aLink.download = saveName || ""; // HTML5新增的属性，指定保存文件名，可以不要后缀，注意，file:///模式下不会生效
+      var event;
+      if (window.MouseEvent) event = new MouseEvent("click");
+      else {
+        event = document.createEvent("MouseEvents");
+        event.initMouseEvent(
+          "click",
+          true,
+          false,
+          window,
+          0,
+          0,
+          0,
+          0,
+          0,
+          false,
+          false,
+          false,
+          false,
+          0,
+          null
+        );
+      }
+      aLink.dispatchEvent(event);
+    },
+
+    exportExcel() {
+      var aoa = [
+        ["成员工号", "项目上级工号"],
+        ["xxx", "xxx"]
+      ];
+      var sheet = XLSX.utils.aoa_to_sheet(aoa);
+      this.openDownloadDialog(this.sheet2blob(sheet), "项目成员信息模板.xlsx");
+    }
   },
+
   mounted: function() {
     this.projectId = this.$route.query.projectId;
     // 获取项目状态

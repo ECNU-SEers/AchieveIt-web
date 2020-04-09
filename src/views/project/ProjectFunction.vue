@@ -25,8 +25,7 @@
               this.state !== '立项驳回' &&
               this.permission === true
           "
-          >新增</el-button
-        >
+        >新增</el-button>
         <el-button
           type="primary"
           class="add-btn"
@@ -38,20 +37,25 @@
               this.state !== '立项驳回' &&
               this.permission === true
           "
-          >导入</el-button
-        >
+        >导入</el-button>
         <el-button
           type="primary"
           class="add-btn"
-          v-if="this.permission === true"
-          >下载</el-button
-        >
+          v-if="
+            this.state !== '结束' &&
+              this.state !== '已归档' &&
+              this.state !== '申请立项' &&
+              this.state !== '立项驳回' &&
+              this.permission === true
+          "
+          @click="exportExcel"
+        >导出</el-button>
       </PageHeader>
 
       <!-- 导入excel -->
       <el-dialog title="导入项目功能列表" :visible.sync="addExcelFormVisible">
         <el-upload
-          action=""
+          action
           :auto-upload="false"
           :limit="1"
           accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
@@ -81,25 +85,10 @@
           :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
         >
           <el-table-column width="50"></el-table-column>
-          <el-table-column
-            type="index"
-            label="序号"
-            width="70"
-          ></el-table-column>
-          <el-table-column
-            prop="id"
-            label="功能ID"
-            width="180"
-          ></el-table-column>
-          <el-table-column
-            prop="name"
-            label="功能名称"
-            width="180"
-          ></el-table-column>
-          <el-table-column
-            prop="description"
-            label="功能描述"
-          ></el-table-column>
+          <el-table-column type="index" label="序号" width="70"></el-table-column>
+          <el-table-column prop="id" label="功能ID" width="180"></el-table-column>
+          <el-table-column prop="name" label="功能名称" width="180"></el-table-column>
+          <el-table-column prop="description" label="功能描述"></el-table-column>
 
           <el-table-column
             fixed="right"
@@ -147,28 +136,16 @@
           </el-form-item>-->
 
           <el-form-item label="功能名称" required>
-            <el-input
-              v-model="addForm.name"
-              placeholder="请填写功能名称"
-            ></el-input>
+            <el-input v-model="addForm.name" placeholder="请填写功能名称"></el-input>
           </el-form-item>
 
           <el-form-item label="功能描述">
-            <el-input
-              type="textarea"
-              v-model="addForm.description"
-              placeholder="请填写功能描述"
-            ></el-input>
+            <el-input type="textarea" v-model="addForm.description" placeholder="请填写功能描述"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="addFormVisible = false">取消</el-button>
-          <el-button
-            type="primary"
-            @click="submitAddForm"
-            :loading="submitLoading"
-            >提交</el-button
-          >
+          <el-button type="primary" @click="submitAddForm" :loading="submitLoading">提交</el-button>
         </div>
       </el-dialog>
 
@@ -180,35 +157,21 @@
           </el-form-item>-->
 
           <el-form-item label="项目名称" required>
-            <el-input
-              v-model="editForm.name"
-              placeholder="请填写项目名称"
-            ></el-input>
+            <el-input v-model="editForm.name" placeholder="请填写项目名称"></el-input>
           </el-form-item>
 
           <el-form-item label="项目描述">
-            <el-input
-              type="textarea"
-              v-model="editForm.description"
-              placeholder="请填写项目描述"
-            ></el-input>
+            <el-input type="textarea" v-model="editForm.description" placeholder="请填写项目描述"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="editFormVisible = false">取消</el-button>
-          <el-button
-            type="primary"
-            @click="submitEditForm"
-            :loading="submitLoading"
-            >提交</el-button
-          >
+          <el-button type="primary" @click="submitEditForm" :loading="submitLoading">提交</el-button>
         </div>
       </el-dialog>
     </div>
 
-    <el-row
-      v-if="this.projectId !== undefined && this.getInfoPermission !== true"
-    >
+    <el-row v-if="this.projectId !== undefined && this.getInfoPermission !== true">
       <el-col :span="24">
         <el-tag type="success" effect="dark">无权限查看</el-tag>
       </el-col>
@@ -259,7 +222,9 @@ export default {
       },
 
       // 导入
-      uploadFuntion: []
+      uploadFuntion: [],
+      // 导出
+      row: 1
     };
   },
   methods: {
@@ -490,23 +455,37 @@ export default {
     // 上传excel
     async submitUpload() {
       if (this.submitUploadfailed === false) {
-      let parentId = 0;
-      let i = 0;
-      for (i = 0; i < this.uploadFuntion.length; i++) {
-        const func = this.uploadFuntion[i];
-        if (func.hasOwnProperty("一级功能名称")){
-          parentId = await Project.addFunction(this.projectId, func["一级功能名称"], func["一级功能描述"]);
-          await Project.addFunction(this.projectId, func["二级功能名称"], func["二级功能描述"], parentId);
-        } else {
-          await Project.addFunction(this.projectId, func["二级功能名称"], func["二级功能描述"], parentId);
+        let parentId = 0;
+        let i = 0;
+        for (i = 0; i < this.uploadFuntion.length; i++) {
+          const func = this.uploadFuntion[i];
+          if (func.hasOwnProperty("一级功能名称")) {
+            parentId = await Project.addFunction(
+              this.projectId,
+              func["一级功能名称"],
+              func["一级功能描述"]
+            );
+            await Project.addFunction(
+              this.projectId,
+              func["二级功能名称"],
+              func["二级功能描述"],
+              parentId
+            );
+          } else {
+            await Project.addFunction(
+              this.projectId,
+              func["二级功能名称"],
+              func["二级功能描述"],
+              parentId
+            );
+          }
         }
-      }
-      this.$message({
-        message: "提交成功！",
-        type: "success"
-      });
-      this.addExcelFormVisible = false;
-      this.getFunctionList();
+        this.$message({
+          message: "提交成功！",
+          type: "success"
+        });
+        this.addExcelFormVisible = false;
+        this.getFunctionList();
       } else {
         this.$message.error("上传文件的大小不能超过10M!");
       }
@@ -519,22 +498,22 @@ export default {
         return;
       }
       const fileReader = new FileReader();
-      	fileReader.onload = (ev) => {
+      fileReader.onload = ev => {
         try {
           const data = ev.target.result;
           const workbook = XLSX.read(data, {
-            type: 'binary'
+            type: "binary"
           });
           // console.log(workbook)
           let sheet = Object.keys(workbook.Sheets)[0];
-          const json = XLSX.utils.sheet_to_json(workbook.Sheets[sheet]);  //获得以第一列为键名的sheet数组对象
+          const json = XLSX.utils.sheet_to_json(workbook.Sheets[sheet]); //获得以第一列为键名的sheet数组对象
           this.uploadFuntion = json;
-          console.log(json)
-          } catch (e) {
-            console.log(e)
-          }
-        };
-        fileReader.readAsBinaryString(file.raw);
+          console.log(json);
+        } catch (e) {
+          console.log(e);
+        }
+      };
+      fileReader.readAsBinaryString(file.raw);
     },
     handleSuccess() {},
     handleError() {},
@@ -580,6 +559,123 @@ export default {
       } catch (e) {
         console.log(e);
       }
+    },
+
+    // 导出
+    sheet2blob(sheet, sheetName) {
+      sheetName = sheetName || "sheet1";
+      var workbook = {
+        SheetNames: [sheetName],
+        Sheets: {}
+      };
+      workbook.Sheets[sheetName] = sheet;
+      // 生成excel的配置项
+      var wopts = {
+        bookType: "xlsx", // 要生成的文件类型
+        bookSST: false, // 是否生成Shared String Table，官方解释是，如果开启生成速度会下降，但在低版本IOS设备上有更好的兼容性
+        type: "binary"
+      };
+      var wbout = XLSX.write(workbook, wopts);
+      var blob = new Blob([s2ab(wbout)], { type: "application/octet-stream" });
+      // 字符串转ArrayBuffer
+      function s2ab(s) {
+        var buf = new ArrayBuffer(s.length);
+        var view = new Uint8Array(buf);
+        for (var i = 0; i != s.length; ++i) view[i] = s.charCodeAt(i) & 0xff;
+        return buf;
+      }
+      return blob;
+    },
+
+    openDownloadDialog(url, saveName) {
+      if (typeof url == "object" && url instanceof Blob) {
+        url = URL.createObjectURL(url); // 创建blob地址
+      }
+      var aLink = document.createElement("a");
+      aLink.href = url;
+      aLink.download = saveName || ""; // HTML5新增的属性，指定保存文件名，可以不要后缀，注意，file:///模式下不会生效
+      var event;
+      if (window.MouseEvent) event = new MouseEvent("click");
+      else {
+        event = document.createEvent("MouseEvents");
+        event.initMouseEvent(
+          "click",
+          true,
+          false,
+          window,
+          0,
+          0,
+          0,
+          0,
+          0,
+          false,
+          false,
+          false,
+          false,
+          0,
+          null
+        );
+      }
+      aLink.dispatchEvent(event);
+    },
+
+    async exportExcel() {
+      this.row = 1;
+      let aoa = [
+        ["一级功能名称", "一级功能描述", "二级功能名称", "二级功能描述"]
+      ];
+      let firstFunction = await Project.getFirstFunctionList(this.projectId, "");
+      let i = 0;
+      let merges = [];
+      for (i = 0; i < firstFunction.length; i++) {
+        let mergeItem1 = {};
+        let mergeItem2 = {};
+        const start1 = {r: this.row, c: 0};
+        const start2 = {r: this.row, c: 1};
+        let secondFunction = await Project.getSubFunctionList(this.projectId, firstFunction[i].id);
+        let j = 0;
+        if (secondFunction.length === 0) {
+          let aoaItem = [];
+          aoaItem.push(firstFunction[i].name);
+          aoaItem.push(firstFunction[i].description);
+          aoaItem.push(null);
+          aoaItem.push(null);
+          aoa.push(aoaItem);
+          this.row += 1;
+        }
+        for (j = 0; j < secondFunction.length; j++) {
+          let aoaItem = [];
+          if (j === 0) {         
+            aoaItem.push(firstFunction[i].name);
+            aoaItem.push(firstFunction[i].description);
+            aoaItem.push(secondFunction[j].name);
+            aoaItem.push(secondFunction[j].description);
+            aoa.push(aoaItem);
+          } else {
+            aoaItem.push(null);
+            aoaItem.push(null);
+            aoaItem.push(secondFunction[j].name);
+            aoaItem.push(secondFunction[j].description);
+            aoa.push(aoaItem);
+          }                 
+        }
+        this.row += j; 
+        const end1 = {r: this.row-1, c: 0};
+        const end2 = {r: this.row-1, c: 1};
+        mergeItem1["s"] = start1;
+        mergeItem1["e"] = end1;
+        merges.push(mergeItem1);
+        mergeItem2["s"] = start2;
+        mergeItem2["e"] = end2;
+        merges.push(mergeItem2);
+      }
+      var sheet = XLSX.utils.aoa_to_sheet(aoa);
+      sheet["!merges"] = merges;
+      // sheet["!merges"] = [
+      //   // 设置A1-C1的单元格合并
+      //   { s: { r: 0, c: 0 }, e: { r: 0, c: 2 } }
+      // ];
+      this.openDownloadDialog(this.sheet2blob(sheet), "项目功能列表.xlsx");
     }
   },
 
