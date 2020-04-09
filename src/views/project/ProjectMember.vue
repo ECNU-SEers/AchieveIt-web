@@ -22,10 +22,8 @@
           type="primary"
           class="add-btn"
           @click="addMember"
-          v-permission="'归档申请'"
-          >新增</el-button
-        >
-        <!-- <el-button
+        >新增</el-button>
+        <el-button
           v-if="
             this.state !== '结束' &&
               this.state !== '已归档' &&
@@ -36,9 +34,19 @@
           type="primary"
           class="add-btn"
           @click="addExcelFormVisible = true"
-          v-permission="'归档申请'"
-          >导入</el-button
-        > -->
+        >导入</el-button>
+        <el-button
+          type="primary"
+          class="add-btn"
+          v-if="
+            this.state !== '结束' &&
+              this.state !== '已归档' &&
+              this.state !== '申请立项' &&
+              this.state !== '立项驳回' &&
+              this.permission === true
+          "
+          @click="exportExcel"
+        >模板</el-button>
       </PageHeader>
 
       <!-- 新增项目成员 -->
@@ -46,12 +54,7 @@
         <el-form label-width="150px" class="demo-ruleForm">
           <!-- 单选 -->
           <el-form-item label="用户姓名" required>
-            <el-select
-              v-model="addForm.user"
-              value-key="userId"
-              placeholder="请选择成员"
-              filterable
-            >
+            <el-select v-model="addForm.user" value-key="userId" placeholder="请选择成员" filterable>
               <el-option
                 v-for="item in users"
                 :key="item.userId"
@@ -59,27 +62,19 @@
                 :value="item"
               >
                 <span style="float: left">{{ item.realName }}</span>
-                <span style="float: right; color: #8492a6; font-size: 13px">{{
+                <span style="float: right; color: #8492a6; font-size: 13px">
+                  {{
                   item.username
-                }}</span>
+                  }}
+                </span>
               </el-option>
             </el-select>
           </el-form-item>
 
           <!-- 多选 -->
           <el-form-item label="角色" prop="roles">
-            <el-select
-              v-model="addForm.roles"
-              multiple
-              filterable
-              placehoder="请选择成员角色"
-            >
-              <el-option
-                v-for="item in roles"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-              ></el-option>
+            <el-select v-model="addForm.roles" multiple filterable placehoder="请选择成员角色">
+              <el-option v-for="item in roles" :key="item.id" :label="item.name" :value="item.id"></el-option>
             </el-select>
           </el-form-item>
 
@@ -98,45 +93,37 @@
                 :value="item"
               >
                 <span style="float: left">{{ item.realName }}</span>
-                <span style="float: right; color: #8492a6; font-size: 13px">{{
+                <span style="float: right; color: #8492a6; font-size: 13px">
+                  {{
                   item.username
-                }}</span>
+                  }}
+                </span>
               </el-option>
             </el-select>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="addFormVisible = false">取消</el-button>
-          <el-button
-            type="primary"
-            @click="submitAddForm('addForm')"
-            :loading="submitLoading"
-            >提交</el-button
-          >
+          <el-button type="primary" @click="submitAddForm('addForm')" :loading="submitLoading">提交</el-button>
         </div>
       </el-dialog>
 
       <!-- 导入excel -->
       <el-dialog title="导入项目成员信息" :visible.sync="addExcelFormVisible">
         <el-upload
-          action="https://jsonplaceholder.typicode.com/posts/"
-          :file-list="fileList"
+          action
+          :auto-upload="false"
+          :limit="1"
           accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
           :on-change="handleChange"
-          :on-success="handleSuccess"
-          :on-error="handleError"
         >
-          <el-button size="small" type="primary">点击上传excel文件</el-button>
+          <el-button type="primary">上传excel文件</el-button>
+          <div slot="tip" class="el-upload__tip">只能上传excel文件，一次仅支持上传一个且大小不超过10MB</div>
         </el-upload>
 
         <div slot="footer" class="dialog-footer">
           <el-button @click="addExcelFormVisible = false">取消</el-button>
-          <el-button
-            type="primary"
-            @click="submitUpload"
-            :loading="submitLoading"
-            >提交</el-button
-          >
+          <el-button type="primary" @click="submitUpload" :loading="submitLoading">提交</el-button>
         </div>
       </el-dialog>
 
@@ -158,22 +145,13 @@
           stripe
           border
         >
-          <el-table-column
-            fixed
-            prop="userId"
-            label="序号"
-            width="70"
-            type="index"
-          ></el-table-column>
+          <el-table-column fixed prop="userId" label="序号" width="70" type="index"></el-table-column>
           <el-table-column prop="username" label="员工ID"></el-table-column>
           <el-table-column prop="realName" label="姓名"></el-table-column>
           <el-table-column prop="rolesStr" label="角色"></el-table-column>
           <el-table-column prop="email" label="邮件地址"></el-table-column>
           <el-table-column prop="department" label="所属部门"></el-table-column>
-          <el-table-column
-            prop="leaderRealName"
-            label="项目中的上级"
-          ></el-table-column>
+          <el-table-column prop="leaderRealName" label="项目中的上级"></el-table-column>
           <el-table-column prop="phoneNumber" label="电话"></el-table-column>
           <el-table-column prop="workingHours" label="总工时"></el-table-column>
           <el-table-column
@@ -212,28 +190,13 @@
         <el-form label-width="150px" class="demo-ruleForm">
           <!-- 不可修改 -->
           <el-form-item label="用户姓名" required>
-            <el-input
-              v-model="editForm.username"
-              :disabled="true"
-              placeholder
-              style="width:40%"
-            ></el-input>
+            <el-input v-model="editForm.username" :disabled="true" placeholder style="width:40%"></el-input>
           </el-form-item>
 
           <!-- 多选 -->
           <el-form-item label="角色" prop="roles">
-            <el-select
-              v-model="editForm.roles"
-              multiple
-              filterable
-              placehoder="请选择成员角色"
-            >
-              <el-option
-                v-for="item in roles"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-              ></el-option>
+            <el-select v-model="editForm.roles" multiple filterable placehoder="请选择成员角色">
+              <el-option v-for="item in roles" :key="item.id" :label="item.name" :value="item.id"></el-option>
             </el-select>
           </el-form-item>
 
@@ -252,9 +215,11 @@
                 :value="item"
               >
                 <span style="float: left">{{ item.realName }}</span>
-                <span style="float: right; color: #8492a6; font-size: 13px">{{
+                <span style="float: right; color: #8492a6; font-size: 13px">
+                  {{
                   item.username
-                }}</span>
+                  }}
+                </span>
               </el-option>
             </el-select>
           </el-form-item>
@@ -262,23 +227,12 @@
 
         <div slot="footer" class="dialog-footer">
           <el-button @click="editFormVisible = false">取消</el-button>
-          <el-button
-            type="primary"
-            @click="submitEditForm('editForm')"
-            :loading="submitLoading"
-            >提交</el-button
-          >
+          <el-button type="primary" @click="submitEditForm('editForm')" :loading="submitLoading">提交</el-button>
         </div>
       </el-dialog>
     </div>
-    <el-row v-if="this.projectId === undefined">
-      <el-col :span="24">
-        <el-tag type="success" effect="dark">请选择项目</el-tag>
-      </el-col>
-    </el-row>
-    <el-row
-      v-if="this.projectId !== undefined && this.getInfoPermission !== true"
-    >
+
+    <el-row v-if="this.projectId !== undefined && this.getInfoPermission !== true">
       <el-col :span="24">
         <el-tag type="success" effect="dark">无权限查看</el-tag>
       </el-col>
@@ -292,6 +246,8 @@ import Search from "../../components/common/Search";
 import Pagination from "../../components/common/Pagination";
 import Project from "@/sys/models/project_htx";
 import { mapGetters } from "vuex";
+import XLSX from "xlsx";
+
 export default {
   components: {
     PageHeader,
@@ -333,7 +289,13 @@ export default {
         roles: [],
         leader: ""
       },
-      tableData: []
+      tableData: [],
+
+      // 导入excel
+      uploadMember: [],
+      submitUploadfailed: false
+
+      // 导出excel
     };
   },
   methods: {
@@ -360,12 +322,52 @@ export default {
       console.log("permission: " + this.permission);
     },
     // 上传excel
-    submitUpload() {},
-    handleChange(file, fileList) {
-      if (fileList.length > 0) {
-        this.fileList = [fileList[fileList.length - 1]];
-        console.log(fileList);
+    submitUpload() {
+      if (this.submitUploadfailed === false) {
+        this.uploadMember.forEach(member => {
+          const roleId = [5];
+          Project.importMember(
+            this.projectId,
+            member["成员工号"],
+            member["项目上级工号"],
+            roleId
+          );
+        });
+        this.$message({
+          message: "提交成功！",
+          type: "success"
+        });
+        this.addExcelFormVisible = false;
+        this.getMemberList();
+      } else {
+        this.$message.error("上传文件的大小不能超过10M!");
       }
+    },
+
+    handleChange(file, fileList) {
+      const size = file.size / 1024 / 1024;
+      if (size > 10) {
+        this.submitUploadfailed = true;
+        this.$message.error("上传文件的大小不能超过10M!");
+        return;
+      }
+      const fileReader = new FileReader();
+      fileReader.onload = ev => {
+        try {
+          const data = ev.target.result;
+          const workbook = XLSX.read(data, {
+            type: "binary"
+          });
+          // console.log(workbook)
+          let sheet = Object.keys(workbook.Sheets)[0];
+          const json = XLSX.utils.sheet_to_json(workbook.Sheets[sheet]); //获得以第一列为键名的sheet数组对象
+          this.uploadMember = json;
+          console.log(json);
+        } catch (e) {
+          console.log(e);
+        }
+      };
+      fileReader.readAsBinaryString(file.raw);
     },
     handleSuccess() {},
     handleError() {},
@@ -387,10 +389,12 @@ export default {
         // this.users = allUser.filter(item => item.);
         const hasUsers = await Project.searchMembers(this.projectId, "");
         const hasUserIds = [];
+        this.users = [];
         hasUsers.forEach(user => {
           hasUserIds.push(user.id);
         });
         allUser.forEach(user => {
+          console.log(user);
           if (hasUserIds.indexOf(user.userId) === -1) {
             this.users.push(user);
           }
@@ -407,6 +411,9 @@ export default {
     },
     // 提交新增成员
     async submitAddForm(form) {
+      if (this.addForm.roles === []) {
+        this.addForm.roles = [5];
+      }
       var info = await Project.addMember(
         this.projectId,
         this.addForm.user.userId,
@@ -625,8 +632,75 @@ export default {
       } catch (e) {
         console.log(e);
       }
+    },
+
+    sheet2blob(sheet, sheetName) {
+      sheetName = sheetName || "sheet1";
+      var workbook = {
+        SheetNames: [sheetName],
+        Sheets: {}
+      };
+      workbook.Sheets[sheetName] = sheet;
+      // 生成excel的配置项
+      var wopts = {
+        bookType: "xlsx", // 要生成的文件类型
+        bookSST: false, // 是否生成Shared String Table，官方解释是，如果开启生成速度会下降，但在低版本IOS设备上有更好的兼容性
+        type: "binary"
+      };
+      var wbout = XLSX.write(workbook, wopts);
+      var blob = new Blob([s2ab(wbout)], { type: "application/octet-stream" });
+      // 字符串转ArrayBuffer
+      function s2ab(s) {
+        var buf = new ArrayBuffer(s.length);
+        var view = new Uint8Array(buf);
+        for (var i = 0; i != s.length; ++i) view[i] = s.charCodeAt(i) & 0xff;
+        return buf;
+      }
+      return blob;
+    },
+
+    openDownloadDialog(url, saveName) {
+      if (typeof url == "object" && url instanceof Blob) {
+        url = URL.createObjectURL(url); // 创建blob地址
+      }
+      var aLink = document.createElement("a");
+      aLink.href = url;
+      aLink.download = saveName || ""; // HTML5新增的属性，指定保存文件名，可以不要后缀，注意，file:///模式下不会生效
+      var event;
+      if (window.MouseEvent) event = new MouseEvent("click");
+      else {
+        event = document.createEvent("MouseEvents");
+        event.initMouseEvent(
+          "click",
+          true,
+          false,
+          window,
+          0,
+          0,
+          0,
+          0,
+          0,
+          false,
+          false,
+          false,
+          false,
+          0,
+          null
+        );
+      }
+      aLink.dispatchEvent(event);
+    },
+
+    exportExcel() {
+      var aoa = [
+        ["成员工号", "项目上级工号"],
+        ["xxx", "xxx"]
+      ];
+      var sheet = XLSX.utils.aoa_to_sheet(aoa);
+      this.openDownloadDialog(this.sheet2blob(sheet), "项目成员信息模板.xlsx");
     }
   },
+
   mounted: function() {
     this.projectId = this.$route.query.projectId;
     // 获取项目状态

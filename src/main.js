@@ -1,6 +1,7 @@
 import '@babel/polyfill';
 import Vue from 'vue';
 import ElementUI from 'element-ui';
+import JsonExcel from 'vue-json-excel'
 
 import '@/config/global';
 import '@/sys/mixin';
@@ -31,6 +32,7 @@ Vue.component(CollapseTransition.name, CollapseTransition);
 Vue.component('sticky-top', StickyTop);
 Vue.component('l-icon', LIcon);
 Vue.component('source-code', SourceCode);
+Vue.component('downloadExcel', JsonExcel)
 
 /* eslint no-unused-vars: 0 */
 const AppInstance = new Vue({

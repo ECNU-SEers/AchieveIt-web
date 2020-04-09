@@ -94,7 +94,7 @@ export default class ProjectSYJ {
   }
 
   static async getAllUser() {
-    return await get("/employees");
+    return await get("/users");
   }
 
   static async assignQAs(QAs) {
@@ -177,5 +177,30 @@ export default class ProjectSYJ {
 
   static async getPermission(projectId) {
     return await get("/project/" + projectId+ "/permissions/me");
+  }
+
+  // 字典
+  static async addTech(skillName) {
+    return await post("/skill/add?skillName=" + skillName);
+  }
+
+  static async updateTech(skillId, newSkillName) {
+    return await put("/skill/update?skillId=" + skillId + "&newSkillName=" + newSkillName);
+  }
+
+  static async deleteTech(skillIds) {
+    return await _delete("/skill/delete?skillIds=" + skillIds);
+  }
+
+  static async addArea(businessAreaName) {
+    return await post("/business/area/add?businessAreaName=" + businessAreaName);
+  }
+
+  static async updateArea(businessAreaId, newBusinessAreaName) {
+    return await put("/business/area/update?businessAreaId="+ businessAreaId +"&newBusinessAreaName="+newBusinessAreaName);
+  }
+
+  static async deleteArea(businessAreaIds) {
+    return await _delete("/business/area/delete?businessAreaIds=" + businessAreaIds);
   }
 }

@@ -3,11 +3,6 @@
     <PageHeader title="项目进展状态" style="height:40px;">
       <!-- <div style="float:left;"> <span >当前项目ID: {{this.projectId}}</span> </div> -->
     </PageHeader>
-    <el-row v-if="this.projectId === undefined">
-      <el-col :span="24">
-        <el-tag type="success" effect="dark">请选择项目</el-tag>
-      </el-col>
-    </el-row>
 
     <!--列表展示-->
     <Pagination :current-page.sync="pageNo"

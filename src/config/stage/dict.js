@@ -9,12 +9,27 @@ const dictRouter = {
   children: [
     {
       name: 'dictConfig',
-      route: '/dictionary/config',
-      type: 'view',
+      route: '/dictionary/tech',
+      type: 'tab',
       inNav: true,
       icon: 'iconfont icon-huiyuan1',
-      filePath: 'views/dictionary/DictConfig.vue',
-      title: '字典设置'
+      filePath: 'views/dictionary/DictTech.vue',
+      title: '字典设置',
+      children: [{
+        name: 'projectTech',
+        route: '/dictionary/tech',
+        type: 'view',
+        inNav: true,
+        filePath: 'views/dictionary/DictTech.vue',
+        title: '采用技术'
+      }, {
+        name: 'projectArea',
+        route: '/dictionary/area',
+        type: 'view',
+        inNav: true,
+        filePath: 'views/dictionary/DictArea.vue',
+        title: '业务领域'
+      }]
     }
   ]
 };
