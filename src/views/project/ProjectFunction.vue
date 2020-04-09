@@ -1,5 +1,12 @@
 <template>
   <div>
+    <el-row v-if="this.projectId !== undefined && this.getInfoPermission !== true" style="height: 800px">
+      <el-col style="height: 800px"
+        v-loading="loading"
+        element-loading-text="您暂无权限查看此页面"
+        element-loading-spinner="el-icon-loading"
+      ></el-col>
+    </el-row>
     <div v-if="this.getInfoPermission === true">
       <!--工具条：搜索栏-->
       <PageHeader title="项目功能列表">
@@ -170,12 +177,6 @@
         </div>
       </el-dialog>
     </div>
-
-    <el-row v-if="this.projectId !== undefined && this.getInfoPermission !== true">
-      <el-col :span="24">
-        <el-tag type="success" effect="dark">无权限查看</el-tag>
-      </el-col>
-    </el-row>
   </div>
 </template>
 
@@ -194,6 +195,8 @@ export default {
   },
   data() {
     return {
+      loading: true,
+      testpermission: false,
       state: "",
       permission: false,
       getInfoPermission: false,
@@ -624,15 +627,21 @@ export default {
       let aoa = [
         ["一级功能名称", "一级功能描述", "二级功能名称", "二级功能描述"]
       ];
-      let firstFunction = await Project.getFirstFunctionList(this.projectId, "");
+      let firstFunction = await Project.getFirstFunctionList(
+        this.projectId,
+        ""
+      );
       let i = 0;
       let merges = [];
       for (i = 0; i < firstFunction.length; i++) {
         let mergeItem1 = {};
         let mergeItem2 = {};
-        const start1 = {r: this.row, c: 0};
-        const start2 = {r: this.row, c: 1};
-        let secondFunction = await Project.getSubFunctionList(this.projectId, firstFunction[i].id);
+        const start1 = { r: this.row, c: 0 };
+        const start2 = { r: this.row, c: 1 };
+        let secondFunction = await Project.getSubFunctionList(
+          this.projectId,
+          firstFunction[i].id
+        );
         let j = 0;
         if (secondFunction.length === 0) {
           let aoaItem = [];
@@ -645,7 +654,7 @@ export default {
         }
         for (j = 0; j < secondFunction.length; j++) {
           let aoaItem = [];
-          if (j === 0) {         
+          if (j === 0) {
             aoaItem.push(firstFunction[i].name);
             aoaItem.push(firstFunction[i].description);
             aoaItem.push(secondFunction[j].name);
@@ -657,11 +666,11 @@ export default {
             aoaItem.push(secondFunction[j].name);
             aoaItem.push(secondFunction[j].description);
             aoa.push(aoaItem);
-          }                 
+          }
         }
-        this.row += j; 
-        const end1 = {r: this.row-1, c: 0};
-        const end2 = {r: this.row-1, c: 1};
+        this.row += j;
+        const end1 = { r: this.row - 1, c: 0 };
+        const end2 = { r: this.row - 1, c: 1 };
         mergeItem1["s"] = start1;
         mergeItem1["e"] = end1;
         merges.push(mergeItem1);
