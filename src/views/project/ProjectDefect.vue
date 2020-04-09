@@ -24,11 +24,11 @@
       >
     </PageHeader>
 
-    <el-row v-if="this.projectId === undefined">
+    <!-- <el-row v-if="this.projectId === undefined">
       <el-col :span="24">
         <el-tag type="success" effect="dark">请选择项目</el-tag>
       </el-col>
-    </el-row>
+    </el-row> -->
     <!-- <p v-permission="{name:'查看系统消息',type:'disabled'}">Hello word</p>
         <p v-permission="'查看日志'">Hello word</p>
     <button v-permission="['修改信息','修改密码']">编辑</button>-->

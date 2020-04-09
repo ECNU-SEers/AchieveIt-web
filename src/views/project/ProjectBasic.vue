@@ -1,11 +1,6 @@
 <template>
   <div>
-    <PageHeader title="项目基本信息"></PageHeader>
-    <el-row v-if="this.outerId === undefined">
-      <el-col :span="24">
-        <el-tag type="success" effect="dark">请选择项目</el-tag>
-      </el-col>
-    </el-row>
+    <PageHeader title="项目基本信息" style="height:40px;"></PageHeader>
     <el-card v-if="this.outerId !== undefined" class="box-card">
       <div slot="header" class="clearfix">
         <span>当前项目ID: {{ this.outerId }}</span>

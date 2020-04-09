@@ -33,7 +33,7 @@
       :total="projectsLength"
       @page-change="handlePageChange"
     >
-      <el-table :data="projects" highlight-current-row style="width: 100%">
+      <el-table :data="projects" highlight-current-row style="width: 100%" stripe>
         <!-- <el-table-column type="expand">
                     <template slot-scope="props">
                         <el-table :data="props.row.projectProgress" highlight-current-row style="width:80%">

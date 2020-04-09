@@ -49,26 +49,21 @@
       </PageHeader>
 
       <!-- 导入excel -->
-      <el-dialog title="导入项目成员信息" :visible.sync="addExcelFormVisible">
+      <el-dialog title="导入项目功能列表" :visible.sync="addExcelFormVisible">
         <el-upload
-          action="https://jsonplaceholder.typicode.com/posts/"
-          :file-list="fileList"
+          action=""
+          :auto-upload="false"
+          :limit="1"
           accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
           :on-change="handleChange"
-          :on-success="handleSuccess"
-          :on-error="handleError"
         >
-          <el-button size="small" type="primary">点击上传excel文件</el-button>
+          <el-button type="primary">上传excel文件</el-button>
+          <div slot="tip" class="el-upload__tip">只能上传excel文件，一次仅支持上传一个且大小不超过10MB</div>
         </el-upload>
 
         <div slot="footer" class="dialog-footer">
           <el-button @click="addExcelFormVisible = false">取消</el-button>
-          <el-button
-            type="primary"
-            @click="submitUpload"
-            :loading="submitLoading"
-            >提交</el-button
-          >
+          <el-button type="primary" @click="submitUpload" :loading="submitLoading">提交</el-button>
         </div>
       </el-dialog>
 
@@ -154,7 +149,7 @@
           <el-form-item label="功能名称" required>
             <el-input
               v-model="addForm.name"
-              placeholder="请填写项目名称"
+              placeholder="请填写功能名称"
             ></el-input>
           </el-form-item>
 
@@ -210,11 +205,7 @@
         </div>
       </el-dialog>
     </div>
-    <el-row v-if="this.projectId === undefined">
-      <el-col :span="24">
-        <el-tag type="success" effect="dark">请选择项目</el-tag>
-      </el-col>
-    </el-row>
+
     <el-row
       v-if="this.projectId !== undefined && this.getInfoPermission !== true"
     >
@@ -230,6 +221,7 @@ import PageHeader from "../../components/common/PageHeader";
 import Search from "../../components/common/Search";
 import Pagination from "../../components/common/Pagination";
 import Project from "@/sys/models/project_htx";
+import XLSX from "xlsx";
 
 export default {
   components: {
@@ -264,7 +256,10 @@ export default {
         id: "",
         name: "",
         description: ""
-      }
+      },
+
+      // 导入
+      uploadFuntion: []
     };
   },
   methods: {
@@ -493,12 +488,46 @@ export default {
       }
     },
     // 上传excel
-    submitUpload() {},
-    handleChange(file, fileList) {
-      if (fileList.length > 0) {
-        this.fileList = [fileList[fileList.length - 1]];
-        console.log(fileList);
+    async submitUpload() {
+      let parentId = 0;
+      let i = 0;
+      for (i = 0; i < this.uploadFuntion.length; i++) {
+        const func = this.uploadFuntion[i];
+        if (func.hasOwnProperty("一级功能名称")){
+          parentId = await Project.addFunction(this.projectId, func["一级功能名称"], func["一级功能描述"]);
+          await Project.addFunction(this.projectId, func["二级功能名称"], func["二级功能描述"], parentId);
+        } else {
+          await Project.addFunction(this.projectId, func["二级功能名称"], func["二级功能描述"], parentId);
+        }
       }
+      // this.uploadFuntion.forEach(func => {
+        
+      // });
+      this.$message({
+        message: "提交成功！",
+        type: "success"
+      });
+      this.addExcelFormVisible = false;
+      this.getFunctionList();
+    },
+    handleChange(file, fileList) {
+      const fileReader = new FileReader();
+      	fileReader.onload = (ev) => {
+        try {
+          const data = ev.target.result;
+          const workbook = XLSX.read(data, {
+            type: 'binary'
+          });
+          // console.log(workbook)
+          let sheet = Object.keys(workbook.Sheets)[0];
+          const json = XLSX.utils.sheet_to_json(workbook.Sheets[sheet]);  //获得以第一列为键名的sheet数组对象
+          this.uploadFuntion = json;
+          console.log(json)
+          } catch (e) {
+            console.log(e)
+          }
+        };
+        fileReader.readAsBinaryString(file.raw);
     },
     handleSuccess() {},
     handleError() {},

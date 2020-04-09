@@ -45,12 +45,6 @@
       >
     </PageHeader>
 
-    <el-row v-if="this.projectId === undefined">
-      <el-col :span="24">
-        <el-tag type="success" effect="dark">请选择项目</el-tag>
-      </el-col>
-    </el-row>
-
     <!--列表展示-->
     <Pagination v-if="this.projectId !== undefined">
       <el-table
