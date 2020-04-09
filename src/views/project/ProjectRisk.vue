@@ -294,8 +294,8 @@
       title="导入风险信息"
       :visible.sync="importFormVisible"
       :before-close="handleClose"
-      @open="clearCascader"
       :append-to-body="true"
+      @open="clearCascader()"
       center
     >
       <div
@@ -313,8 +313,8 @@
             :show-all-levels="false"
             filterable
             clearable
-            @visible-change="getOtherProjects($event)"
-          ></el-cascader>
+          >
+          </el-cascader>
         </div>
         <div style="padding-top:30px;">
           <el-button
@@ -402,6 +402,7 @@
         <el-form-item label="风险责任人:" prop="owner">
           <el-select
             v-model="editForm.owner"
+            value-key="userId"
             @visible-change="getAllMembers($event)"
             filterable
             placeholder="请选择该风险责任人"
@@ -425,6 +426,7 @@
           <el-select
             v-model="editForm.relatedPersons"
             @visible-change="getAllMembers($event)"
+            value-key="username"
             multiple
             filterable
             placeholder="请选择"
@@ -591,10 +593,10 @@ export default {
       },
       //导入
       importFormVisible: false,
-      importSourceId: "",
+      importSourceId: [],
       importProps: {
         expandTrigger: "hover",
-        children: "otherProjects"
+        children: "otherProjects",
       },
       importSources: [
         {
@@ -620,6 +622,7 @@ export default {
     } else {
       this.getMyPermissions(this.projectId);
       this.getRiskList();
+      this.getOtherProjects();
     }
   },
   methods: {
@@ -703,7 +706,7 @@ export default {
         if (JSON.stringify(item.riskRelatedPeople) == "{}") {
           obj.riskRelatedPeople = null;
         } else {
-          // console.log("there are riskRelatedPeople! and item.id="+item.id);
+          console.log("there are riskRelatedPeople! and item.id="+item.id);
           obj.riskRelatedPeople = item.riskRelatedPeople;
         }
         tmp.push(obj);
@@ -743,7 +746,7 @@ export default {
       // console.log("回调参数" + callback);
       if (callback) {
         const res = await ProjectLW.getAllMembers(this.projectId);
-        // console.log(res);
+        console.log("member="+res);
         this.users = res;
       } else;
     },
@@ -784,7 +787,7 @@ export default {
         trackingFreq: row.trackingFreq === "暂无数据" ? "" : row.trackingFreq,
         source: row.source,
         description: row.description === "暂无数据" ? "" : row.description,
-        relatedPersons: JSON.stringify(row.riskRelatedPeople),
+        relatedPersons: row.riskRelatedPeople,
         state: this.$options.methods.find(_this.state, row.state)
       };
       this.row = row;
@@ -843,9 +846,9 @@ export default {
         });
     },
     //导入
-    //下拉，获取其他项目
-    async getOtherProjects(callback) {
-      if (callback) {
+        //下拉，获取其他项目
+    async getOtherProjects() {
+      var _this = this;
         const res = await ProjectLW.getOtherProjects();
         var tmp = [];
         res.forEach(item => {
@@ -854,35 +857,34 @@ export default {
           obj.label = item.name + "( ID:" + item.outerId + " )";
           tmp.push(obj);
         });
-        this.importSources.forEach((item, index) => {
-          if (index === 1) {
-            this.$set(this.importSources[index], "otherProjects", tmp);
-          }
-        });
-      }
+         this.$set(this.importSources[1], "otherProjects", tmp);
     },
-    //再次打开“导入”前，清空选框内容
+   // 再次打开“导入”前，清空选框内容
     clearCascader() {
-      let obj = {};
-      obj.stopPropagation = () => {};
-      try {
-        this.$refs.cascader.clearValue(obj);
-      } catch (e) {
-        this.$refs.cascader.handleClear(obj);
-      }
+      this.importSourceId="";
+      // let obj = {};
+      // obj.stopPropagation = () => {};
+      // try {
+      
+      //   this.$refs.cascader.clearValue(obj);
+       
+      // } catch (e) {
+      //   this.$refs.cascader.handleClear(obj);
+      // }
     },
     //确定“导入”
     async importSubmit() {
       var importSourceId = this.importSourceId;
       var _this = this;
       try {
-        if (importSourceId === -1) {
+        if (importSourceId == -1) {
           const res = await ProjectLW.importRisksFromStdLib(this.projectId);
-          _this.$message.success("导入成功");
+          _this.$message.success("导入成功1");
         } else {
+         // console.log("importSourceId="+importSourceId[1]);
           const res = await ProjectLW.importRisksFromOtherProject(
             this.projectId,
-            importSourceId
+            importSourceId[1]
           );
           _this.$message.success("导入成功");
         }
