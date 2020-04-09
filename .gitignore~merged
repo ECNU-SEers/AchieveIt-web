@@ -1,11 +1,5 @@
 <<<<<<< HEAD
 node_modules
-node_modules
-.env.development
-.DS_Store
-<<<<<<< HEAD
-tests
-=======
 =======
 .DS_Store
 /node_modules
@@ -15,6 +9,7 @@ tests
 # local env files
 .env.local
 .env.*.local
+.env.development
 
 # Log files
 npm-debug.log*
@@ -30,5 +25,4 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw*
->>>>>>> wclong
->>>>>>> a5d11bce03a41c78d0438207116621c2969210d8
+>>>>>>> de779041dde2df087f8b6e9e93c3815331b70400

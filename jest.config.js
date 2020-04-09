@@ -24,7 +24,10 @@ module.exports = {
   coverageDirectory: "<rootDir>/tests/coverage",
   collectCoverageFrom: [
     "!**/node_modules/**",
-    "<rootDir>/src/views/permission/**/*.vue"
+    "<rootDir>/src/views/permission/**/*.vue",
+    "<rootDir>/src/views/project/ProjectBasic.vue",
+    "<rootDir>/src/views/project/ProjectMember.vue",
+    "<rootDir>/src/views/project/ProjectFunction.vue"
   ],
   modulePathIgnorePatterns: ["/node_modules/*"],
   coverageReporters: ["html", "text-summary"]
