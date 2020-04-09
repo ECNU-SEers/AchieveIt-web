@@ -22,7 +22,6 @@
           type="primary"
           class="add-btn"
           @click="addMember"
-          v-permission="'归档申请'"
         >新增</el-button>
         <el-button
           v-if="
@@ -35,8 +34,27 @@
           type="primary"
           class="add-btn"
           @click="addExcelFormVisible = true"
-          v-permission="'归档申请'"
         >导入</el-button>
+        <download-excel :data="json_data" :fields="json_fields" name="项目成员信息.xls">
+          <!-- 上面可以自定义自己的样式，还可以引用其他组件button -->
+          <el-button
+            type="primary"
+            class="add-btn"
+            v-if="
+            this.state !== '结束' &&
+              this.state !== '已归档' &&
+              this.state !== '申请立项' &&
+              this.state !== '立项驳回' &&
+              this.permission === true
+          "
+          >模板</el-button>
+        </download-excel>
+        <!-- <el-button
+          
+          type="primary"
+          class="add-btn"
+          @click="exportExcel"
+        >导出模板</el-button>-->
       </PageHeader>
 
       <!-- 新增项目成员 -->
@@ -281,8 +299,29 @@ export default {
       },
       tableData: [],
 
-      // 导入成员
-      uploadMember: []
+      // 导入excel
+      uploadMember: [],
+      submitUploadfailed: false,
+
+      // 导出excel
+      json_fields: {
+        成员工号: "username",
+        项目上级工号: "leaderName"
+      },
+      json_data: [
+        {
+          username: "xxx",
+          leaderName: "xxx"
+        }
+      ],
+      json_meta: [
+        [
+          {
+            key: "charset",
+            value: "utf-8"
+          }
+        ]
+      ]
     };
   },
   methods: {
@@ -310,24 +349,34 @@ export default {
     },
     // 上传excel
     submitUpload() {
-      this.uploadMember.forEach(member => {
-        const roleId = [5];
-        Project.importMember(
-          this.projectId,
-          member["成员工号"],
-          member["项目上级工号"],
-          roleId
-        );
-      });
-      this.$message({
-        message: "提交成功！",
-        type: "success"
-      });
-      this.addExcelFormVisible = false;
-      this.getMemberList();
+      if (this.submitUploadfailed === false) {
+        this.uploadMember.forEach(member => {
+          const roleId = [5];
+          Project.importMember(
+            this.projectId,
+            member["成员工号"],
+            member["项目上级工号"],
+            roleId
+          );
+        });
+        this.$message({
+          message: "提交成功！",
+          type: "success"
+        });
+        this.addExcelFormVisible = false;
+        this.getMemberList();
+      } else {
+        this.$message.error("上传文件的大小不能超过10M!");
+      }
     },
 
     handleChange(file, fileList) {
+      const size = file.size / 1024 / 1024;
+      if (size > 10) {
+        this.submitUploadfailed = true;
+        this.$message.error("上传文件的大小不能超过10M!");
+        return;
+      }
       const fileReader = new FileReader();
       fileReader.onload = ev => {
         try {
@@ -388,6 +437,9 @@ export default {
     },
     // 提交新增成员
     async submitAddForm(form) {
+      if (this.addForm.roles === []) {
+        this.addForm.roles = [5];
+      }
       var info = await Project.addMember(
         this.projectId,
         this.addForm.user.userId,
@@ -606,7 +658,7 @@ export default {
       } catch (e) {
         console.log(e);
       }
-    }
+    }   
   },
   mounted: function() {
     this.projectId = this.$route.query.projectId;

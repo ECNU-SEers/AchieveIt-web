@@ -74,7 +74,7 @@
           :data="tableData"
           style="margin-bottom: 20px;"
           row-key="id"
-          strip
+          stripe
           border
           lazy
           :load="load"
@@ -489,6 +489,7 @@ export default {
     },
     // 上传excel
     async submitUpload() {
+      if (this.submitUploadfailed === false) {
       let parentId = 0;
       let i = 0;
       for (i = 0; i < this.uploadFuntion.length; i++) {
@@ -500,17 +501,23 @@ export default {
           await Project.addFunction(this.projectId, func["二级功能名称"], func["二级功能描述"], parentId);
         }
       }
-      // this.uploadFuntion.forEach(func => {
-        
-      // });
       this.$message({
         message: "提交成功！",
         type: "success"
       });
       this.addExcelFormVisible = false;
       this.getFunctionList();
+      } else {
+        this.$message.error("上传文件的大小不能超过10M!");
+      }
     },
     handleChange(file, fileList) {
+      const size = file.size / 1024 / 1024;
+      if (size > 10) {
+        this.submitUploadfailed = true;
+        this.$message.error("上传文件的大小不能超过10M!");
+        return;
+      }
       const fileReader = new FileReader();
       	fileReader.onload = (ev) => {
         try {
