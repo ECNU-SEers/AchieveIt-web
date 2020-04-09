@@ -1,5 +1,17 @@
 <template>
   <div>
+    <el-row
+      v-if="this.projectId !== undefined && this.permissions.indexOf('查询项目风险信息') <= -1"
+      style="height: 800px"
+    >
+      <el-col
+        style="height: 800px"
+        v-loading="loading"
+        element-loading-text="您暂无权限查看此页面"
+        element-loading-spinner="el-icon-loading"
+      ></el-col>
+    </el-row>
+    <div v-if="this.permissions.indexOf('查询项目风险信息') > -1">
     <PageHeader title="项目风险信息">
       <!--工具条：搜索栏-->
       <Search
@@ -454,6 +466,7 @@
         </el-form-item>
       </el-form>
     </el-dialog>
+    </div>
   </div>
 </template>
 

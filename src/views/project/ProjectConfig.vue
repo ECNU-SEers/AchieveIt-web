@@ -1,5 +1,17 @@
 <template>
   <div>
+    <el-row
+      v-if="this.projectId !== undefined && this.permissions.indexOf('管理项目配置信息') <= -1"
+      style="height: 800px"
+    >
+      <el-col
+        style="height: 800px"
+        v-loading="loading"
+        element-loading-text="您暂无权限查看此页面"
+        element-loading-spinner="el-icon-loading"
+      ></el-col>
+    </el-row>
+    <div v-if="this.permissions.indexOf('管理项目配置信息') > -1">
     <PageHeader title="项目配置信息" style="height:40px;"></PageHeader>
     <el-card class="box-card" v-if="this.projectId !== undefined">
       <div slot="header" class="clearfix">
@@ -94,6 +106,7 @@
         <el-table-column prop="detail" label="详细信息"></el-table-column>
       </el-table>
     </el-card>
+    </div>
   </div>
 </template>
 

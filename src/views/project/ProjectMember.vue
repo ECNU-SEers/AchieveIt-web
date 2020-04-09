@@ -1,5 +1,16 @@
 <template>
   <div>
+     <el-row
+      v-if="this.projectId !== undefined && this.getInfoPermission !== true"
+      style="height: 800px"
+    >
+      <el-col
+        style="height: 800px"
+        v-loading="loading"
+        element-loading-text="您暂无权限查看此页面"
+        element-loading-spinner="el-icon-loading"
+      ></el-col>
+    </el-row>
     <div v-if="this.getInfoPermission === true">
       <!--工具条：搜索栏-->
       <PageHeader title="项目成员信息">
@@ -232,11 +243,7 @@
       </el-dialog>
     </div>
 
-    <el-row v-if="this.projectId !== undefined && this.getInfoPermission !== true">
-      <el-col :span="24">
-        <el-tag type="success" effect="dark">无权限查看</el-tag>
-      </el-col>
-    </el-row>
+   
   </div>
 </template>
 
@@ -256,6 +263,7 @@ export default {
   },
   data() {
     return {
+
       state: "",
       permission: false,
       getInfoPermission: false,
