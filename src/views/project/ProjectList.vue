@@ -567,11 +567,12 @@
               :key="item.userId"
               :label="item.realName"
               :value="item.userId"
+              size="medium"
             >
-              <!-- <span style="float: left">{{ item.username }}</span>
+              <span style="float: left">{{ item.realName }}</span>
               <span style="float: right; color: #8492a6; font-size: 13px">{{
-                item.userId
-              }}</span> -->
+                item.username
+              }}</span>
             </el-option>
           </el-select>
         </el-form-item>
@@ -668,11 +669,12 @@
               :key="item.userId"
               :label="item.realName"
               :value="item.userId"
+              size="medium"
             >
-              <!-- <span style="float: left">{{ item.username }}</span>
+              <span style="float: left">{{ item.realName }}</span>
               <span style="float: right; color: #8492a6; font-size: 13px">{{
-                item.userId
-              }}</span> -->
+                item.username
+              }}</span>
             </el-option>
           </el-select>
         </el-form-item>
