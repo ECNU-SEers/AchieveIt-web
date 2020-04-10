@@ -9,7 +9,7 @@
         :rules="rules"
         label-width="60"
       >
-        <el-form-item label="账号:" prop="account">
+        <el-form-item label="账号:" prop="username">
           <el-input v-model="form.username" />
         </el-form-item>
         <el-form-item label="密码:" prop="password">
@@ -45,7 +45,7 @@ export default {
         password: "admin"
       },
       rules: {
-        account: [
+        username: [
           {
             required: true,
             message: "请输入账号"
