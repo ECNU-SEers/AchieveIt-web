@@ -1,6 +1,6 @@
 /* eslint-disable class-methods-use-this */
-import {post, get, put, _delete} from "@/sys/plugins/axios";
-import {getAllProjectPermissions} from "@/api/permisssion";
+import { post, get, put, _delete } from "@/sys/plugins/axios";
+import { getAllProjectPermissions } from "@/api/permisssion";
 
 export default class Admin {
   constructor(uPage = 0, uCount = 10, gPage = 0, gCount = 5) {
@@ -33,26 +33,33 @@ export default class Admin {
   }
 
   static async getAllPermissions(isProjectPermission = false) {
-    const permissions = await (isProjectPermission ? getAllProjectPermissions() : get("/view/permissions"));
+    const permissions = await (isProjectPermission
+      ? getAllProjectPermissions()
+      : get("/view/permissions"));
     let res = {};
     permissions.forEach(permission => {
       res[permission.module]
-          ? res[permission.module].push({
+        ? res[permission.module].push({
             ...permission,
             name: isProjectPermission ? permission.name : permission.permission
           })
-          : (res[permission.module] = [
-            {...permission, name: isProjectPermission ? permission.name : permission.permission}
+        : (res[permission.module] = [
+            {
+              ...permission,
+              name: isProjectPermission
+                ? permission.name
+                : permission.permission
+            }
           ]);
     });
     return res;
   }
 
   static async getAdminUsers({
-                               group_id,
-                               count = this.uCount,
-                               page = this.uPag
-                             }) {
+    group_id,
+    count = this.uCount,
+    page = this.uPag
+  }) {
     let res;
     if (group_id) {
       res = await get("cms/admin/users", {
@@ -79,7 +86,7 @@ export default class Admin {
     return this.getAdminUsers({});
   }
 
-  async getGroupsWithPermissions({count = this.uCount, page = this.uPag}) {
+  async getGroupsWithPermissions({ count = this.uCount, page = this.uPag }) {
     const res = await get("cms/admin/groups", {
       count,
       page
