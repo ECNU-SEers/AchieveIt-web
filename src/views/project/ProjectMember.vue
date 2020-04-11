@@ -73,7 +73,7 @@
           ref="addForm"
         >
           <!-- 单选 -->
-          <el-form-item label="用户姓名" required prop="userId">
+          <el-form-item label="用户姓名" prop="user.realName">
             <el-select
               v-model="addForm.user"
               value-key="userId"
@@ -321,7 +321,7 @@ export default {
   data() {
     return {
       rules: {
-        userId: [{ required: true, message: "请选择用户", trigger: "blur" }]
+        ['user.realName']: [{ required: true, message: "请选择用户", trigger: "blur" }]
       },
 
       state: "",
