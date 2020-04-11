@@ -100,7 +100,17 @@ const adminRouter = {
       name: null,
       filePath: 'views/permission/role',
       inNav: true,
-      title: '角色设置',
+      title: '平台角色设置',
+      icon: 'iconfont icon-add',
+      permission: ['角色设置']
+    },
+    {
+      route: '/admin/project/list',
+      type: 'view',
+      name: null,
+      filePath: 'views/permission/project-role',
+      inNav: true,
+      title: '项目角色设置',
       icon: 'iconfont icon-add',
       permission: ['角色设置']
     }

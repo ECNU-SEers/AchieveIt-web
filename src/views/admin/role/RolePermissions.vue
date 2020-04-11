@@ -41,6 +41,7 @@
 
 <script>
 import Admin from "@/sys/models/admin";
+import { getAllProjectPermissions } from "@/api/permisssion";
 
 export default {
   props: {
@@ -50,6 +51,10 @@ export default {
       default: () => []
     },
     readonly: {
+      type: Boolean,
+      default: false
+    },
+    isProjectPermissions: {
       type: Boolean,
       default: false
     },
@@ -98,7 +103,9 @@ export default {
     },
     // 获取角色权限
     async getGroupPermissions() {
-      this.allPermissions = await Admin.getAllPermissions();
+      this.allPermissions = await Admin.getAllPermissions(
+        this.isProjectPermissions
+      );
       // 通过判断有没有传入id，来判断当前页面是添加角色还是编辑角色
       if (this.id) {
         const res = await Admin.getOneGroup(this.id);
