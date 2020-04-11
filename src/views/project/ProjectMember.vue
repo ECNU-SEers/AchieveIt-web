@@ -346,7 +346,7 @@ export default {
           type: "success"
         });
         this.addExcelFormVisible = false;
-        this.getMemberList();
+        this.getMemberList("");
       } else {
         this.$message.error("上传文件的大小不能超过10M!");
       }
