@@ -1,6 +1,6 @@
 <template>
   <div>
-     <el-row
+    <el-row
       v-if="this.projectId !== undefined && this.getInfoPermission !== true"
       style="height: 800px"
     >
@@ -62,9 +62,9 @@
 
       <!-- 新增项目成员 -->
       <el-dialog title="新增项目成员" :visible.sync="addFormVisible">
-        <el-form label-width="150px" class="demo-ruleForm">
+        <el-form label-width="150px" class="demo-ruleForm" :model="addForm" :rules="rules" ref="addForm">
           <!-- 单选 -->
-          <el-form-item label="用户姓名" required>
+          <el-form-item label="用户姓名" required prop="userId">
             <el-select v-model="addForm.user" value-key="userId" placeholder="请选择成员" filterable>
               <el-option
                 v-for="item in users"
@@ -242,8 +242,6 @@
         </div>
       </el-dialog>
     </div>
-
-   
   </div>
 </template>
 
@@ -263,6 +261,9 @@ export default {
   },
   data() {
     return {
+      rules: {
+        userId: [{ required: true, message: '请选择用户', trigger: 'blur' }]
+      },
 
       state: "",
       permission: false,
@@ -418,25 +419,35 @@ export default {
       }
     },
     // 提交新增成员
-    async submitAddForm(form) {
-      if (this.addForm.roles === []) {
-        this.addForm.roles = [5];
-      }
-      var info = await Project.addMember(
-        this.projectId,
-        this.addForm.user.userId,
-        this.addForm.user.username,
-        this.addForm.leader.userId,
-        this.addForm.leader.username,
-        this.addForm.roles
-      );
-      this.$message({
-        type: "success",
-        message: "已提交!"
+    async submitAddForm(formName) {
+      console.log(formName);
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          if (this.addForm.roles === []) {
+            this.addForm.roles = [5];
+          }
+
+          Project.addMember(
+            this.projectId,
+            this.addForm.user.userId,
+            this.addForm.user.username,
+            this.addForm.leader.userId,
+            this.addForm.leader.username,
+            this.addForm.roles
+          ).then(() => {
+            this.$message({
+              type: "success",
+              message: "已提交!"
+            });
+            this.addFormVisible = false;
+            // location.reload();
+            this.getMemberList(this.keyword);
+          });
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
       });
-      this.addFormVisible = false;
-      // location.reload();
-      this.getMemberList(this.keyword);
     },
     // 编辑项目成员信息
     async handleEdit(index, row) {
