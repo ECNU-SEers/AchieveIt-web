@@ -1,6 +1,6 @@
 <template>
   <div>
-     <el-row
+    <el-row
       v-if="this.projectId !== undefined && this.getInfoPermission !== true"
       style="height: 800px"
     >
@@ -33,7 +33,8 @@
           type="primary"
           class="add-btn"
           @click="addMember"
-        >新增</el-button>
+          >新增</el-button
+        >
         <el-button
           v-if="
             this.state !== '结束' &&
@@ -45,7 +46,8 @@
           type="primary"
           class="add-btn"
           @click="addExcelFormVisible = true"
-        >导入</el-button>
+          >导入</el-button
+        >
         <el-button
           type="primary"
           class="add-btn"
@@ -57,15 +59,27 @@
               this.permission === true
           "
           @click="exportExcel"
-        >模板</el-button>
+          >模板</el-button
+        >
       </PageHeader>
 
       <!-- 新增项目成员 -->
       <el-dialog title="新增项目成员" :visible.sync="addFormVisible">
-        <el-form label-width="150px" class="demo-ruleForm">
+        <el-form
+          label-width="150px"
+          class="demo-ruleForm"
+          :model="addForm"
+          :rules="rules"
+          ref="addForm"
+        >
           <!-- 单选 -->
-          <el-form-item label="用户姓名" required>
-            <el-select v-model="addForm.user" value-key="userId" placeholder="请选择成员" filterable>
+          <el-form-item label="用户姓名" prop="user.realName">
+            <el-select
+              v-model="addForm.user"
+              value-key="userId"
+              placeholder="请选择成员"
+              filterable
+            >
               <el-option
                 v-for="item in users"
                 :key="item.userId"
@@ -74,9 +88,7 @@
               >
                 <span style="float: left">{{ item.realName }}</span>
                 <span style="float: right; color: #8492a6; font-size: 13px">
-                  {{
-                  item.username
-                  }}
+                  {{ item.username }}
                 </span>
               </el-option>
             </el-select>
@@ -84,8 +96,18 @@
 
           <!-- 多选 -->
           <el-form-item label="角色" prop="roles">
-            <el-select v-model="addForm.roles" multiple filterable placehoder="请选择成员角色">
-              <el-option v-for="item in roles" :key="item.id" :label="item.name" :value="item.id"></el-option>
+            <el-select
+              v-model="addForm.roles"
+              multiple
+              filterable
+              placehoder="请选择成员角色"
+            >
+              <el-option
+                v-for="item in roles"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              ></el-option>
             </el-select>
           </el-form-item>
 
@@ -105,9 +127,7 @@
               >
                 <span style="float: left">{{ item.realName }}</span>
                 <span style="float: right; color: #8492a6; font-size: 13px">
-                  {{
-                  item.username
-                  }}
+                  {{ item.username }}
                 </span>
               </el-option>
             </el-select>
@@ -115,7 +135,12 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="addFormVisible = false">取消</el-button>
-          <el-button type="primary" @click="submitAddForm('addForm')" :loading="submitLoading">提交</el-button>
+          <el-button
+            type="primary"
+            @click="submitAddForm('addForm')"
+            :loading="submitLoading"
+            >提交</el-button
+          >
         </div>
       </el-dialog>
 
@@ -129,12 +154,19 @@
           :on-change="handleChange"
         >
           <el-button type="primary">上传excel文件</el-button>
-          <div slot="tip" class="el-upload__tip">只能上传excel文件，一次仅支持上传一个且大小不超过10MB</div>
+          <div slot="tip" class="el-upload__tip">
+            只能上传excel文件，一次仅支持上传一个且大小不超过10MB
+          </div>
         </el-upload>
 
         <div slot="footer" class="dialog-footer">
           <el-button @click="addExcelFormVisible = false">取消</el-button>
-          <el-button type="primary" @click="submitUpload" :loading="submitLoading">提交</el-button>
+          <el-button
+            type="primary"
+            @click="submitUpload"
+            :loading="submitLoading"
+            >提交</el-button
+          >
         </div>
       </el-dialog>
 
@@ -156,13 +188,22 @@
           stripe
           border
         >
-          <el-table-column fixed prop="userId" label="序号" width="70" type="index"></el-table-column>
+          <el-table-column
+            fixed
+            prop="userId"
+            label="序号"
+            width="70"
+            type="index"
+          ></el-table-column>
           <el-table-column prop="username" label="员工ID"></el-table-column>
           <el-table-column prop="realName" label="姓名"></el-table-column>
           <el-table-column prop="rolesStr" label="角色"></el-table-column>
           <el-table-column prop="email" label="邮件地址"></el-table-column>
           <el-table-column prop="department" label="所属部门"></el-table-column>
-          <el-table-column prop="leaderRealName" label="项目中的上级"></el-table-column>
+          <el-table-column
+            prop="leaderRealName"
+            label="项目中的上级"
+          ></el-table-column>
           <el-table-column prop="phoneNumber" label="电话"></el-table-column>
           <el-table-column prop="workingHours" label="总工时"></el-table-column>
           <el-table-column
@@ -201,13 +242,28 @@
         <el-form label-width="150px" class="demo-ruleForm">
           <!-- 不可修改 -->
           <el-form-item label="用户姓名" required>
-            <el-input v-model="editForm.username" :disabled="true" placeholder style="width:40%"></el-input>
+            <el-input
+              v-model="editForm.username"
+              :disabled="true"
+              placeholder
+              style="width:40%"
+            ></el-input>
           </el-form-item>
 
           <!-- 多选 -->
           <el-form-item label="角色" prop="roles">
-            <el-select v-model="editForm.roles" multiple filterable placehoder="请选择成员角色">
-              <el-option v-for="item in roles" :key="item.id" :label="item.name" :value="item.id"></el-option>
+            <el-select
+              v-model="editForm.roles"
+              multiple
+              filterable
+              placehoder="请选择成员角色"
+            >
+              <el-option
+                v-for="item in roles"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              ></el-option>
             </el-select>
           </el-form-item>
 
@@ -227,9 +283,7 @@
               >
                 <span style="float: left">{{ item.realName }}</span>
                 <span style="float: right; color: #8492a6; font-size: 13px">
-                  {{
-                  item.username
-                  }}
+                  {{ item.username }}
                 </span>
               </el-option>
             </el-select>
@@ -238,12 +292,15 @@
 
         <div slot="footer" class="dialog-footer">
           <el-button @click="editFormVisible = false">取消</el-button>
-          <el-button type="primary" @click="submitEditForm('editForm')" :loading="submitLoading">提交</el-button>
+          <el-button
+            type="primary"
+            @click="submitEditForm('editForm')"
+            :loading="submitLoading"
+            >提交</el-button
+          >
         </div>
       </el-dialog>
     </div>
-
-   
   </div>
 </template>
 
@@ -263,6 +320,9 @@ export default {
   },
   data() {
     return {
+      rules: {
+        ['user.realName']: [{ required: true, message: "请选择用户", trigger: "blur" }]
+      },
 
       state: "",
       permission: false,
@@ -418,25 +478,35 @@ export default {
       }
     },
     // 提交新增成员
-    async submitAddForm(form) {
-      if (this.addForm.roles === []) {
-        this.addForm.roles = [5];
-      }
-      var info = await Project.addMember(
-        this.projectId,
-        this.addForm.user.userId,
-        this.addForm.user.username,
-        this.addForm.leader.userId,
-        this.addForm.leader.username,
-        this.addForm.roles
-      );
-      this.$message({
-        type: "success",
-        message: "已提交!"
+    async submitAddForm(formName) {
+      console.log(formName);
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          if (this.addForm.roles === []) {
+            this.addForm.roles = [5];
+          }
+
+          Project.addMember(
+            this.projectId,
+            this.addForm.user.userId,
+            this.addForm.user.username,
+            this.addForm.leader.userId,
+            this.addForm.leader.username,
+            this.addForm.roles
+          ).then(() => {
+            this.$message({
+              type: "success",
+              message: "已提交!"
+            });
+            this.addFormVisible = false;
+            // location.reload();
+            this.getMemberList(this.keyword);
+          });
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
       });
-      this.addFormVisible = false;
-      // location.reload();
-      this.getMemberList(this.keyword);
     },
     // 编辑项目成员信息
     async handleEdit(index, row) {
