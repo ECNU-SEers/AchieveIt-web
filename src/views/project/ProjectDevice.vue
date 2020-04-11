@@ -1,5 +1,17 @@
 <template>
   <div>
+    <el-row
+      v-if="this.projectId !== undefined && this.permissions.indexOf('查询项目设备信息') <= -1"
+      style="height: 800px"
+    >
+      <el-col
+        style="height: 800px"
+        v-loading="loading"
+        element-loading-text="您暂无权限查看此页面"
+        element-loading-spinner="el-icon-loading"
+      ></el-col>
+    </el-row>
+    <div v-if="this.permissions.indexOf('查询项目设备信息') > -1">
     <PageHeader title="项目设备信息">
       <!--工具条：搜索栏-->
       <Search
@@ -29,12 +41,6 @@
         >新增</el-button
       >
     </PageHeader>
-
-    <el-row v-if="this.projectId === undefined">
-      <el-col :span="24">
-        <el-tag type="success" effect="dark">请选择项目</el-tag>
-      </el-col>
-    </el-row>
 
     <!--列表展示-->
     <Pagination
@@ -287,6 +293,7 @@
         >
       </div>
     </el-dialog>
+    </div>
   </div>
 </template>
 

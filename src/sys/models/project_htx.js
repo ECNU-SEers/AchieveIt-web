@@ -153,7 +153,7 @@ export default class Project {
    * 获取所有员工
    */
   static async getUsers() {
-    const info = get("/employees");
+    const info = get("/users");
     return info;
   }
 
@@ -172,6 +172,20 @@ export default class Project {
       userId,
       username,
       leaderId,
+      leaderName,
+      roleId
+    });
+    return info;
+  }
+
+  static async importMember(
+    projectId,
+    username,
+    leaderName,
+    roleId
+  ) {
+    const info = post("/project/" + projectId + "/member", {
+      username,
       leaderName,
       roleId
     });

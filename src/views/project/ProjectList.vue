@@ -33,7 +33,7 @@
       :total="projectsLength"
       @page-change="handlePageChange"
     >
-      <el-table :data="projects" highlight-current-row style="width: 100%">
+      <el-table :data="projects" highlight-current-row style="width: 100%" stripe>
         <!-- <el-table-column type="expand">
                     <template slot-scope="props">
                         <el-table :data="props.row.projectProgress" highlight-current-row style="width:80%">
@@ -180,9 +180,9 @@
             </el-form-item>
           </el-col>
         </el-form-item>
-        <el-form-item label="项目经理" prop="managerName">
+        <!-- <el-form-item label="项目经理" prop="managerName">
           <el-input v-model="addForm.managerName" disabled></el-input>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="项目主管" prop="supervisorName">
           <el-select
             v-model="addForm.supervisorName"
@@ -565,12 +565,13 @@
             <el-option
               v-for="item in employees"
               :key="item.userId"
-              :label="item.username"
+              :label="item.realName"
               :value="item.userId"
+              size="medium"
             >
-              <span style="float: left">{{ item.username }}</span>
+              <span style="float: left">{{ item.realName }}</span>
               <span style="float: right; color: #8492a6; font-size: 13px">{{
-                item.userId
+                item.username
               }}</span>
             </el-option>
           </el-select>
@@ -666,12 +667,13 @@
             <el-option
               v-for="item in employees"
               :key="item.userId"
-              :label="item.username"
+              :label="item.realName"
               :value="item.userId"
+              size="medium"
             >
-              <span style="float: left">{{ item.username }}</span>
+              <span style="float: left">{{ item.realName }}</span>
               <span style="float: right; color: #8492a6; font-size: 13px">{{
-                item.userId
+                item.username
               }}</span>
             </el-option>
           </el-select>
@@ -707,7 +709,7 @@ export default {
     return {
       // 分页
       pageNo: 1,
-      pageSize: 5,
+      pageSize: 10,
       projects: [],
       projectsLength: 0,
       keyword: "",
@@ -1401,9 +1403,13 @@ export default {
               config["isFileServerDirConfirmed"] = 0;
               config["isMailConfirmed"] = 0;
               ProjectSYJ.addConfigAfterAccepted(this.approvalForm.id, config);
+
+              // 分配项目经理的权限
+              // console.log(this.approvalForm);
+              ProjectSYJ.assignRoleForPM(this.approvalForm.id, 6, this.approvalForm.managerId);
             } else {
               ProjectSYJ.rejectProject(
-                his.approvalForm.outerId,
+                this.approvalForm.outerId,
                 this.approvalForm.remark
               ).then(() => {
                 this.submitLoading = false;

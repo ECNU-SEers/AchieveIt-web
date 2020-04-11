@@ -287,13 +287,12 @@ export default class ProjectLW {
 
   /**
    * 从其他项目导入
+   *  @param {number} thisProjectId
    *  @param {number} projectId
-   *  @param {number} otherProjectId
    */
-  static async importRisksFromOtherProject(projectId, otherProjectId) {
-    const res = await post("/project/" + projectId + "/risk/import/other", {
-      projectId,
-      otherProjectId
+  static async importRisksFromOtherProject(thisProjectId, projectId) {
+    const res = await post("/project/" + thisProjectId + "/risk/import/other", {
+      projectId
     });
     return res;
   }

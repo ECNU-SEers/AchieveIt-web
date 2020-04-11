@@ -1,240 +1,206 @@
 <template>
   <div>
-    <PageHeader title="项目缺陷信息">
-      <Search
-        v-if="this.projectId !== undefined"
-        placeholder="请输入缺陷名称"
-        :query-search="querySearch"
-        @search="searchDefect"
-        @select-suggestion="selectSearch"
-      >
-      </Search>
-      <el-button
-        v-if="
+    <el-row
+      v-if="this.projectId !== undefined && this.getPermission !== true"
+      style="height: 800px"
+    >
+      <el-col
+        style="height: 800px"
+        v-loading="loading"
+        element-loading-text="您暂无权限查看此页面"
+        element-loading-spinner="el-icon-loading"
+      ></el-col>
+    </el-row>
+    <div v-if="this.getPermission === true">
+      <PageHeader title="项目缺陷信息">
+        <Search
+          v-if="this.projectId !== undefined"
+          placeholder="请输入缺陷名称"
+          :query-search="querySearch"
+          @search="searchDefect"
+          @select-suggestion="selectSearch"
+        ></Search>
+        <el-button
+          v-if="
           this.projectState !== '结束' &&
             this.projectState !== '已归档' &&
             this.projectState !== '申请立项' &&
             this.projectState !== '立项驳回' &&
             this.addPermission === true
         "
-        type="primary"
-        class="add-btn"
-        @click="handleAdd"
-        >新增</el-button
-      >
-    </PageHeader>
+          type="primary"
+          class="add-btn"
+          @click="handleAdd"
+        >新增</el-button>
+      </PageHeader>
 
-    <el-row v-if="this.projectId === undefined">
+      <!-- <el-row v-if="this.projectId === undefined">
       <el-col :span="24">
         <el-tag type="success" effect="dark">请选择项目</el-tag>
       </el-col>
-    </el-row>
-    <!-- <p v-permission="{name:'查看系统消息',type:'disabled'}">Hello word</p>
+      </el-row>-->
+      <!-- <p v-permission="{name:'查看系统消息',type:'disabled'}">Hello word</p>
         <p v-permission="'查看日志'">Hello word</p>
-    <button v-permission="['修改信息','修改密码']">编辑</button>-->
-    <!--工具条：搜索栏-->
-    <Pagination
-      v-if="this.projectId !== undefined"
-      :current-page.sync="page"
-      :page-size="pageSize"
-      :total="defectsLength"
-      @page-change="handlePageChange"
-    >
-      <el-table
+      <button v-permission="['修改信息','修改密码']">编辑</button>-->
+      <!--工具条：搜索栏-->
+      <Pagination
         v-if="this.projectId !== undefined"
-        :data="defects"
-        highlight-current-row
-        border
-        style="width: 100%"
+        :current-page.sync="page"
+        :page-size="pageSize"
+        :total="defectsLength"
+        @page-change="handlePageChange"
       >
-        <el-table-column
-          type="index"
-          label="序号"
-          width="70px"
-        ></el-table-column>
-        <el-table-column label="缺陷ID" prop="id"></el-table-column>
-        <el-table-column label="缺陷名称" prop="name"></el-table-column>
-        <el-table-column label="缺陷描述" prop="description"></el-table-column>
-        <el-table-column label="缺陷状态" prop="state"></el-table-column>
-        <el-table-column label="缺陷类型" prop="type"></el-table-column>
-        <el-table-column label="缺陷级别" prop="level"></el-table-column>
-        <el-table-column label="提交人" prop="creatorName"></el-table-column>
-        <el-table-column label="处理人" prop="handlerName"></el-table-column>
-        <el-table-column label="创建日期" prop="createdAt"></el-table-column>
-        <el-table-column label="预定日期" prop="due"></el-table-column>
-        <el-table-column label="更新日期" prop="updatedAt"></el-table-column>
-        <el-table-column
-          fixed="right"
-          label="操作"
-          width="140px"
-          v-if="
+        <el-table
+          v-if="this.projectId !== undefined"
+          :data="defects"
+          highlight-current-row
+          border
+          stripe
+          style="width: 100%"
+        >
+          <el-table-column type="index" label="序号" width="70px"></el-table-column>
+          <el-table-column label="缺陷ID" prop="id"></el-table-column>
+          <el-table-column label="缺陷名称" prop="name"></el-table-column>
+          <el-table-column label="缺陷描述" prop="description"></el-table-column>
+          <el-table-column label="缺陷状态" prop="state"></el-table-column>
+          <el-table-column label="缺陷类型" prop="type"></el-table-column>
+          <el-table-column label="缺陷级别" prop="level"></el-table-column>
+          <el-table-column label="提交人" prop="creatorName"></el-table-column>
+          <el-table-column label="处理人" prop="handlerName"></el-table-column>
+          <el-table-column label="创建日期" prop="createdAt"></el-table-column>
+          <el-table-column label="预定日期" prop="due"></el-table-column>
+          <el-table-column label="更新日期" prop="updatedAt"></el-table-column>
+          <el-table-column
+            fixed="right"
+            label="操作"
+            width="140px"
+            v-if="
             this.projectState !== '结束' &&
               this.projectState !== '已归档' &&
               this.projectState !== '申请立项' &&
               this.projectState !== '立项驳回' &&
               (this.editPermission === true || this.handlePermission === true)
           "
-        >
-          <template slot-scope="scope">
-            <el-button-group>
-              <el-button
-                size="medium"
-                type="primary"
-                @click.stop="handleEdit(scope.$index, scope.row)"
-                icon="el-icon-edit"
-              ></el-button>
-              <el-button
-                size="medium"
-                type="success"
-                @click.stop="handleChangeState(scope.$index, scope.row)"
-                icon="el-icon-check"
-              ></el-button>
-            </el-button-group>
-          </template>
-        </el-table-column>
-      </el-table>
-    </Pagination>
+          >
+            <template slot-scope="scope">
+              <el-button-group>
+                <el-button
+                  size="medium"
+                  type="primary"
+                  @click.stop="handleEdit(scope.$index, scope.row)"
+                  icon="el-icon-edit"
+                ></el-button>
+                <el-button
+                  size="medium"
+                  type="success"
+                  @click.stop="handleChangeState(scope.$index, scope.row)"
+                  icon="el-icon-check"
+                ></el-button>
+              </el-button-group>
+            </template>
+          </el-table-column>
+        </el-table>
+      </Pagination>
 
-    <!-- 新建缺陷 -->
-    <el-dialog
-      title="新增缺陷"
-      :visible.sync="addFormVisible"
-      :close-on-click-modal="false"
-    >
-      <el-form
-        @submit.native.prevent
-        ref="addForm"
-        :model="addForm"
-        :rules="addFormRules"
-        label-width="100px"
-        class="demo-ruleForm"
-      >
-        <el-form-item label="缺陷名称" prop="name">
-          <el-input
-            v-model="addForm.name"
-            placeholder="请填写缺陷名称"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="缺陷类型" prop="type">
-          <el-select v-model="addForm.type" placeholder="请选择缺陷类型">
-            <el-option
-              v-for="item in type"
-              :key="item.name"
-              :label="item.name"
-              :value="item.id"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="缺陷等级" prop="level">
-          <el-select v-model="addForm.level" placeholder="请选择缺陷等级">
-            <el-option
-              v-for="item in levelDB"
-              :key="item.name"
-              :label="item.name"
-              :value="item.id"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <!-- <el-form-item label="提交人" prop="creatorName">
+      <!-- 新建缺陷 -->
+      <el-dialog title="新增缺陷" :visible.sync="addFormVisible" :close-on-click-modal="false">
+        <el-form
+          @submit.native.prevent
+          ref="addForm"
+          :model="addForm"
+          :rules="addFormRules"
+          label-width="100px"
+          class="demo-ruleForm"
+        >
+          <el-form-item label="缺陷名称" prop="name">
+            <el-input v-model="addForm.name" placeholder="请填写缺陷名称"></el-input>
+          </el-form-item>
+          <el-form-item label="缺陷类型" prop="type">
+            <el-select v-model="addForm.type" placeholder="请选择缺陷类型">
+              <el-option v-for="item in type" :key="item.name" :label="item.name" :value="item.id"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="缺陷等级" prop="level">
+            <el-select v-model="addForm.level" placeholder="请选择缺陷等级">
+              <el-option
+                v-for="item in levelDB"
+                :key="item.name"
+                :label="item.name"
+                :value="item.id"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+          <!-- <el-form-item label="提交人" prop="creatorName">
           <el-input v-model="addForm.creatorName" disabled></el-input>
-        </el-form-item> -->
-        <el-form-item label="预定日期" prop="due">
-          <el-date-picker
-            v-model="addForm.due"
-            placeholder="请选择交付日"
-            type="datetime"
-            format="yyyy-MM-dd HH:mm:ss"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            :picker-options="pickerOptions"
-          ></el-date-picker>
-        </el-form-item>
-        <el-form-item label="处理人" prop="handlerId">
-          <el-select v-model="addForm.handlerId" placeholder="请选择缺陷处理人">
-            <el-option
-              v-for="item in members"
-              :key="item.id"
-              :label="item.realName"
-              :value="item.id"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="缺陷描述" prop="description">
-          <el-input
-            type="textarea"
-            v-model="addForm.description"
-            placeholder
-          ></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click.native="addFormVisible = false">取消</el-button>
-        <el-button
-          type="primary"
-          @click.native="addDefectSubmit"
-          :loading="submitLoading"
-          >提交</el-button
-        >
-      </div>
-    </el-dialog>
+          </el-form-item>-->
+          <el-form-item label="预定日期" prop="due">
+            <el-date-picker
+              v-model="addForm.due"
+              placeholder="请选择交付日"
+              type="datetime"
+              format="yyyy-MM-dd HH:mm:ss"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              :picker-options="pickerOptions"
+            ></el-date-picker>
+          </el-form-item>
+          <el-form-item label="处理人" prop="handlerId">
+            <el-select v-model="addForm.handlerId" placeholder="请选择缺陷处理人">
+              <el-option
+                v-for="item in members"
+                :key="item.id"
+                :label="item.realName"
+                :value="item.id"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="缺陷描述" prop="description">
+            <el-input type="textarea" v-model="addForm.description" placeholder></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click.native="addFormVisible = false">取消</el-button>
+          <el-button type="primary" @click.native="addDefectSubmit" :loading="submitLoading">提交</el-button>
+        </div>
+      </el-dialog>
 
-    <!-- 编辑缺陷 -->
-    <el-dialog
-      title="编辑缺陷"
-      :visible.sync="editFormVisible"
-      :close-on-click-modal="false"
-    >
-      <el-form
-        @submit.native.prevent
-        ref="editForm"
-        :model="editForm"
-        :rules="editFormRules"
-        label-width="100px"
-        class="demo-ruleForm"
-      >
-        <el-form-item label="缺陷名称" prop="name">
-          <el-input
-            v-model="editForm.name"
-            placeholder="请填写缺陷名称"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="缺陷类型" prop="type">
-          <el-select v-model="editForm.type" placeholder="请选择缺陷类型">
-            <el-option
-              v-for="item in type"
-              :key="item.name"
-              :label="item.name"
-              :value="item.id"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="缺陷等级" prop="level">
-          <el-select v-model="editForm.level" placeholder="请选择缺陷等级">
-            <el-option
-              v-for="item in levelDB"
-              :key="item.name"
-              :label="item.name"
-              :value="item.id"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="缺陷描述" prop="description">
-          <el-input
-            type="textarea"
-            v-model="editForm.description"
-            placeholder
-          ></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click.native="editFormVisible = false">取消</el-button>
-        <el-button
-          type="primary"
-          @click.native="editDefectSubmit"
-          :loading="submitLoading"
-          >提交</el-button
+      <!-- 编辑缺陷 -->
+      <el-dialog title="编辑缺陷" :visible.sync="editFormVisible" :close-on-click-modal="false">
+        <el-form
+          @submit.native.prevent
+          ref="editForm"
+          :model="editForm"
+          :rules="editFormRules"
+          label-width="100px"
+          class="demo-ruleForm"
         >
-      </div>
-    </el-dialog>
+          <el-form-item label="缺陷名称" prop="name">
+            <el-input v-model="editForm.name" placeholder="请填写缺陷名称"></el-input>
+          </el-form-item>
+          <el-form-item label="缺陷类型" prop="type">
+            <el-select v-model="editForm.type" placeholder="请选择缺陷类型">
+              <el-option v-for="item in type" :key="item.name" :label="item.name" :value="item.id"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="缺陷等级" prop="level">
+            <el-select v-model="editForm.level" placeholder="请选择缺陷等级">
+              <el-option
+                v-for="item in levelDB"
+                :key="item.name"
+                :label="item.name"
+                :value="item.id"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="缺陷描述" prop="description">
+            <el-input type="textarea" v-model="editForm.description" placeholder></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click.native="editFormVisible = false">取消</el-button>
+          <el-button type="primary" @click.native="editDefectSubmit" :loading="submitLoading">提交</el-button>
+        </div>
+      </el-dialog>
+    </div>
   </div>
 </template>
 
