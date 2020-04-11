@@ -203,4 +203,9 @@ export default class ProjectSYJ {
   static async deleteArea(businessAreaIds) {
     return await _delete("/business/area/delete?businessAreaIds=" + businessAreaIds);
   }
+
+   // 权限
+   static async assignRoleForPM(projectId, roleId, assigneeId) {
+    return await post("/project/" + projectId + "/role/" + roleId + "/assign", {assigneeId});
+   }
 }

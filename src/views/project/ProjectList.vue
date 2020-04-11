@@ -1403,6 +1403,10 @@ export default {
               config["isFileServerDirConfirmed"] = 0;
               config["isMailConfirmed"] = 0;
               ProjectSYJ.addConfigAfterAccepted(this.approvalForm.id, config);
+
+              // 分配项目经理的权限
+              // console.log(this.approvalForm);
+              ProjectSYJ.assignRoleForPM(this.approvalForm.id, 6, this.approvalForm.managerId);
             } else {
               ProjectSYJ.rejectProject(
                 this.approvalForm.outerId,
