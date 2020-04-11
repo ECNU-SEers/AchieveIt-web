@@ -37,3 +37,15 @@ export const deleteRole = id => _delete(`/view/role/${id}`);
 
 export const setUserRole = (userId, roles) =>
     MOCK ? Promise.resolve() : put(`/user/${userId}/view/roles`, {roles});
+
+export const getProjectRole = (page, pageSize) =>
+    get(`/roles`, {page, pageSize});
+
+export const addProjectRole = (name, permissions) =>
+    post(`/role`, {name, permissions});
+
+export const editProjectRole = (id, name, permissions) =>
+    put(`/role/${id}`, {name, permissions});
+
+export const getAllProjectPermissions = () =>
+    get(`/permissions`, {pageNo: 1, pageSize: 10000000});
