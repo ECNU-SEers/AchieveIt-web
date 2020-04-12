@@ -62,13 +62,13 @@
           <el-table-column label="缺陷ID" prop="id"></el-table-column>
           <el-table-column label="缺陷名称" prop="name"></el-table-column>
           <el-table-column label="缺陷描述" prop="description"></el-table-column>
-          <el-table-column label="缺陷状态" prop="state"></el-table-column>
-          <el-table-column label="缺陷类型" prop="type"></el-table-column>
-          <el-table-column label="缺陷级别" prop="level"></el-table-column>
+          <el-table-column label="缺陷状态" prop="stateName"></el-table-column>
+          <el-table-column label="缺陷类型" prop="typeName"></el-table-column>
+          <el-table-column label="缺陷级别" prop="levelName"></el-table-column>
           <el-table-column label="提交人" prop="creatorName"></el-table-column>
           <el-table-column label="处理人" prop="handlerName"></el-table-column>
           <el-table-column label="创建日期" prop="createdAt"></el-table-column>
-          <el-table-column label="预定日期" prop="due"></el-table-column>
+          <el-table-column label="预定日期" prop="dueDate"></el-table-column>
           <el-table-column label="更新日期" prop="updatedAt"></el-table-column>
           <el-table-column
             fixed="right"
@@ -133,9 +133,9 @@
           <!-- <el-form-item label="提交人" prop="creatorName">
           <el-input v-model="addForm.creatorName" disabled></el-input>
           </el-form-item>-->
-          <el-form-item label="预定日期" prop="due">
+          <el-form-item label="预定日期" prop="dueDate">
             <el-date-picker
-              v-model="addForm.due"
+              v-model="addForm.dueDate"
               placeholder="请选择交付日"
               type="datetime"
               format="yyyy-MM-dd HH:mm:ss"
@@ -351,7 +351,7 @@ export default {
             triggle: "blur"
           }
         ],
-        due: [
+        dueDate: [
           {
             required: true,
             message: "请选择预定日期",
@@ -364,7 +364,7 @@ export default {
         name: "",
         type: "",
         level: "",
-        due: "",
+        dueDate: "",
         handlerId: "",
         description: ""
       },
@@ -510,16 +510,16 @@ export default {
       this.defects = res.items;
       let i = 0;
       for (i = 0; i < this.defects.length; i++) {
-        this.defects[i].due = moment(this.defects[i].due).format("YYYY-MM-DD");
+        this.defects[i].dueDate = moment(this.defects[i].due).format("YYYY-MM-DD");
         this.defects[i].createdAt = moment(this.defects[i].createdAt).format(
           "YYYY-MM-DD"
         );
         this.defects[i].updatedAt = moment(this.defects[i].updatedAt).format(
           "YYYY-MM-DD"
         );
-        this.defects[i].level = this.matchLevel(this.defects[i].level);
-        this.defects[i].state = this.matchState(this.defects[i].state);
-        this.defects[i].type = this.matchType(this.defects[i].type);
+        this.defects[i].levelName = this.matchLevel(this.defects[i].level);
+        this.defects[i].stateName = this.matchState(this.defects[i].state);
+        this.defects[i].typeName = this.matchType(this.defects[i].type);
         if (this.defects[i].handlerName === null) {
           this.defects[i].handlerName = "暂未处理";
         }
@@ -576,21 +576,47 @@ export default {
     },
 
     handleChangeState(index, row) {
+      let changedState = {};
+      changedState.assigneeId = row.handlerId;
+      changedState.assigneeName = row.handlerName;
+      changedState.due = util.formatDate.format(new Date(row.due), 'yyyy-MM-dd hh:mm:ss')
       if (
         this.handlePermission === true &&
-        row.state === "已修复" &&
+        row.stateName === "已修复" &&
         this.username === row.creatorName
       ) {
+        changedState.action = "close";
         this.$confirm("确定关闭该缺陷吗", "提示", {}).then(() => {
-          changeDefectState(this.projectId, this.defectId);
+          ProjectSYJ.changeDefectState(
+            this.projectId,
+            row.id,
+            changedState
+          ).then(() => {
+            this.$message({
+              message: "提交成功！",
+              type: "success"
+            });
+            this.getAllDefects("");
+          });
         });
       } else if (
         this.handlePermission === true &&
-        row.state === "已分派" &&
+        row.stateName === "已分派" &&
         this.username === row.handlerName
       ) {
+        changedState.action = "fix";
         this.$confirm("确定已修复该缺陷吗", "提示", {}).then(() => {
-          changeDefectState(this.projectId, this.defectId);
+          ProjectSYJ.changeDefectState(
+            this.projectId,
+            row.id,
+            changedState
+          ).then(() => {
+            this.$message({
+              message: "提交成功！",
+              type: "success"
+            });
+            this.getAllDefects("");
+          });
         });
       } else {
         this.$message({
@@ -635,6 +661,7 @@ export default {
   },
   mounted() {
     this.username = this.user.username;
+    this.userId = this.user.userId;
     this.projectId = this.$route.query.projectId;
     this.projectState = this.$route.query.projectState;
     if (this.projectId === undefined) {
