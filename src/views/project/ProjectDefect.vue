@@ -221,6 +221,7 @@ export default {
   },
   data() {
     return {
+      loading: true,
       page: 1,
       pageSize: 10,
       projectId: 1,

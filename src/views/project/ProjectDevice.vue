@@ -311,6 +311,7 @@ export default {
   },
   data() {
     return {
+      loading: true,
       //分页
       pageNo: 1,
       pageSize: 10,

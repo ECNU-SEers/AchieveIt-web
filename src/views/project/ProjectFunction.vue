@@ -247,12 +247,12 @@ export default {
           console.log("permission：查询");
         }
       }
-      if (this.getInfoPermission === false) {
-        this.$message({
-          message: "无权限查看！",
-          type: "warning"
-        });
-      }
+      // if (this.getInfoPermission === false) {
+      //   this.$message({
+      //     message: "无权限查看！",
+      //     type: "warning"
+      //   });
+      // }
       console.log("permission: " + this.permission);
     },
     showInfo() {},

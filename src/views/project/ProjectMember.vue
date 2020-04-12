@@ -323,6 +323,7 @@ export default {
       rules: {
         ['user.realName']: [{ required: true, message: "请选择用户", trigger: "blur" }]
       },
+      loading: true,
 
       state: "",
       permission: false,
@@ -381,12 +382,12 @@ export default {
           this.getInfoPermission = true;
         }
       }
-      if (this.getInfoPermission === false) {
-        this.$message({
-          message: "无权限查看！",
-          type: "warning"
-        });
-      }
+      // if (this.getInfoPermission === false) {
+      //   this.$message({
+      //     message: "无权限查看！",
+      //     type: "warning"
+      //   });
+      // }
       console.log("permission: " + this.permission);
     },
     // 上传excel

@@ -123,6 +123,7 @@ export default {
 
   data() {
     return {
+      loading: true,
       editFormVisible: false,
       formLabelWidth: "120px",
       projectId: "",

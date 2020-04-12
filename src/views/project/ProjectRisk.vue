@@ -486,6 +486,7 @@ export default {
   },
   data() {
     return {
+      loading: true,
       projectId: 1,
       projectState: "",
       pageNo: 1,
