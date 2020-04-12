@@ -187,7 +187,6 @@
           <el-form-item label="资产管理者:" prop="managerId">
             <el-select
               v-model="addForm.managerId"
-              @visible-change="getAllMembers($event)"
               filterable
               placeholder="请选择资产管理者"
             >
@@ -204,6 +203,8 @@
           <el-form-item label="开始使用时间:" prop="startDate">
             <el-date-picker
               v-model="addForm.startDate"
+              value-format="yyyy-MM-dd"
+              format="yyyy年MM月dd日"
               type="date"
               placeholder="开始使用时间"
             ></el-date-picker>
@@ -211,6 +212,8 @@
           <el-form-item label="资产归还期限:" prop="dueDate">
             <el-date-picker
               v-model="addForm.dueDate"
+              value-format="yyyy-MM-dd"
+              format="yyyy年MM月dd日"
               type="date"
               placeholder="结束日期"
             ></el-date-picker>
@@ -282,6 +285,8 @@
           <el-form-item label="开始使用时间:" prop="startDate">
             <el-date-picker
               v-model="editForm.startDate"
+              value-format="yyyy-MM-dd"
+              format="yyyy年MM月dd日"
               type="date"
               placeholder="开始日期"
             ></el-date-picker>
@@ -289,6 +294,8 @@
           <el-form-item label="资产归还期限:" prop="dueDate">
             <el-date-picker
               v-model="editForm.dueDate"
+              value-format="yyyy-MM-dd"
+              format="yyyy年MM月dd日"
               type="date"
               placeholder="结束日期"
             ></el-date-picker>
@@ -400,6 +407,7 @@ export default {
       this.getMyPermissions();
       this.getDeviceList("");
       this.getDeviceLength();
+      this.getAllMembers();
     }
   },
   methods: {
@@ -478,13 +486,10 @@ export default {
       });
     },
     //下拉，可选设备管理员
-    async getAllMembers(callback) {
-      console.log("回调参数" + callback);
-      if (callback) {
+    async getAllMembers() {
         const res = await ProjectLW.getAllMembers(this.projectId);
         console.log(res);
         this.users = res;
-      } else;
     },
     handleClose(done) {
       this.$confirm("确认关闭？")
