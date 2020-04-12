@@ -121,11 +121,16 @@ export default class ProjectLW {
   }
   /**
    * 归还设备
-   * @param {number} projectId 
+   * @param {number} projectId
    * @param {string} deviceOuterId
    */
-  static returnDevice(projectId,deviceOuterId){
-   return put("/device/return?deviceOuterId="+deviceOuterId+"&projectId="+projectId);
+  static returnDevice(projectId, deviceOuterId) {
+    return put(
+      "/device/return?deviceOuterId=" +
+        deviceOuterId +
+        "&projectId=" +
+        projectId
+    );
   }
 
   /***********风险***************/
@@ -205,18 +210,18 @@ export default class ProjectLW {
   static updateRisk(
     projectId,
     riskId,
-      name,
-      type,
-      level,
-      impact,
-      strategy,
-      state,
-      ownerId,
-      ownerName,
-      trackingFreq,
-      source,
-      description,
-      relatedPersons
+    name,
+    type,
+    level,
+    impact,
+    strategy,
+    state,
+    ownerId,
+    ownerName,
+    trackingFreq,
+    source,
+    description,
+    relatedPersons
   ) {
     // console.log("owner" + ownerId);
     // console.log("riskId" + riskId);

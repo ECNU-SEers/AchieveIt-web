@@ -596,7 +596,7 @@ export default {
       importSourceId: [],
       importProps: {
         expandTrigger: "hover",
-        children: "otherProjects",
+        children: "otherProjects"
       },
       importSources: [
         {
@@ -706,7 +706,7 @@ export default {
         if (JSON.stringify(item.riskRelatedPeople) == "{}") {
           obj.riskRelatedPeople = null;
         } else {
-          console.log("there are riskRelatedPeople! and item.id="+item.id);
+          console.log("there are riskRelatedPeople! and item.id=" + item.id);
           obj.riskRelatedPeople = item.riskRelatedPeople;
         }
         tmp.push(obj);
@@ -746,7 +746,7 @@ export default {
       // console.log("回调参数" + callback);
       if (callback) {
         const res = await ProjectLW.getAllMembers(this.projectId);
-        console.log("member="+res);
+        console.log("member=" + res);
         this.users = res;
       } else;
     },
@@ -846,28 +846,28 @@ export default {
         });
     },
     //导入
-        //下拉，获取其他项目
+    //下拉，获取其他项目
     async getOtherProjects() {
       var _this = this;
-        const res = await ProjectLW.getOtherProjects();
-        var tmp = [];
-        res.forEach(item => {
-          const obj = {};
-          obj.value = item.id;
-          obj.label = item.name + "( ID:" + item.outerId + " )";
-          tmp.push(obj);
-        });
-         this.$set(this.importSources[1], "otherProjects", tmp);
+      const res = await ProjectLW.getOtherProjects();
+      var tmp = [];
+      res.forEach(item => {
+        const obj = {};
+        obj.value = item.id;
+        obj.label = item.name + "( ID:" + item.outerId + " )";
+        tmp.push(obj);
+      });
+      this.$set(this.importSources[1], "otherProjects", tmp);
     },
-   // 再次打开“导入”前，清空选框内容
+    // 再次打开“导入”前，清空选框内容
     clearCascader() {
-      this.importSourceId="";
+      this.importSourceId = "";
       // let obj = {};
       // obj.stopPropagation = () => {};
       // try {
-      
+
       //   this.$refs.cascader.clearValue(obj);
-       
+
       // } catch (e) {
       //   this.$refs.cascader.handleClear(obj);
       // }
@@ -881,7 +881,7 @@ export default {
           const res = await ProjectLW.importRisksFromStdLib(this.projectId);
           _this.$message.success("导入成功1");
         } else {
-         // console.log("importSourceId="+importSourceId[1]);
+          // console.log("importSourceId="+importSourceId[1]);
           const res = await ProjectLW.importRisksFromOtherProject(
             this.projectId,
             importSourceId[1]
