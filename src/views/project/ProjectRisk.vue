@@ -6,7 +6,6 @@
     >
       <el-col
         style="height: 800px"
-        v-loading="loading"
         element-loading-text="您暂无权限查看此页面"
         element-loading-spinner="el-icon-loading"
       ></el-col>
@@ -187,6 +186,7 @@
       <el-form
         :model="addForm"
         :rules="rules"
+        :validate-on-rule-change="false"
         ref="addForm"
         label-width="120px"
       >
@@ -248,7 +248,6 @@
           <el-select
             v-model="addForm.owner"
             value-key="userId"
-            @visible-change="getAllMembers($event)"
             filterable
             placeholder="请选择该风险责任人"
           >
@@ -270,10 +269,9 @@
         <el-form-item label="风险相关者:" prop="relatedPersons">
           <el-select
             v-model="addForm.relatedPersons"
-            @visible-change="getAllMembers($event)"
             multiple
             filterable
-            placeholder="请选择"
+            placeholder="至少有一位相关者"
           >
             <el-option
               v-for="item in users.items"
@@ -415,7 +413,6 @@
           <el-select
             v-model="editForm.owner"
             value-key="userId"
-            @visible-change="getAllMembers($event)"
             filterable
             placeholder="请选择该风险责任人"
           >
@@ -437,7 +434,6 @@
         <el-form-item label="风险相关者:" prop="relatedPersons">
           <el-select
             v-model="editForm.relatedPersons"
-            @visible-change="getAllMembers($event)"
             value-key="username"
             multiple
             filterable
@@ -462,9 +458,9 @@
             type="primary"
             @click="editSubmit('editForm')"
             style="margin-right:8%;"
-            >添加</el-button
+            >修改</el-button
           >
-          <el-button @click="addFormVisible = false">取消</el-button>
+          <el-button @click="editFormVisible = false">取消</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -494,7 +490,6 @@ export default {
       riskData: [],
       results: [],
       users: [],
-      owner: [],
       relatedPersons: [],
       row: "",
       permissions: [],
@@ -573,7 +568,7 @@ export default {
       rules: {
         name: [{ required: true, message: "请输入风险名称", trigger: "blur" }],
         type: [
-          { required: true, message: "请选择风险类型", trigger: "change" }
+          { required: true, message: "请选择风险类型", trigger: "blur" }
         ],
         description: [
           { required: true, message: "请输入风险描述", trigger: "blur" }
@@ -581,17 +576,17 @@ export default {
         level: [
           { required: true, message: "请选择风险级别", trigger: "change" }
         ],
-        impact: [
+        impact: [ 
           { required: true, message: "请选择风险影响度", trigger: "change" }
         ],
         strategy: [
           { required: true, message: "请输入风险策略", trigger: "blur" }
         ],
         owner: [
-          { required: true, message: "请选择资风险管理者", trigger: "change" }
+          { required: true, message: "请选择资风险责任人", trigger: ['blur','change'] }
         ],
         trackingFreq: [
-          { required: true, message: "请选择风险跟踪频度", trigger: "change" }
+          { required: true, message: "请输入风险跟踪频度", trigger: "blur" }
         ],
         relatedPersons: [
           {
@@ -636,6 +631,7 @@ export default {
       this.getMyPermissions(this.projectId);
       this.getRiskList();
       this.getOtherProjects();
+      this.getAllMembers();
     }
   },
   methods: {
@@ -719,7 +715,6 @@ export default {
         if (JSON.stringify(item.riskRelatedPeople) == "{}") {
           obj.riskRelatedPeople = null;
         } else {
-          console.log("there are riskRelatedPeople! and item.id=" + item.id);
           obj.riskRelatedPeople = item.riskRelatedPeople;
         }
         tmp.push(obj);
@@ -755,13 +750,12 @@ export default {
       });
     },
     //Form下拉，项目成员
-    async getAllMembers(callback) {
+    async getAllMembers() {
       // console.log("回调参数" + callback);
-      if (callback) {
         const res = await ProjectLW.getAllMembers(this.projectId);
         console.log("member=" + res);
         this.users = res;
-      } else;
+     
     },
     handleClose(done) {
       this.$confirm("确认关闭？")
@@ -790,6 +784,12 @@ export default {
     //点击“编辑” 深拷贝原信息
     updateRisk(row) {
       var _this = this;
+      var tmp=[];
+      row.riskRelatedPeople.forEach(item=>{
+        var obj={};
+        obj=item.id;
+        tmp.push(obj);
+      });
       this.editForm = {
         name: row.name === "暂无数据" ? "" : row.name,
         type: row.type === "暂无数据" ? "" : row.type,
@@ -800,7 +800,7 @@ export default {
         trackingFreq: row.trackingFreq === "暂无数据" ? "" : row.trackingFreq,
         source: row.source,
         description: row.description === "暂无数据" ? "" : row.description,
-        relatedPersons: row.riskRelatedPeople,
+        relatedPersons: tmp,
         state: this.$options.methods.find(_this.state, row.state)
       };
       this.row = row;

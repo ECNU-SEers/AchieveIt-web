@@ -194,10 +194,10 @@
           <el-date-picker
             v-model="addForm.startDate"
             type="date"
-            placeholder="开始日期"
+            placeholder="开始使用时间"
           ></el-date-picker>
         </el-form-item>
-        <el-form-item label="到期时间:" prop="dueDate">
+        <el-form-item label="资产归还期限:" prop="dueDate">
           <el-date-picker
             v-model="addForm.dueDate"
             type="date"
@@ -273,7 +273,7 @@
             placeholder="开始日期"
           ></el-date-picker>
         </el-form-item>
-        <el-form-item label="资产到期时间:" prop="dueDate">
+        <el-form-item label="资产归还期限:" prop="dueDate">
           <el-date-picker
             v-model="editForm.dueDate"
             type="date"
@@ -369,7 +369,7 @@ export default {
           }
         ],
         dueDate: [
-          { required: true, message: "请选择资产到期时间", trigger: "change" }
+          { required: true, message: "请选择归还期限", trigger: "change" }
         ]
       }
     };
@@ -501,6 +501,8 @@ export default {
     editSubmit(formName) {
       this.$refs[formName].validate(async valid => {
         var _this = this;
+         console.log("editForm.startDate="+_this.editForm.startDate);
+           console.log( "editForm.dueDate="+_this.editForm.dueDate,);
         if (valid) {
           const res = await ProjectLW.updateDevice(
             _this.editForm.outerId,
@@ -511,21 +513,12 @@ export default {
             _this.editForm.dueDate,
             _this.editForm.returnDate
           );
-          // console.log(res);
+           console.log(res);
           _this.editFormVisible = false;
           _this.$message.success("修改成功");
 
           this.getDeviceList("");
 
-          //前端修改当前行
-          //   _this.row={
-          //      outerId: _this.editForm.outerId,
-          //         type:_this.editForm.type,
-          //  managerName:  _this.editForm.managerId,
-          //    startDate:  _this.editForm.startDate,
-          //      dueDate: _this.editForm.dueDate,
-          //        state: row.state
-          //   };
         } else {
           this.$message.error("修改失败");
           return false;
