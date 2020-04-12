@@ -1,5 +1,6 @@
 /* eslint-disable class-methods-use-this */
 import { post, get, put, _delete } from "@/sys/plugins/axios";
+import { getAllProjectPermissions } from "@/api/permisssion";
 
 export default class Admin {
   constructor(uPage = 0, uCount = 10, gPage = 0, gCount = 5) {
@@ -31,17 +32,24 @@ export default class Admin {
     }
   }
 
-  static async getAllPermissions() {
-    const permissions = await get("/view/permissions");
+  static async getAllPermissions(isProjectPermission = false) {
+    const permissions = await (isProjectPermission
+      ? getAllProjectPermissions()
+      : get("/view/permissions"));
     let res = {};
     permissions.forEach(permission => {
       res[permission.module]
         ? res[permission.module].push({
             ...permission,
-            name: permission.permission
+            name: isProjectPermission ? permission.name : permission.permission
           })
         : (res[permission.module] = [
-            { ...permission, name: permission.permission }
+            {
+              ...permission,
+              name: isProjectPermission
+                ? permission.name
+                : permission.permission
+            }
           ]);
     });
     return res;

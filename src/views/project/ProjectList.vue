@@ -565,12 +565,13 @@
             <el-option
               v-for="item in employees"
               :key="item.userId"
-              :label="item.username"
+              :label="item.realName"
               :value="item.userId"
+              size="medium"
             >
-              <span style="float: left">{{ item.username }}</span>
+              <span style="float: left">{{ item.realName }}</span>
               <span style="float: right; color: #8492a6; font-size: 13px">{{
-                item.userId
+                item.username
               }}</span>
             </el-option>
           </el-select>
@@ -666,12 +667,13 @@
             <el-option
               v-for="item in employees"
               :key="item.userId"
-              :label="item.username"
+              :label="item.realName"
               :value="item.userId"
+              size="medium"
             >
-              <span style="float: left">{{ item.username }}</span>
+              <span style="float: left">{{ item.realName }}</span>
               <span style="float: right; color: #8492a6; font-size: 13px">{{
-                item.userId
+                item.username
               }}</span>
             </el-option>
           </el-select>
@@ -1401,6 +1403,10 @@ export default {
               config["isFileServerDirConfirmed"] = 0;
               config["isMailConfirmed"] = 0;
               ProjectSYJ.addConfigAfterAccepted(this.approvalForm.id, config);
+
+              // 分配项目经理的权限
+              // console.log(this.approvalForm);
+              ProjectSYJ.assignRoleForPM(this.approvalForm.id, 6, this.approvalForm.managerId);
             } else {
               ProjectSYJ.rejectProject(
                 this.approvalForm.outerId,

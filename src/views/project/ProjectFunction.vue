@@ -488,7 +488,7 @@ export default {
           type: "success"
         });
         this.addExcelFormVisible = false;
-        this.getFunctionList();
+        this.getFunctionList("");
       } else {
         this.$message.error("上传文件的大小不能超过10M!");
       }
