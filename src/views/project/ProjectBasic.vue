@@ -44,7 +44,7 @@
             </el-form-item>
 
             <!-- 下拉单选 -->
-            <el-form-item label="客户名称" prop="company">
+            <el-form-item label="客户名称" prop="client.company">
               <el-select
                 v-model="editForm.client"
                 value-key="outerId"
@@ -300,7 +300,7 @@ export default {
           { required: true, message: "请输入项目名称", trigger: "blur" }
           // { min: 3, max: 30, message: "长度在 3 到 30 个字符", trigger: "blur" }
         ],
-        client: [
+        ['client.company']: [
           { required: true, message: "请选择客户姓名", trigger: "blur" }
         ],
         startDate: [
