@@ -85,7 +85,7 @@ export default class ProjectSYJ {
 
   static async rejectProject(projectOuterId, remark) {
     return await put(
-      "/project/reject" +
+      "/project/reject?" +
         "projectOuterId=" +
         projectOuterId +
         "&remark=" +

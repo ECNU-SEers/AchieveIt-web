@@ -180,9 +180,9 @@
             </el-form-item>
           </el-col>
         </el-form-item>
-        <el-form-item label="项目经理" prop="managerName">
+        <!-- <el-form-item label="项目经理" prop="managerName">
           <el-input v-model="addForm.managerName" disabled></el-input>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="项目主管" prop="supervisorName">
           <el-select
             v-model="addForm.supervisorName"
@@ -707,7 +707,7 @@ export default {
     return {
       // 分页
       pageNo: 1,
-      pageSize: 5,
+      pageSize: 10,
       projects: [],
       projectsLength: 0,
       keyword: "",
@@ -1403,7 +1403,7 @@ export default {
               ProjectSYJ.addConfigAfterAccepted(this.approvalForm.id, config);
             } else {
               ProjectSYJ.rejectProject(
-                his.approvalForm.outerId,
+                this.approvalForm.outerId,
                 this.approvalForm.remark
               ).then(() => {
                 this.submitLoading = false;
