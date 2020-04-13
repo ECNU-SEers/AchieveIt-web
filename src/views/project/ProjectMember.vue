@@ -185,6 +185,7 @@
                 data.userName.toLowerCase().includes(search.toLowerCase())
             )
           "
+          v-loading="infoLoading"
           stripe
           border
         >
@@ -320,6 +321,7 @@ export default {
   },
   data() {
     return {
+      infoLoading: true,
       rules: {
         ['user.realName']: [{ required: true, message: "请选择用户", trigger: "blur" }]
       },
@@ -646,10 +648,9 @@ export default {
           this.pageSize,
           keyword
         );
-        console.log("get member list success!");
         this.tableData = info.items;
+        this.infoLoading = false;
         this.showInfo();
-        console.log(this.tableData);
       } catch (e) {
         console.log(e);
       }

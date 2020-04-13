@@ -22,8 +22,10 @@
             this.projectId !== undefined &&
               this.permissions.indexOf('查询项目风险信息') > -1
           "
+          placeholder="请输入风险名称"
           :query-search="querySearch"
-          @select-suggestion="getRisk"
+          @search="searchRisk"
+          @select-suggestion="selectSearch"
           value-key="name"
         ></Search>
         <!-- <div style="width:20px;height=100%;"></div> -->
@@ -62,6 +64,7 @@
       <!--列表展示-->
       <Pagination v-if="this.projectId !== undefined">
         <el-table
+        v-loading="infoLoading"
           :data="riskData"
           stripe
           border
@@ -485,6 +488,7 @@ export default {
   },
   data() {
     return {
+      infoLoading: true,
       loading: true,
       projectId: 1,
       projectState: "",
@@ -635,7 +639,7 @@ export default {
       });
     } else {
       this.getMyPermissions(this.projectId);
-      this.getRiskList();
+      this.getRiskList("");
       this.getOtherProjects();
       this.getAllMembers();
     }
@@ -653,12 +657,13 @@ export default {
       console.log("getMypermission=" + this.permissions);
     },
     //列表展示
-    async getRiskList() {
+    async getRiskList(keyword) {
       var _this = this;
       const res = await ProjectLW.getRiskList(
         this.projectId,
         this.pageNo,
-        this.pageSize
+        this.pageSize,
+        keyword
       );
       var tmp = [];
       res.items.forEach(item => {
@@ -726,6 +731,7 @@ export default {
         tmp.push(obj);
       });
       this.riskData = tmp;
+      this.infoLoading = false;
     },
     //新增
     addSubmit(formName) {
@@ -747,7 +753,7 @@ export default {
             this.addForm.relatedPersons
           );
           // console.log(res);
-          this.getRiskList();
+          this.getRiskList("");
           this.addFormVisible = false;
           this.$message.success("添加成功");
         } else {
@@ -838,7 +844,7 @@ export default {
           // console.log(res);
           _this.editFormVisible = false;
           _this.$message.success("修改成功");
-          this.getRiskList();
+          this.getRiskList("");
         } else {
           this.$message.error("修改失败");
           return false;
@@ -858,7 +864,7 @@ export default {
             type: "success",
             message: "删除成功!"
           });
-          this.getRiskList();
+          this.getRiskList("");
         })
         .catch(() => {
           this.$message({
@@ -914,7 +920,7 @@ export default {
           );
           _this.$message.success("导入成功！");
         }
-        this.getRiskList();
+        this.getRiskList("");
         this.importFormVisible = false;
       } catch (e) {
         _this.$message.error("导入失败");
@@ -936,10 +942,18 @@ export default {
       cb(tmp);
     },
     //查询
-    async getRisk(item) {
-      console.log("item=" + item);
-      const res = await ProjectLW.getRisk(this.projectId, item.id);
-      console.log("返回查询结果=" + res);
+    // async getRisk(item) {
+    //   console.log("item=" + item);
+    //   const res = await ProjectLW.getRisk(this.projectId, item.id);
+    //   console.log("返回查询结果=" + res);
+    // },
+
+    async selectSearch(item) {
+      this.selectedMember = item.id;
+    },
+
+    async searchRisk(keyword) {
+      this.getRiskList(keyword);
     },
 
      //对象数组判空

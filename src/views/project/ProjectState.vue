@@ -10,6 +10,7 @@
       :total="statesLength"
       @page-change="handlePageChange">
     <el-table
+    v-loading="infoLoading"
       :data="stateData"
       stripe
       border
@@ -72,6 +73,7 @@ export default {
   },
   data() {
     return {
+      infoLoading: true,
       projectId: "",
       outerId: "",
       projectState:"",
@@ -120,6 +122,7 @@ export default {
         }
         this.stateData[i].latterState = this.stateData[i].formerState + '-->' + this.stateData[i].latterState;
       }
+      this.infoLoading = false;
     },
 
     //获取备注

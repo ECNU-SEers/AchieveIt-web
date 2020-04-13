@@ -19,7 +19,7 @@
           placeholder="请输入功能名称"
           :query-search="querySearch"
           @search="searchFunctions"
-          @select-suggestion="getOne"
+          @select-suggestion="selectSearch"
         >
           <!-- <span style="float: left">{{ item.value }}</span>
           <span style="float: right; color: #8492a6; font-size: 13px">{{item.id}}</span>-->
@@ -86,6 +86,7 @@
       <Pagination v-if="this.projectId !== undefined">
         <el-table
           v-if="this.projectId !== undefined"
+          v-loading="infoLoading"
           :data="tableData"
           style="margin-bottom: 20px;"
           row-key="id"
@@ -205,6 +206,7 @@ export default {
   },
   data() {
     return {
+      infoLoading: true,
       rules: {
         name: [{ required: true, message: "请输入功能名称", trigger: "blur" }]
       },
@@ -294,6 +296,7 @@ export default {
           ) {
             this.tableData[i].description = "暂无数据";
           }
+          this.infoLoading = false;
         }
       } catch (e) {
         console.log(e);
@@ -601,9 +604,11 @@ export default {
       this.functionSearch = tmp;
       cb(tmp);
     },
-    searchFunctions(item) {
-      console.log(item);
-      console.log("search or click");
+    async searchFunctions(keyword) {
+      this.getFunctionList(keyword);
+    },
+    async selectSearch(item) {
+      this.selectedMember = item.id;
     },
 
     // 点击下拉中的一条获取一条功能信息
