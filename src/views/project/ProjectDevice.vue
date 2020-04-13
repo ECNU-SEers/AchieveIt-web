@@ -41,8 +41,7 @@
               this.projectState !== '立项驳回' &&
               this.permissions.indexOf('管理项目设备信息') > -1
           "
-          >新增</el-button
-        >
+        >新增</el-button>
       </PageHeader>
 
       <!--列表展示-->
@@ -92,23 +91,16 @@
               ></el-table-column>
             </el-table>
           </template>
-        </el-table-column>-->
+          </el-table-column>-->
 
           <!--列表展示-->
-          <el-table-column
-            label="序号"
-            width="70px"
-            type="index"
-          ></el-table-column>
+          <el-table-column label="序号" width="70px" type="index"></el-table-column>
 
           <el-table-column label="资产 ID" prop="outerId"></el-table-column>
 
           <el-table-column label="资产类型" prop="type"></el-table-column>
 
-          <el-table-column
-            label="资产管理者"
-            prop="managerId"
-          ></el-table-column>
+          <el-table-column label="资产管理者" prop="managerId"></el-table-column>
 
           <el-table-column label="开始时间" prop="startDate"></el-table-column>
           <el-table-column label="归还期限" prop="dueDate"></el-table-column>
@@ -186,11 +178,7 @@
 
           <!--带搜索的下拉选择-->
           <el-form-item label="资产管理者:" prop="managerId">
-            <el-select
-              v-model="addForm.managerId"
-              filterable
-              placeholder="请选择资产管理者"
-            >
+            <el-select v-model="addForm.managerId" filterable placeholder="请选择资产管理者">
               <el-option
                 v-for="(item, index) in users.items"
                 :key="index + '1'"
@@ -208,6 +196,7 @@
               format="yyyy年MM月dd日"
               type="date"
               placeholder="开始使用时间"
+              :picker-options="addPickerTimeBeg"
             ></el-date-picker>
           </el-form-item>
           <el-form-item label="资产归还期限:" prop="dueDate">
@@ -217,23 +206,18 @@
               format="yyyy年MM月dd日"
               type="date"
               placeholder="结束日期"
+              :picker-options="addPickerTimeEnd"
             ></el-date-picker>
           </el-form-item>
 
           <!--不可更改-->
           <el-form-item label="资产状态:">
-            <el-input
-              placeholder="已领取"
-              v-model="addForm.state"
-              :disabled="true"
-            ></el-input>
+            <el-input placeholder="已领取" v-model="addForm.state" :disabled="true"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="addFormVisible = false">取消</el-button>
-          <el-button type="primary" @click="addSubmit('addForm')"
-            >提交</el-button
-          >
+          <el-button type="primary" @click="addSubmit('addForm')">提交</el-button>
         </div>
       </el-dialog>
 
@@ -245,12 +229,7 @@
         @open="handleForm(editForm)"
         :append-to-body="true"
       >
-        <el-form
-          :model="editForm"
-          :rules="rules"
-          ref="editForm"
-          label-width="120px"
-        >
+        <el-form :model="editForm" :rules="rules" ref="editForm" label-width="120px">
           <!--文本框-->
           <el-form-item label="资产ID:" prop="outerId">
             <el-input v-model="editForm.outerId" disabled></el-input>
@@ -268,11 +247,7 @@
 
           <!--带搜索的下拉选择-->
           <el-form-item label="资产管理者:" prop="managerId">
-            <el-select
-              v-model="editForm.managerId"
-              filterable
-              placeholder="请选择资产管理者"
-            >
+            <el-select v-model="editForm.managerId" filterable placeholder="请选择资产管理者">
               <el-option
                 v-for="(item, index) in users.items"
                 :key="index"
@@ -290,6 +265,7 @@
               format="yyyy年MM月dd日"
               type="date"
               placeholder="开始日期"
+              :picker-options="editPickerTimeBeg"
             ></el-date-picker>
           </el-form-item>
           <el-form-item label="资产归还期限:" prop="dueDate">
@@ -299,6 +275,7 @@
               format="yyyy年MM月dd日"
               type="date"
               placeholder="结束日期"
+              :picker-options="editPickerTimeEnd"
             ></el-date-picker>
           </el-form-item>
 
@@ -309,9 +286,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="editFormVisible = false">取消</el-button>
-          <el-button type="primary" @click="editSubmit('editForm')"
-            >提交</el-button
-          >
+          <el-button type="primary" @click="editSubmit('editForm')">提交</el-button>
         </div>
       </el-dialog>
     </div>
@@ -366,6 +341,26 @@ export default {
         dueDate: "",
         state: ""
       },
+                  editPickerTimeBeg: { //限制开始时间
+                disabledDate: (time) => {
+                    if (this.editForm.dueDate != '' && this.editForm.dueDate) {
+                        let timeStr = new Date(this.editForm.dueDate.replace(/-/g, '/'));
+                        return time.getTime() > timeStr;
+                    } else {
+                        return ''
+                    }
+                }
+            },
+            editPickerTimeEnd: { //限制结束时间
+                disabledDate: (time) => {
+                    if (this.editForm.startDate != '' && this.editForm.startDate) {
+                        let timeStr = new Date(this.editForm.startDate.replace(/-/g, '/'));
+                        return time.getTime() < timeStr;
+                    } else {
+                        return ''
+                    }
+                }
+            },
       //新增
       addFormVisible: false,
       addForm: {
@@ -376,6 +371,26 @@ export default {
         dueDate: "",
         state: ""
       },
+            addPickerTimeBeg: { //限制开始时间
+                disabledDate: (time) => {
+                    if (this.addForm.dueDate != '' && this.addForm.dueDate) {
+                        let timeStr = new Date(this.addForm.dueDate.replace(/-/g, '/'));
+                        return time.getTime() > timeStr;
+                    } else {
+                        return ''
+                    }
+                }
+            },
+            addPickerTimeEnd: { //限制结束时间
+                disabledDate: (time) => {
+                    if (this.addForm.startDate != '' && this.addForm.startDate) {
+                        let timeStr = new Date(this.addForm.startDate.replace(/-/g, '/'));
+                        return time.getTime() < timeStr;
+                    } else {
+                        return ''
+                    }
+                }
+            },
       rules: {
         outerId: [{ required: true, message: "请输入资产ID", trigger: "blur" }],
         type: [
@@ -490,9 +505,9 @@ export default {
     },
     //下拉，可选设备管理员
     async getAllMembers() {
-        const res = await ProjectLW.getAllMembers(this.projectId);
-        console.log(res);
-        this.users = res;
+      const res = await ProjectLW.getAllMembers(this.projectId);
+      console.log(res);
+      this.users = res;
     },
     handleClose(done) {
       this.$confirm("确认关闭？")
