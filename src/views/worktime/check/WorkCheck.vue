@@ -101,13 +101,13 @@ export default {
         : this.onSearch(nextPage);
     },
     onAccept(row) {
-      acceptWorkTime(row).then(() => {
+      acceptWorkTime(row.id).then(() => {
         this.$message.success('通过成功');
         this.getCheckList(this.currentPage);
       });
     },
     onRefuse(row) {
-      refuseWorkTime(row).then(() => {
+      refuseWorkTime(row.id).then(() => {
         this.$message.success('退回成功');
         this.getCheckList(this.currentPage);
       });
