@@ -5,9 +5,9 @@ const NODULE_NAME = '/laborhour';
 export const getWorkTimeCheckList = (pageNo, pageSize = 10) =>
     get(`${NODULE_NAME}/show/subordinate/list`, {pageNo, pageSize});
 
-export const acceptWorkTime = id => put(`${NODULE_NAME}/accept`, {id});
+export const acceptWorkTime = id => put(`${NODULE_NAME}/accept?id=${id}`, {id});
 
-export const refuseWorkTime = id => put(`${NODULE_NAME}/return`, {id});
+export const refuseWorkTime = id => put(`${NODULE_NAME}/return?id=${id}`, {id});
 
 export const searchWorkTimeCheckList = (
     startDateTimestamp,
