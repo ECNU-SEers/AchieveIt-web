@@ -134,9 +134,9 @@
               <el-radio-group v-model="editForm.businessAreaName">
                 <el-radio
                   v-for="item in areas"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.name"
+                  :key="item"
+                  :label="item"
+                  :value="item"
                 ></el-radio>
               </el-radio-group>
             </el-form-item>
@@ -443,7 +443,12 @@ export default {
         // 客户
         this.clients = await Project.getClients();
         // 业务领域
-        this.areas = await Project.getAreas();
+        var tmp = await Project.getAreas();
+        this.areas = [];
+        for(var i=0;i<tmp.length;++i){
+          this.areas.push(tmp[i].name);
+        }
+        console.log(this.areas);
         // 采用技术
         this.skills = await Project.getSkills();
         // 切割里程碑
@@ -517,6 +522,7 @@ export default {
         } else {
           this.editForm.businessAreaName =
             info.projectBusinessArea.businessAreaName;
+            console.log(this.editForm.businessAreaName);
         }
         for (var i = 0; i < info.projectSkills.length; ++i) {
           this.editForm.skillNames.push(info.projectSkills[i].skillName);
