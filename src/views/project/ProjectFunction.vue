@@ -278,10 +278,13 @@ export default {
     // 获取一级功能列表并展示
     async getFunctionList(keyword) {
       try {
-        const info = await Project.getFirstFunctionList(
-          this.projectId,
-          keyword
-        );
+        let info;
+        if (keyword === '') {
+          info = await Project.getFirstFunctionList(this.projectId, '');
+        } else {
+          info = await Project.searchFunction(this.projectId, keyword);
+        }
+        
         console.log("get function list success!");
         this.tableData = info;
 
@@ -620,7 +623,7 @@ export default {
       cb(tmp);
     },
     async searchFunctions(keyword) {
-      this.getFunctionList(keyword);
+        this.getFunctionList(keyword);    
     },
     async selectSearch(item) {
       this.selectedMember = item.id;

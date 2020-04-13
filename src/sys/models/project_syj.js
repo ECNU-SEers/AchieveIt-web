@@ -208,4 +208,7 @@ export default class ProjectSYJ {
    static async assignRoleForPM(projectId, roleId, assigneeId) {
     return await post("/project/" + projectId + "/role/" + roleId + "/assign", {assigneeId});
    }
+
+   // 功能列表
+   
 }

@@ -326,4 +326,8 @@ export default class Project {
   static async getPermissions(projectId) {
     return get("/project/" + projectId + "/permissions/me");
   }
+
+  static async searchFunction(projectId, keyword) {
+    return await get("/project/"+ projectId +"/functions/search?keyword=" + keyword);
+  }
 }
