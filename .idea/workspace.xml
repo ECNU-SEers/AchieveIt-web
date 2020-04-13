@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="ff17f4b7-0ae5-4549-a9f5-db85837a2be1" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/login/Login.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/login/Login.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/views/permission/role/AddRoleDialog.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/permission/role/AddRoleDialog.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/views/permission/role/EditRoleDialog.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/permission/role/EditRoleDialog.vue" afterDir="false" />
     </list>
@@ -57,7 +58,7 @@
       <workItem from="1586501008562" duration="184000" />
       <workItem from="1586581751847" duration="2504000" />
       <workItem from="1586770972711" duration="1132000" />
-      <workItem from="1586786094110" duration="313000" />
+      <workItem from="1586786094110" duration="774000" />
     </task>
     <servers />
   </component>
