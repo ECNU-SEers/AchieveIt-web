@@ -899,7 +899,6 @@ export default {
     async importSubmit() {
       var importSourceId = this.importSourceId;
       var _this = this;
-<<<<<<< HEAD
       if (importSourceId == "" || importSourceId == null) {
         _this.$message.warning("请选择风险来源!");
       } else {
@@ -919,23 +918,6 @@ export default {
           this.importFormVisible = false;
         } catch (e) {
           _this.$message.error("导入失败");
-=======
-      if(importSourceId==""|| importSourceId==null){
-         _this.$message.warning("请选择风险来源!");
-      }
-      else{
-      try {
-        if (importSourceId == -1) {
-          const res = await ProjectLW.importRisksFromStdLib(this.projectId);
-          _this.$message.success("导入成功！");
-        } else {
-          // console.log("importSourceId="+importSourceId[1]);
-          const res = await ProjectLW.importRisksFromOtherProject(
-            this.projectId,
-            importSourceId[1]
-          );
-          _this.$message.success("导入成功！");
->>>>>>> 09f000f2511fd605b15a2980dc1fcf21c30ac898
         }
       }
     },
