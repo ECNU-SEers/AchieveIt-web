@@ -2,25 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ff17f4b7-0ae5-4549-a9f5-db85837a2be1" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/views/dictionary/DictArea.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/views/dictionary/DictTech.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/config/stage/dict.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/config/stage/dict.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/config/stage/plugins.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/config/stage/plugins.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sys/models/project_htx.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/sys/models/project_htx.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sys/models/project_lw.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/sys/models/project_lw.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sys/models/project_syj.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/sys/models/project_syj.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/project/ProjectBasic.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/project/ProjectBasic.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/project/ProjectConfig.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/project/ProjectConfig.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/project/ProjectDefect.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/project/ProjectDefect.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/project/ProjectDevice.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/project/ProjectDevice.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/project/ProjectFunction.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/project/ProjectFunction.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/project/ProjectList.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/project/ProjectList.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/project/ProjectMember.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/project/ProjectMember.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/project/ProjectRisk.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/project/ProjectRisk.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/project/ProjectState.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/project/ProjectState.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/workTime.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/workTime.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/login/Login.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/login/Login.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/worktime/check/WorkCheck.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/worktime/check/WorkCheck.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -72,6 +57,7 @@
       <workItem from="1584777911441" duration="48000" />
       <workItem from="1586501008562" duration="184000" />
       <workItem from="1586581751847" duration="2504000" />
+      <workItem from="1586770972711" duration="1069000" />
     </task>
     <servers />
   </component>

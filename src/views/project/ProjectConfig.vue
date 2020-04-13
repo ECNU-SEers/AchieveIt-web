@@ -13,7 +13,7 @@
     </el-row>
     <div v-if="this.permissions.indexOf('管理项目配置信息') > -1">
     <PageHeader title="项目配置信息" style="height:40px;"></PageHeader>
-    <el-card class="box-card" v-if="this.projectId !== undefined">
+    <el-card v-loading="infoLoading" class="box-card" v-if="this.projectId !== undefined">
       <div slot="header" class="clearfix">
         <span>当前项目ID: {{ this.outerId }}</span>
         <el-button
@@ -123,6 +123,7 @@ export default {
 
   data() {
     return {
+      infoLoading: true,
       loading: true,
       editFormVisible: false,
       formLabelWidth: "120px",
@@ -256,6 +257,7 @@ export default {
       } else {
         _this.tableData[3].detail = res.mail;
       }
+      this.infoLoading = false;
     },
 
     //编辑

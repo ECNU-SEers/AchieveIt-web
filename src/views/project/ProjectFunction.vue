@@ -19,7 +19,7 @@
           placeholder="请输入功能名称"
           :query-search="querySearch"
           @search="searchFunctions"
-          @select-suggestion="getOne"
+          @select-suggestion="selectSearch"
         >
           <!-- <span style="float: left">{{ item.value }}</span>
           <span style="float: right; color: #8492a6; font-size: 13px">{{item.id}}</span>-->
@@ -86,6 +86,7 @@
       <Pagination v-if="this.projectId !== undefined">
         <el-table
           v-if="this.projectId !== undefined"
+          v-loading="infoLoading"
           :data="tableData"
           style="margin-bottom: 20px;"
           row-key="id"
@@ -207,6 +208,7 @@ export default {
   },
   data() {
     return {
+      infoLoading: true,
       rules: {
         name: [{ required: true, message: "请输入功能名称", trigger: "blur" }]
       },
@@ -242,6 +244,7 @@ export default {
 
       // 导入
       uploadFuntion: [],
+      submitUploadfailed: false,
       // 导出
       row: 1
     };
@@ -296,6 +299,7 @@ export default {
           ) {
             this.tableData[i].description = "暂无数据";
           }
+          this.infoLoading = false;
         }
       } catch (e) {
         console.log(e);
@@ -521,28 +525,38 @@ export default {
     // 上传excel
     async submitUpload() {
       if (this.submitUploadfailed === false) {
-        let parentId = 0;
+        let parentId = -1;
         let i = 0;
         for (i = 0; i < this.uploadFuntion.length; i++) {
           const func = this.uploadFuntion[i];
-          if (func.hasOwnProperty("一级功能名称")) {
+          console.log(func);
+          if (
+            func.hasOwnProperty("一级功能名称") &&
+            func.hasOwnProperty("二级功能名称")
+          ) {
             parentId = await Project.addFunction(
               this.projectId,
               func["一级功能名称"],
-              func["一级功能描述"]
+              func["一级功能描述"] || ""
             );
             await Project.addFunction(
               this.projectId,
               func["二级功能名称"],
-              func["二级功能描述"],
+              func["二级功能描述"] || "",
               parentId
             );
-          } else {
+          } else if (func.hasOwnProperty("二级功能名称")) {
             await Project.addFunction(
               this.projectId,
               func["二级功能名称"],
-              func["二级功能描述"],
+              func["二级功能描述"] || "",
               parentId
+            );
+          } else if (func.hasOwnProperty("一级功能名称")) {
+            await Project.addFunction(
+              this.projectId,
+              func["一级功能名称"],
+              func["一级功能描述"] || 0
             );
           }
         }
@@ -557,7 +571,9 @@ export default {
       }
     },
     handleChange(file, fileList) {
+      console.log(file.size);
       const size = file.size / 1024 / 1024;
+      console.log(size);
       if (size > 10) {
         this.submitUploadfailed = true;
         this.$message.error("上传文件的大小不能超过10M!");
@@ -603,9 +619,11 @@ export default {
       this.functionSearch = tmp;
       cb(tmp);
     },
-    searchFunctions(item) {
-      console.log(item);
-      console.log("search or click");
+    async searchFunctions(keyword) {
+      this.getFunctionList(keyword);
+    },
+    async selectSearch(item) {
+      this.selectedMember = item.id;
     },
 
     // 点击下拉中的一条获取一条功能信息
