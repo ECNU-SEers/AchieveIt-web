@@ -57,6 +57,7 @@
             this.projectId !== undefined &&
               this.permissions.indexOf('查询项目设备信息') > -1
           "
+          v-loading="infoLoading"
           :data="deviceData"
           stripe
           border
@@ -331,6 +332,7 @@ export default {
   },
   data() {
     return {
+      infoLoading: true,
       loading: true,
       //分页
       pageNo: 1,
@@ -442,6 +444,7 @@ export default {
       );
       console.log(res.items);
       this.deviceData = res.items;
+      this.infoLoading = false;
     },
     //下拉展示设备审核
     async exChange(row, expandedRows) {

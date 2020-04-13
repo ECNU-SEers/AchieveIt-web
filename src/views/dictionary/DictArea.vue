@@ -3,7 +3,7 @@
     <el-row>
       <el-col :span="20">
         <div class="grid-content"></div>
-        <el-table :data="areas" class="table" style="width:50%" stripe>
+        <el-table v-loading="infoLoading" :data="areas" class="table" style="width:70%" stripe>
           <el-table-column width="70px" type="index" label="序号"></el-table-column>
           <el-table-column prop="name" label="技术名称"></el-table-column>
           <el-table-column label="操作" width="150px">
@@ -78,6 +78,7 @@ import ProjectSYJ from "@/sys/models/project_syj";
 export default {
   data() {
     return {
+      infoLoading: true,
       areas: [],
 
       // 新增
@@ -120,6 +121,7 @@ export default {
     async getAllArea() {
       const res = await ProjectSYJ.getAllBusinessArea();
       this.areas = res;
+      this.infoLoading = false;
     },
 
     handleAdd() {
@@ -204,7 +206,7 @@ export default {
 <style lang="scss" scoped>
 .table {
   margin: 0 auto;
-  width: 99%;
+  width: 100%;
   border-radius: 4px;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.12), 0 0 6px 0 rgba(0, 0, 0, 0.04);
 }

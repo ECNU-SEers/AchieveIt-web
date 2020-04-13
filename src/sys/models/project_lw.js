@@ -184,10 +184,10 @@ export default class ProjectLW {
    * @param {number} pageSize
    * @param {number} projectId
    */
-  static async getRiskList(projectId, page, pageSize) {
+  static async getRiskList(projectId, page, pageSize, keyword) {
     //  console.log("getRiskList");
     const res = await get(
-      "/project/" + projectId + "/risks?page=" + page + "&pageSize=" + pageSize
+      "/project/" + projectId + "/risks?page=" + page + "&pageSize=" + pageSize + "&keyword=" + keyword
     );
     //  console.log("getRiskList"+res);
     return res;

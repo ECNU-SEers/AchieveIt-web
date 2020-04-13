@@ -33,29 +33,7 @@
       :total="projectsLength"
       @page-change="handlePageChange"
     >
-      <el-table :data="projects" highlight-current-row style="width: 100%" stripe>
-        <!-- <el-table-column type="expand">
-                    <template slot-scope="props">
-                        <el-table :data="props.row.projectProgress" highlight-current-row style="width:80%">
-                          <el-table-column type="index" label="序号" width="70px"></el-table-column>
-                          <el-table-column prop="updateDate" label="更新日期"></el-table-column>
-                          <el-table-column prop="state" label="更新状态"></el-table-column>
-                          <el-table-column prop="recorder" label="触发人"></el-table-column>
-                        </el-table>
-                    </template>
-                    <el-timeline :reverse="reverse">
-                        <el-timeline-item
-                                v-for="(activity, index) in activities"
-                                :key="index"
-                                :icon="activity.icon"
-                                :type="activity.type"
-                                :color="activity.color"
-                                :size="activity.size"
-                                :timestamp="activity.timestamp"
-                        >{{activity.state}}
-                        </el-timeline-item>
-                    </el-timeline>
-        </el-table-column>-->
+      <el-table v-loading="infoLoading" :data="projects" highlight-current-row  style="width: 100%" stripe>
         <el-table-column
           label="序号"
           type="index"
@@ -707,6 +685,7 @@ export default {
   },
   data() {
     return {
+      infoLoading: true,
       // 分页
       pageNo: 1,
       pageSize: 10,
@@ -714,6 +693,7 @@ export default {
       projectsLength: 0,
       keyword: "",
       selectedProject: "",
+      
 
       // 模态框
       clients: [],
@@ -1080,6 +1060,7 @@ export default {
         this.keyword
       );
       this.projects = res.items;
+      this.infoLoading = false;
     },
 
     async getProjectModals() {
