@@ -82,7 +82,7 @@ const adminRouter = {
   icon: 'iconfont icon-huiyuanguanli',
   order: null,
   inNav: true,
-  permission: ['用户权限管理', '角色设置'],
+  permission: ['用户权限管理', '平台角色设置', '项目角色设置'],
   children: [
     {
       route: '/admin/user',

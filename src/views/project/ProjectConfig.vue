@@ -227,13 +227,15 @@ export default {
       _this.virtual = true;
       const res = await ProjectLW.getConfig(this.projectId);
       // console.log("res.sMailConfirmed:"+res.isMailConfirmed);
-      if (res.gitRepoAddress == ("" || null)) {
+      if (res.gitRepoAddress == "" || res.gitRepoAddress == null) {
+         _this.tableData[0].detail="暂无数据";
         _this.git = false;
       } else {
         _this.tableData[0].detail = res.gitRepoAddress;
         _this.git = true;
       }
-      if (res.virtualMachineSpace == ("" || null)) {
+      if (res.virtualMachineSpace == "" ||res.gitRepoAddress ==  null) {
+        _this.tableData[1].detail="暂无数据";
         _this.virtual = false;
       } else {
         _this.tableData[1].detail = res.virtualMachineSpace;
@@ -261,9 +263,21 @@ export default {
     //编辑
     edit() {
       var _this = this;
+      var git="";
+      var virtual="";
+      if(_this.tableData[0].detail=="暂无数据"){
+            git="";
+      }else{
+        git=_this.tableData[0].detail;
+      }
+      if(_this.tableData[1].detail=="暂无数据"){
+        virtual="";
+      }else {
+        virtual=_this.tableData[1].detail;
+      }
       this.editForm = {
-        GitAddress: _this.tableData[0].detail,
-        virtualSpace: _this.tableData[1].detail,
+        GitAddress: git,
+        virtualSpace: virtual,
         fileAddValue: _this.fileTrigger,
         emailValue: _this.emailTrigger
       };

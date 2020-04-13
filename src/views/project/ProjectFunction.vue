@@ -169,12 +169,14 @@
 
       <!-- 修改 -->
       <el-dialog title="修改项目功能" :visible.sync="editFormVisible">
-        <el-form label-width="150px" class="demo-ruleForm">
+        <el-form label-width="150px" class="demo-ruleForm" :model="editForm"
+          :rules="rules"
+          ref="editForm">
           <!-- <el-form-item label="项目ID" required>
           <el-input v-model="editForm.id" placeholder="请填写项目ID"></el-input>
           </el-form-item>-->
 
-          <el-form-item label="项目名称" required>
+          <el-form-item label="项目名称" required prop="name">
             <el-input v-model="editForm.name" placeholder="请填写项目名称"></el-input>
           </el-form-item>
 
@@ -242,6 +244,7 @@ export default {
 
       // 导入
       uploadFuntion: [],
+      submitUploadfailed: false,
       // 导出
       row: 1
     };
@@ -275,10 +278,13 @@ export default {
     // 获取一级功能列表并展示
     async getFunctionList(keyword) {
       try {
-        const info = await Project.getFirstFunctionList(
-          this.projectId,
-          keyword
-        );
+        let info;
+        if (keyword === '') {
+          info = await Project.getFirstFunctionList(this.projectId, '');
+        } else {
+          info = await Project.searchFunction(this.projectId, keyword);
+        }
+        
         console.log("get function list success!");
         this.tableData = info;
 
@@ -522,28 +528,38 @@ export default {
     // 上传excel
     async submitUpload() {
       if (this.submitUploadfailed === false) {
-        let parentId = 0;
+        let parentId = -1;
         let i = 0;
         for (i = 0; i < this.uploadFuntion.length; i++) {
           const func = this.uploadFuntion[i];
-          if (func.hasOwnProperty("一级功能名称")) {
+          console.log(func);
+          if (
+            func.hasOwnProperty("一级功能名称") &&
+            func.hasOwnProperty("二级功能名称")
+          ) {
             parentId = await Project.addFunction(
               this.projectId,
               func["一级功能名称"],
-              func["一级功能描述"]
+              func["一级功能描述"] || ""
             );
             await Project.addFunction(
               this.projectId,
               func["二级功能名称"],
-              func["二级功能描述"],
+              func["二级功能描述"] || "",
               parentId
             );
-          } else {
+          } else if (func.hasOwnProperty("二级功能名称")) {
             await Project.addFunction(
               this.projectId,
               func["二级功能名称"],
-              func["二级功能描述"],
+              func["二级功能描述"] || "",
               parentId
+            );
+          } else if (func.hasOwnProperty("一级功能名称")) {
+            await Project.addFunction(
+              this.projectId,
+              func["一级功能名称"],
+              func["一级功能描述"] || 0
             );
           }
         }
@@ -558,7 +574,9 @@ export default {
       }
     },
     handleChange(file, fileList) {
+      console.log(file.size);
       const size = file.size / 1024 / 1024;
+      console.log(size);
       if (size > 10) {
         this.submitUploadfailed = true;
         this.$message.error("上传文件的大小不能超过10M!");
@@ -605,7 +623,7 @@ export default {
       cb(tmp);
     },
     async searchFunctions(keyword) {
-      this.getFunctionList(keyword);
+        this.getFunctionList(keyword);    
     },
     async selectSearch(item) {
       this.selectedMember = item.id;
