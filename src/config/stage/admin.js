@@ -102,7 +102,7 @@ const adminRouter = {
       inNav: true,
       title: '平台角色设置',
       icon: 'iconfont icon-add',
-      permission: ['角色设置']
+      permission: ['平台角色设置']
     },
     {
       route: '/admin/project/list',
@@ -112,7 +112,7 @@ const adminRouter = {
       inNav: true,
       title: '项目角色设置',
       icon: 'iconfont icon-add',
-      permission: ['角色设置']
+      permission: ['项目角色设置']
     }
   ]
 };
