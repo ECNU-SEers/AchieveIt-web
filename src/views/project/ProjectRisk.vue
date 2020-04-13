@@ -113,8 +113,8 @@
                   <span
                     v-for="person in props.row.riskRelatedPeople"
                     :key="person.id"
-                    >[{{ person.username }}]   </span
-                  >
+                    >[{{ person.username }}]
+                  </span>
                   <span v-if="props.row.riskRelatedPeople == null">暂无</span>
                 </el-form-item>
                 <el-form-item label="风险来源">
@@ -718,7 +718,7 @@ export default {
         } else {
           obj.source = _this.source[item.source].name;
         }
-        if (this.$options.methods.isEmpty(item.riskRelatedPeople)==true) {
+        if (this.$options.methods.isEmpty(item.riskRelatedPeople) == true) {
           obj.riskRelatedPeople = [];
         } else {
           obj.riskRelatedPeople = item.riskRelatedPeople;
@@ -730,8 +730,7 @@ export default {
     //新增
     addSubmit(formName) {
       this.$refs[formName].validate(async valid => {
-        if (valid ) {
-          
+        if (valid) {
           var _this = this;
           const res = await ProjectLW.addRisk(
             this.projectId,
@@ -898,27 +897,26 @@ export default {
     async importSubmit() {
       var importSourceId = this.importSourceId;
       var _this = this;
-      if(importSourceId==""|| importSourceId==null){
-         _this.$message.warning("请选择风险来源!");
-      }
-      else{
-      try {
-        if (importSourceId == -1) {
-          const res = await ProjectLW.importRisksFromStdLib(this.projectId);
-          _this.$message.success("导入成功");
-        } else {
-          // console.log("importSourceId="+importSourceId[1]);
-          const res = await ProjectLW.importRisksFromOtherProject(
-            this.projectId,
-            importSourceId[1]
-          );
-          _this.$message.success("导入成功");
+      if (importSourceId == "" || importSourceId == null) {
+        _this.$message.warning("请选择风险来源!");
+      } else {
+        try {
+          if (importSourceId == -1) {
+            const res = await ProjectLW.importRisksFromStdLib(this.projectId);
+            _this.$message.success("导入成功");
+          } else {
+            // console.log("importSourceId="+importSourceId[1]);
+            const res = await ProjectLW.importRisksFromOtherProject(
+              this.projectId,
+              importSourceId[1]
+            );
+            _this.$message.success("导入成功");
+          }
+          this.getRiskList();
+          this.importFormVisible = false;
+        } catch (e) {
+          _this.$message.error("导入失败");
         }
-        this.getRiskList();
-        this.importFormVisible = false;
-      } catch (e) {
-        _this.$message.error("导入失败");
-      }
       }
     },
     //搜索
@@ -942,25 +940,26 @@ export default {
       console.log("返回查询结果=" + res);
     },
 
-     //对象数组判空
-   isEmpty(obj) {
-    //检验null和undefined
-    if (!obj && obj !== 0 && obj !== '') {
+    //对象数组判空
+    isEmpty(obj) {
+      //检验null和undefined
+      if (!obj && obj !== 0 && obj !== "") {
         return true;
-    }
-    //检验数组
-    if (Array.prototype.isPrototypeOf(obj) && obj.length === 0) {
+      }
+      //检验数组
+      if (Array.prototype.isPrototypeOf(obj) && obj.length === 0) {
         return true;
-    }
-    //检验对象
-    if (Object.prototype.isPrototypeOf(obj) && Object.keys(obj).length === 0) {
+      }
+      //检验对象
+      if (
+        Object.prototype.isPrototypeOf(obj) &&
+        Object.keys(obj).length === 0
+      ) {
         return true;
+      }
+      return false;
     }
-    return false;
-}
   }
- 
-  
 };
 </script>
 

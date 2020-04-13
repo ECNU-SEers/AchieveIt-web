@@ -487,9 +487,9 @@ export default {
     },
     //下拉，可选设备管理员
     async getAllMembers() {
-        const res = await ProjectLW.getAllMembers(this.projectId);
-        console.log(res);
-        this.users = res;
+      const res = await ProjectLW.getAllMembers(this.projectId);
+      console.log(res);
+      this.users = res;
     },
     handleClose(done) {
       this.$confirm("确认关闭？")
