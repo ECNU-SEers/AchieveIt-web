@@ -109,13 +109,13 @@
                 <el-form-item label="跟踪频度(单位:次/天)">
                   <span>{{ props.row.trackingFreq }}</span>
                 </el-form-item>
-                <el-form-item label="相关者">
+                <el-form-item label="相关者" >
                   <span
                     v-for="person in props.row.riskRelatedPeople"
                     :key="person.id"
                     >[{{ person.username }}]
                   </span>
-                  <span v-if="props.row.riskRelatedPeople == null">暂无</span>
+                  <span v-if="props.row.riskRelatedPeople.length==0">暂无数据</span>
                 </el-form-item>
                 <el-form-item label="风险来源">
                   <span>{{ props.row.source }}</span>
@@ -718,7 +718,9 @@ export default {
         } else {
           obj.source = _this.source[item.source].name;
         }
+       
         if (this.$options.methods.isEmpty(item.riskRelatedPeople) == true) {
+          // console.log("this.riskRelatedPeople.length="+item.riskRelatedPeople.length);
           obj.riskRelatedPeople = [];
         } else {
           obj.riskRelatedPeople = item.riskRelatedPeople;
