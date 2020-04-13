@@ -911,14 +911,14 @@ export default {
       try {
         if (importSourceId == -1) {
           const res = await ProjectLW.importRisksFromStdLib(this.projectId);
-          _this.$message.success("导入成功");
+          _this.$message.success("导入成功！");
         } else {
           // console.log("importSourceId="+importSourceId[1]);
           const res = await ProjectLW.importRisksFromOtherProject(
             this.projectId,
             importSourceId[1]
           );
-          _this.$message.success("导入成功");
+          _this.$message.success("导入成功！");
         }
         this.getRiskList("");
         this.importFormVisible = false;

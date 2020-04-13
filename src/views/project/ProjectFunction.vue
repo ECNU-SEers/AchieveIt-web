@@ -1,7 +1,11 @@
 <template>
   <div>
-    <el-row v-if="this.projectId !== undefined && this.getInfoPermission !== true" style="height: 800px">
-      <el-col style="height: 800px"
+    <el-row
+      v-if="this.projectId !== undefined && this.getInfoPermission !== true"
+      style="height: 800px"
+    >
+      <el-col
+        style="height: 800px"
         v-loading="loading"
         element-loading-text="您暂无权限查看此页面"
         element-loading-spinner="el-icon-loading"
@@ -138,12 +142,18 @@
 
       <!-- 新增 -->
       <el-dialog title="新增项目功能" :visible.sync="addFormVisible">
-        <el-form label-width="150px" class="demo-ruleForm">
+        <el-form
+          label-width="150px"
+          class="demo-ruleForm"
+          :model="addForm"
+          :rules="rules"
+          ref="addForm"
+        >
           <!-- <el-form-item label="项目ID" required>
           <el-input v-model="addForm.id" placeholder="请填写项目ID"></el-input>
           </el-form-item>-->
 
-          <el-form-item label="功能名称" required>
+          <el-form-item label="功能名称" required prop="name">
             <el-input v-model="addForm.name" placeholder="请填写功能名称"></el-input>
           </el-form-item>
 
@@ -153,7 +163,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="addFormVisible = false">取消</el-button>
-          <el-button type="primary" @click="submitAddForm" :loading="submitLoading">提交</el-button>
+          <el-button type="primary" @click="submitAddForm('addForm')" :loading="submitLoading">提交</el-button>
         </div>
       </el-dialog>
 
@@ -174,7 +184,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="editFormVisible = false">取消</el-button>
-          <el-button type="primary" @click="submitEditForm" :loading="submitLoading">提交</el-button>
+          <el-button type="primary" @click="submitEditForm('editForm')" :loading="submitLoading">提交</el-button>
         </div>
       </el-dialog>
     </div>
@@ -197,6 +207,10 @@ export default {
   data() {
     return {
       infoLoading: true,
+      rules: {
+        name: [{ required: true, message: "请输入功能名称", trigger: "blur" }]
+      },
+
       loading: true,
       testpermission: false,
       state: "",
@@ -361,21 +375,45 @@ export default {
       console.log(row.isSub);
     },
     // 提交新增功能
-    async submitAddForm() {
-      try {
-        const info = await Project.addFunction(
-          this.projectId,
-          this.addForm.name,
-          this.addForm.description,
-          this.parentId
-        );
-        console.log("add function list success!");
-        this.addFormVisible = false;
-        this.parentId = -1;
-      } catch (e) {
-        console.log(e);
-      }
-      this.getFunctionList(this.keyword);
+    async submitAddForm(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          // console.log("valid");
+          Project.addFunction(
+            this.projectId,
+            this.addForm.name,
+            this.addForm.description,
+            this.parentId
+          ).then(() => {
+            this.$message({
+              type: "success",
+              message: "提交成功"
+            });
+            console.log("add function list success!");
+            this.addFormVisible = false;
+            this.parentId = -1;
+            this.getFunctionList(this.keyword);
+          });
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
+
+      // try {
+      //   const info = await Project.addFunction(
+      //     this.projectId,
+      //     this.addForm.name,
+      //     this.addForm.description,
+      //     this.parentId
+      //   );
+      //   console.log("add function list success!");
+      //   this.addFormVisible = false;
+      //   this.parentId = -1;
+      // } catch (e) {
+      //   console.log(e);
+      // }
+      // this.getFunctionList(this.keyword);
     },
     // 删除功能
     async deleteFunction(index, row) {
@@ -443,20 +481,43 @@ export default {
       }
     },
     // 修改提交
-    async submitEditForm() {
-      try {
-        const info = await Project.editFunction(
-          this.projectId,
-          this.editForm.id,
-          this.editForm.name,
-          this.editForm.description
-        );
-        console.log("edit function list success!");
-        this.editFormVisible = false;
-        this.getFunctionList(this.keyword);
-      } catch (e) {
-        console.log(e);
-      }
+    submitEditForm(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          // console.log("valid");
+          Project.editFunction(
+            this.projectId,
+            this.editForm.id,
+            this.editForm.name,
+            this.editForm.description
+          ).then(() => {
+            this.$message({
+              type: "success",
+              message: "提交成功"
+            });
+            console.log("edit function list success!");
+            this.editFormVisible = false;
+            this.getFunctionList(this.keyword);
+          });
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
+
+      // try {
+      //   const info = await Project.editFunction(
+      //     this.projectId,
+      //     this.editForm.id,
+      //     this.editForm.name,
+      //     this.editForm.description
+      //   );
+      //   console.log("edit function list success!");
+      //   this.editFormVisible = false;
+      //   this.getFunctionList(this.keyword);
+      // } catch (e) {
+      //   console.log(e);
+      // }
     },
     // 上传excel
     async submitUpload() {
