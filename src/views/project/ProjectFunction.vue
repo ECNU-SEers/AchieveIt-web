@@ -168,12 +168,14 @@
 
       <!-- 修改 -->
       <el-dialog title="修改项目功能" :visible.sync="editFormVisible">
-        <el-form label-width="150px" class="demo-ruleForm">
+        <el-form label-width="150px" class="demo-ruleForm" :model="editForm"
+          :rules="rules"
+          ref="editForm">
           <!-- <el-form-item label="项目ID" required>
           <el-input v-model="editForm.id" placeholder="请填写项目ID"></el-input>
           </el-form-item>-->
 
-          <el-form-item label="项目名称" required>
+          <el-form-item label="项目名称" required prop="name">
             <el-input v-model="editForm.name" placeholder="请填写项目名称"></el-input>
           </el-form-item>
 
