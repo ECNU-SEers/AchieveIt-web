@@ -68,6 +68,7 @@
       async login() {
         const {username, password} = this.form;
         try {
+          await this.$refs.form.validate();
           this.loading = true;
           await User.getToken(username, password);
           await this.getInformation();
