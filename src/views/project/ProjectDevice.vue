@@ -1,7 +1,10 @@
 <template>
   <div>
     <el-row
-      v-if="this.projectId !== undefined && this.permissions.indexOf('查询项目设备信息') <= -1"
+      v-if="
+        this.projectId !== undefined &&
+          this.permissions.indexOf('查询项目设备信息') <= -1
+      "
       style="height: 800px"
     >
       <el-col
@@ -12,59 +15,59 @@
       ></el-col>
     </el-row>
     <div v-if="this.permissions.indexOf('查询项目设备信息') > -1">
-    <PageHeader title="项目设备信息">
-      <!--工具条：搜索栏-->
-      <Search
-        v-if="
-          this.projectId !== undefined &&
-            this.permissions.indexOf('查询项目设备信息') > -1
-        "
-        placeholder="请输入设备名称"
-        :query-search="querySearch"
-        @search="searchDevice"
-        @select-suggestion="selectSearch"
-      ></Search>
-      <!-- <div style="width:20px;height=100%;"></div> -->
+      <PageHeader title="项目设备信息">
+        <!--工具条：搜索栏-->
+        <Search
+          v-if="
+            this.projectId !== undefined &&
+              this.permissions.indexOf('查询项目设备信息') > -1
+          "
+          placeholder="请输入设备名称"
+          :query-search="querySearch"
+          @search="searchDevice"
+          @select-suggestion="selectSearch"
+        ></Search>
+        <!-- <div style="width:20px;height=100%;"></div> -->
 
-      <!--新增-->
-      <el-button
-        class="add-btn"
-        @click="addFormVisible = true"
-        type="primary"
-        v-if="
-          this.projectState !== '结束' &&
-            this.projectState !== '已归档' &&
-            this.projectState !== '申请立项' &&
-            this.projectState !== '立项驳回' &&
-            this.permissions.indexOf('管理项目设备信息') > -1
-        "
-        >新增</el-button
-      >
-    </PageHeader>
+        <!--新增-->
+        <el-button
+          class="add-btn"
+          @click="addFormVisible = true"
+          type="primary"
+          v-if="
+            this.projectState !== '结束' &&
+              this.projectState !== '已归档' &&
+              this.projectState !== '申请立项' &&
+              this.projectState !== '立项驳回' &&
+              this.permissions.indexOf('管理项目设备信息') > -1
+          "
+          >新增</el-button
+        >
+      </PageHeader>
 
-    <!--列表展示-->
-    <Pagination
-      :current-page.sync="pageNo"
-      :page-size="pageSize"
-      :total="devicesLength"
-      @page-change="handlePageChange"
-    >
-      <el-table
-        v-if="
-          this.projectId !== undefined &&
-            this.permissions.indexOf('查询项目设备信息') > -1
-        "
-        :data="deviceData"
-        stripe
-        border
-        :default-sort="{ prop: 'index', order: 'ascending' }"
-        highlight-current-row
-        style="width:100%"
-        :row-key="getRowKeys"
-        @expand-change="exChange"
+      <!--列表展示-->
+      <Pagination
+        :current-page.sync="pageNo"
+        :page-size="pageSize"
+        :total="devicesLength"
+        @page-change="handlePageChange"
       >
-        <!--下拉展示-->
-        <!-- <el-table-column type="expand">
+        <el-table
+          v-if="
+            this.projectId !== undefined &&
+              this.permissions.indexOf('查询项目设备信息') > -1
+          "
+          :data="deviceData"
+          stripe
+          border
+          :default-sort="{ prop: 'index', order: 'ascending' }"
+          highlight-current-row
+          style="width:100%"
+          :row-key="getRowKeys"
+          @expand-change="exChange"
+        >
+          <!--下拉展示-->
+          <!-- <el-table-column type="expand">
           <template>
             <el-table
               :data="inspectData"
@@ -90,209 +93,226 @@
           </template>
         </el-table-column>-->
 
-        <!--列表展示-->
-        <el-table-column
-          label="序号"
-          width="70px"
-          type="index"
-        ></el-table-column>
+          <!--列表展示-->
+          <el-table-column
+            label="序号"
+            width="70px"
+            type="index"
+          ></el-table-column>
 
-        <el-table-column label="资产 ID" prop="outerId"></el-table-column>
+          <el-table-column label="资产 ID" prop="outerId"></el-table-column>
 
-        <el-table-column label="资产类型" prop="type"></el-table-column>
+          <el-table-column label="资产类型" prop="type"></el-table-column>
 
-        <el-table-column label="资产管理者" prop="managerId"></el-table-column>
+          <el-table-column
+            label="资产管理者"
+            prop="managerId"
+          ></el-table-column>
 
-        <el-table-column label="开始时间" prop="startDate"></el-table-column>
-        <el-table-column label="归还期限" prop="dueDate"></el-table-column>
+          <el-table-column label="开始时间" prop="startDate"></el-table-column>
+          <el-table-column label="归还期限" prop="dueDate"></el-table-column>
 
-        <el-table-column label="资产状态" prop="state"></el-table-column>
+          <el-table-column label="资产状态" prop="state"></el-table-column>
 
-        <el-table-column label="归还日期" prop="returnDate"></el-table-column>
+          <el-table-column label="归还日期" prop="returnDate"></el-table-column>
 
-        <!---编辑和删除-->
-        <el-table-column
-          label="操作"
-          width="180px"
-          prop="action"
-          v-if="
-            this.projectState !== '结束' &&
-              this.projectState !== '已归档' &&
-              this.projectState !== '申请立项' &&
-              this.projectState !== '立项驳回' &&
-              this.permissions.indexOf('管理项目设备信息') > -1
-          "
-        >
-          <template slot-scope="{ row }">
-            <el-button-group>
-              <el-button
-                type="primary"
-                icon="el-icon-edit"
-                size="medium"
-                @click="
-                  editFormVisible = true;
-                  updateDevice(row);
-                "
-              ></el-button>
-
-               <el-button type="success" size="medium" icon="el-icon-check"  @click="checkSubmit(row)"></el-button> 
-            </el-button-group>
-          </template>
-        </el-table-column>
-      </el-table>
-    </Pagination>
-
-    <!--新增-->
-    <el-dialog
-      title="资产信息"
-      :visible.sync="addFormVisible"
-      :before-close="handleClose"
-      @open="handleForm('addForm')"
-      :append-to-body="true"
-    >
-      <el-form
-        :model="addForm"
-        :rules="rules"
-        ref="addForm"
-        label-width="120px"
-        @submit.native.prevent
-      >
-        <!--文本框-->
-        <el-form-item label="资产ID:" prop="outerId">
-          <el-input v-model="addForm.outerId"></el-input>
-        </el-form-item>
-
-        <!--单选-->
-        <el-form-item label="资产类型:" prop="type">
-          <el-radio-group v-model="addForm.type">
-            <el-radio label="电脑"></el-radio>
-            <el-radio label="手机"></el-radio>
-            <el-radio label="PAD"></el-radio>
-            <el-radio label="移动存储设备"></el-radio>
-          </el-radio-group>
-        </el-form-item>
-
-        <!--带搜索的下拉选择-->
-        <el-form-item label="资产管理者:" prop="managerId">
-          <el-select
-            v-model="addForm.managerId"
-            @visible-change="getAllMembers($event)"
-            filterable
-            placeholder="请选择资产管理者"
+          <!---编辑和删除-->
+          <el-table-column
+            label="操作"
+            width="180px"
+            prop="action"
+            v-if="
+              this.projectState !== '结束' &&
+                this.projectState !== '已归档' &&
+                this.projectState !== '申请立项' &&
+                this.projectState !== '立项驳回' &&
+                this.permissions.indexOf('管理项目设备信息') > -1
+            "
           >
-            <el-option
-              v-for="(item, index) in users.items"
-              :key="index + '1'"
-              :label="item.realName + '(' + item.username + ')'"
-              :value="item.userId"
-            ></el-option>
-          </el-select>
-        </el-form-item>
+            <template slot-scope="{ row }">
+              <el-button-group>
+                <el-button
+                  type="primary"
+                  icon="el-icon-edit"
+                  size="medium"
+                  @click="
+                    editFormVisible = true;
+                    updateDevice(row);
+                  "
+                ></el-button>
 
-        <!--日期段-->
-        <el-form-item label="开始使用时间:" prop="startDate">
-          <el-date-picker
-            v-model="addForm.startDate"
-            type="date"
-            placeholder="开始使用时间"
-          ></el-date-picker>
-        </el-form-item>
-        <el-form-item label="资产归还期限:" prop="dueDate">
-          <el-date-picker
-            v-model="addForm.dueDate"
-            type="date"
-            placeholder="结束日期"
-          ></el-date-picker>
-        </el-form-item>
+                <el-button
+                  type="success"
+                  size="medium"
+                  icon="el-icon-check"
+                  @click="checkSubmit(row)"
+                ></el-button>
+              </el-button-group>
+            </template>
+          </el-table-column>
+        </el-table>
+      </Pagination>
 
-        <!--不可更改-->
-        <el-form-item label="资产状态:">
-          <el-input
-            placeholder="已领取"
-            v-model="addForm.state"
-            :disabled="true"
-          ></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="addFormVisible = false">取消</el-button>
-        <el-button type="primary" @click="addSubmit('addForm')">提交</el-button>
-      </div>
-    </el-dialog>
-
-    <!--编辑-->
-    <el-dialog
-      title="资产信息"
-      :visible.sync="editFormVisible"
-      :before-close="handleClose"
-      @open="handleForm(editForm)"
-      :append-to-body="true"
-    >
-      <el-form
-        :model="editForm"
-        :rules="rules"
-        ref="editForm"
-        label-width="120px"
+      <!--新增-->
+      <el-dialog
+        title="资产信息"
+        :visible.sync="addFormVisible"
+        :before-close="handleClose"
+        @open="handleForm('addForm')"
+        :append-to-body="true"
       >
-        <!--文本框-->
-        <el-form-item label="资产ID:" prop="outerId">
-          <el-input v-model="editForm.outerId" disabled></el-input>
-        </el-form-item>
-
-        <!--单选-->
-        <el-form-item label="资产类型:" prop="type">
-          <el-radio-group v-model="editForm.type">
-            <el-radio label="电脑"></el-radio>
-            <el-radio label="手机"></el-radio>
-            <el-radio label="PAD"></el-radio>
-            <el-radio label="移动存储设备"></el-radio>
-          </el-radio-group>
-        </el-form-item>
-
-        <!--带搜索的下拉选择-->
-        <el-form-item label="资产管理者:" prop="managerId">
-          <el-select
-            v-model="editForm.managerId"
-            filterable
-            placeholder="请选择资产管理者"
-          >
-            <el-option
-              v-for="(item, index) in users.items"
-              :key="index"
-              :label="item.realName + '(' + item.username + ')'"
-              :value="item.userId"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-
-        <!--日期段-->
-        <el-form-item label="开始使用时间:" prop="startDate">
-          <el-date-picker
-            v-model="editForm.startDate"
-            type="date"
-            placeholder="开始日期"
-          ></el-date-picker>
-        </el-form-item>
-        <el-form-item label="资产归还期限:" prop="dueDate">
-          <el-date-picker
-            v-model="editForm.dueDate"
-            type="date"
-            placeholder="结束日期"
-          ></el-date-picker>
-        </el-form-item>
-
-        <!--不可更改-->
-        <el-form-item label="资产状态:">
-          <el-input placeholder="已领取" :disabled="true"></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="editFormVisible = false">取消</el-button>
-        <el-button type="primary" @click="editSubmit('editForm')"
-          >提交</el-button
+        <el-form
+          :model="addForm"
+          :rules="rules"
+          ref="addForm"
+          label-width="120px"
+          @submit.native.prevent
         >
-      </div>
-    </el-dialog>
+          <!--文本框-->
+          <el-form-item label="资产ID:" prop="outerId">
+            <el-input v-model="addForm.outerId"></el-input>
+          </el-form-item>
+
+          <!--单选-->
+          <el-form-item label="资产类型:" prop="type">
+            <el-radio-group v-model="addForm.type">
+              <el-radio label="电脑"></el-radio>
+              <el-radio label="手机"></el-radio>
+              <el-radio label="PAD"></el-radio>
+              <el-radio label="移动存储设备"></el-radio>
+            </el-radio-group>
+          </el-form-item>
+
+          <!--带搜索的下拉选择-->
+          <el-form-item label="资产管理者:" prop="managerId">
+            <el-select
+              v-model="addForm.managerId"
+              filterable
+              placeholder="请选择资产管理者"
+            >
+              <el-option
+                v-for="(item, index) in users.items"
+                :key="index + '1'"
+                :label="item.realName + '(' + item.username + ')'"
+                :value="item.userId"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+
+          <!--日期段-->
+          <el-form-item label="开始使用时间:" prop="startDate">
+            <el-date-picker
+              v-model="addForm.startDate"
+              value-format="yyyy-MM-dd"
+              format="yyyy年MM月dd日"
+              type="date"
+              placeholder="开始使用时间"
+            ></el-date-picker>
+          </el-form-item>
+          <el-form-item label="资产归还期限:" prop="dueDate">
+            <el-date-picker
+              v-model="addForm.dueDate"
+              value-format="yyyy-MM-dd"
+              format="yyyy年MM月dd日"
+              type="date"
+              placeholder="结束日期"
+            ></el-date-picker>
+          </el-form-item>
+
+          <!--不可更改-->
+          <el-form-item label="资产状态:">
+            <el-input
+              placeholder="已领取"
+              v-model="addForm.state"
+              :disabled="true"
+            ></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="addFormVisible = false">取消</el-button>
+          <el-button type="primary" @click="addSubmit('addForm')"
+            >提交</el-button
+          >
+        </div>
+      </el-dialog>
+
+      <!--编辑-->
+      <el-dialog
+        title="资产信息"
+        :visible.sync="editFormVisible"
+        :before-close="handleClose"
+        @open="handleForm(editForm)"
+        :append-to-body="true"
+      >
+        <el-form
+          :model="editForm"
+          :rules="rules"
+          ref="editForm"
+          label-width="120px"
+        >
+          <!--文本框-->
+          <el-form-item label="资产ID:" prop="outerId">
+            <el-input v-model="editForm.outerId" disabled></el-input>
+          </el-form-item>
+
+          <!--单选-->
+          <el-form-item label="资产类型:" prop="type">
+            <el-radio-group v-model="editForm.type">
+              <el-radio label="电脑"></el-radio>
+              <el-radio label="手机"></el-radio>
+              <el-radio label="PAD"></el-radio>
+              <el-radio label="移动存储设备"></el-radio>
+            </el-radio-group>
+          </el-form-item>
+
+          <!--带搜索的下拉选择-->
+          <el-form-item label="资产管理者:" prop="managerId">
+            <el-select
+              v-model="editForm.managerId"
+              filterable
+              placeholder="请选择资产管理者"
+            >
+              <el-option
+                v-for="(item, index) in users.items"
+                :key="index"
+                :label="item.realName + '(' + item.username + ')'"
+                :value="item.userId"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+
+          <!--日期段-->
+          <el-form-item label="开始使用时间:" prop="startDate">
+            <el-date-picker
+              v-model="editForm.startDate"
+              value-format="yyyy-MM-dd"
+              format="yyyy年MM月dd日"
+              type="date"
+              placeholder="开始日期"
+            ></el-date-picker>
+          </el-form-item>
+          <el-form-item label="资产归还期限:" prop="dueDate">
+            <el-date-picker
+              v-model="editForm.dueDate"
+              value-format="yyyy-MM-dd"
+              format="yyyy年MM月dd日"
+              type="date"
+              placeholder="结束日期"
+            ></el-date-picker>
+          </el-form-item>
+
+          <!--不可更改-->
+          <el-form-item label="资产状态:">
+            <el-input placeholder="已领取" :disabled="true"></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="editFormVisible = false">取消</el-button>
+          <el-button type="primary" @click="editSubmit('editForm')"
+            >提交</el-button
+          >
+        </div>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -311,6 +331,7 @@ export default {
   },
   data() {
     return {
+      loading: true,
       //分页
       pageNo: 1,
       pageSize: 10,
@@ -386,6 +407,7 @@ export default {
       this.getMyPermissions();
       this.getDeviceList("");
       this.getDeviceLength();
+      this.getAllMembers();
     }
   },
   methods: {
@@ -464,13 +486,10 @@ export default {
       });
     },
     //下拉，可选设备管理员
-    async getAllMembers(callback) {
-      console.log("回调参数" + callback);
-      if (callback) {
+    async getAllMembers() {
         const res = await ProjectLW.getAllMembers(this.projectId);
         console.log(res);
         this.users = res;
-      } else;
     },
     handleClose(done) {
       this.$confirm("确认关闭？")
@@ -501,8 +520,8 @@ export default {
     editSubmit(formName) {
       this.$refs[formName].validate(async valid => {
         var _this = this;
-         console.log("editForm.startDate="+_this.editForm.startDate);
-           console.log( "editForm.dueDate="+_this.editForm.dueDate,);
+        console.log("editForm.startDate=" + _this.editForm.startDate);
+        console.log("editForm.dueDate=" + _this.editForm.dueDate);
         if (valid) {
           const res = await ProjectLW.updateDevice(
             _this.editForm.outerId,
@@ -513,12 +532,11 @@ export default {
             _this.editForm.dueDate,
             _this.editForm.returnDate
           );
-           console.log(res);
+          console.log(res);
           _this.editFormVisible = false;
           _this.$message.success("修改成功");
 
           this.getDeviceList("");
-
         } else {
           this.$message.error("修改失败");
           return false;
@@ -553,16 +571,19 @@ export default {
         cancelButtonText: "取消",
         type: "warning"
       })
-        .then(async() => {
+        .then(async () => {
           if (row.state == "已领取") {
-            console.log("row.outerId="+row.outerId);
-            const res =  await ProjectLW.returnDevice(this.projectId,row.outerId);
+            console.log("row.outerId=" + row.outerId);
+            const res = await ProjectLW.returnDevice(
+              this.projectId,
+              row.outerId
+            );
             this.getDeviceList("");
             this.$message({
               type: "success",
               message: "归还成功!"
             });
-          }else {
+          } else {
             this.$message.error("设备已归还!");
           }
         })
