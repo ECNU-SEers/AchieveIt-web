@@ -4,7 +4,7 @@ const projectRouter = {
   title: '项目管理',
   type: 'folder', //folder tab view,
   inNav: true,
-  icon: 'iconfont icon-huiyuan1',
+  icon: 'iconfont icon-shangpinguanli',
   filePath: 'views/project/',
   children: [
     {

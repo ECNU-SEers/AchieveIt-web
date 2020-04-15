@@ -3,7 +3,7 @@ const worktimeRouter = {
   name: null,
   title: '工时管理',
   type: 'folder',
-  icon: 'iconfont icon-huiyuanguanli',
+  icon: 'iconfont icon-clock',
   filePath: 'views/worktime/',
   order: null,
   inNav: true,

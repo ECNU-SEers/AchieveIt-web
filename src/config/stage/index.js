@@ -14,17 +14,17 @@ let homeRouter = [
     icon: 'iconfont icon-iconset0103',
     order: 0,
   },
-  {
-    title: '日志管理',
-    type: 'view',
-    name: Symbol('log'),
-    route: '/log',
-    filePath: 'views/log/Log.vue',
-    inNav: true,
-    icon: 'iconfont icon-rizhiguanli',
-    order: 1,
-    permission: ['查询所有日志'],
-  },
+  // {
+  //   title: '日志管理',
+  //   type: 'view',
+  //   name: Symbol('log'),
+  //   route: '/log',
+  //   filePath: 'views/log/Log.vue',
+  //   inNav: true,
+  //   icon: 'iconfont icon-rizhiguanli',
+  //   order: 1,
+  //   permission: ['查询所有日志'],
+  // },
   {
     title: '个人中心',
     type: 'view',
@@ -43,10 +43,10 @@ let homeRouter = [
     inNav: false,
     icon: 'iconfont icon-rizhiguanli',
   },
-  adminConfig,
   projectRouter,
-  dictRouter,
-  worktimeRouter
+  worktimeRouter,
+  adminConfig,
+  dictRouter
 ];
 
 const plugins = [];
