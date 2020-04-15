@@ -1,91 +1,87 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="ChangeListManager">
-    <list default="true" id="ff17f4b7-0ae5-4549-a9f5-db85837a2be1" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/permission/role/AddRoleDialog.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/permission/role/AddRoleDialog.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/permission/role/EditRoleDialog.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/permission/role/EditRoleDialog.vue" afterDir="false" />
-    </list>
-    <option name="SHOW_DIALOG" value="false" />
-    <option name="HIGHLIGHT_CONFLICTS" value="true" />
-    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
-    <option name="LAST_RESOLUTION" value="IGNORE" />
-  </component>
-  <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
-  </component>
-  <component name="ProjectId" id="1ZQiqe0eCcadJInktzcDIC1VVD9" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
-    <ConfirmationsSetting value="2" id="Add" />
-  </component>
-  <component name="ProjectViewState">
-    <option name="hideEmptyMiddlePackages" value="true" />
-    <option name="showExcludedFiles" value="true" />
-    <option name="showLibraryContents" value="true" />
-  </component>
-  <component name="PropertiesComponent">
-    <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/views/permission" />
-    <property name="node.js.detected.package.eslint" value="true" />
-    <property name="node.js.detected.package.standard" value="true" />
-    <property name="node.js.path.for.package.eslint" value="project" />
-    <property name="node.js.path.for.package.standard" value="project" />
-    <property name="node.js.path.for.package.tslint" value="project" />
-    <property name="node.js.selected.package.eslint" value="(autodetect)" />
-    <property name="node.js.selected.package.standard" value="" />
-    <property name="node.js.selected.package.tslint" value="(autodetect)" />
-    <property name="nodejs_package_manager_path" value="yarn" />
-    <property name="settings.editor.selected.configurable" value="settings.webpack" />
-  </component>
-  <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/src/views/permission" />
-    </key>
-  </component>
-  <component name="SvnConfiguration">
-    <configuration />
-  </component>
-  <component name="TaskManager">
-    <task active="true" id="Default" summary="Default task">
-      <changelist id="ff17f4b7-0ae5-4549-a9f5-db85837a2be1" name="Default Changelist" comment="" />
-      <created>1584777910142</created>
-      <option name="number" value="Default" />
-      <option name="presentableId" value="Default" />
-      <updated>1584777910142</updated>
-      <workItem from="1584777911441" duration="48000" />
-      <workItem from="1586501008562" duration="184000" />
-      <workItem from="1586581751847" duration="2504000" />
-      <workItem from="1586770972711" duration="1132000" />
-      <workItem from="1586786094110" duration="1201000" />
-      <workItem from="1586878175494" duration="1153000" />
-    </task>
-    <servers />
-  </component>
-  <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="1" />
-  </component>
-  <component name="Vcs.Log.Tabs.Properties">
-    <option name="TAB_STATES">
-      <map>
-        <entry key="MAIN">
-          <value>
-            <State>
-              <option name="COLUMN_ORDER" />
-            </State>
-          </value>
-        </entry>
-      </map>
-    </option>
-  </component>
-  <component name="WindowStateProjectService">
-    <state x="440" y="169" key="#ESLint" timestamp="1586581758761">
-      <screen x="0" y="23" width="1680" height="961" />
-    </state>
-    <state x="440" y="169" key="#ESLint/0.23.1680.961@0.23.1680.961" timestamp="1586581758761" />
-    <state x="349" y="142" key="SettingsEditor" timestamp="1586582011776">
-      <screen x="0" y="23" width="1680" height="961" />
-    </state>
-    <state x="349" y="142" key="SettingsEditor/0.23.1680.961@0.23.1680.961" timestamp="1586582011776" />
-  </component>
+    <component name="ChangeListManager">
+        <list default="true" id="ff17f4b7-0ae5-4549-a9f5-db85837a2be1" name="Default Changelist" comment=""/>
+        <option name="SHOW_DIALOG" value="false"/>
+        <option name="HIGHLIGHT_CONFLICTS" value="true"/>
+        <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false"/>
+        <option name="LAST_RESOLUTION" value="IGNORE"/>
+    </component>
+    <component name="Git.Settings">
+        <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$"/>
+    </component>
+    <component name="ProjectId" id="1ZQiqe0eCcadJInktzcDIC1VVD9"/>
+    <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+        <ConfirmationsSetting value="2" id="Add"/>
+    </component>
+    <component name="ProjectViewState">
+        <option name="hideEmptyMiddlePackages" value="true"/>
+        <option name="showExcludedFiles" value="true"/>
+        <option name="showLibraryContents" value="true"/>
+    </component>
+    <component name="PropertiesComponent">
+        <property name="WebServerToolWindowFactoryState" value="false"/>
+        <property name="aspect.path.notification.shown" value="true"/>
+        <property name="last_opened_file_path" value="$PROJECT_DIR$/src/views/permission"/>
+        <property name="node.js.detected.package.eslint" value="true"/>
+        <property name="node.js.detected.package.standard" value="true"/>
+        <property name="node.js.path.for.package.eslint" value="project"/>
+        <property name="node.js.path.for.package.standard" value="project"/>
+        <property name="node.js.path.for.package.tslint" value="project"/>
+        <property name="node.js.selected.package.eslint" value="(autodetect)"/>
+        <property name="node.js.selected.package.standard" value=""/>
+        <property name="node.js.selected.package.tslint" value="(autodetect)"/>
+        <property name="nodejs_package_manager_path" value="yarn"/>
+        <property name="settings.editor.selected.configurable" value="settings.webpack"/>
+    </component>
+    <component name="RecentsManager">
+        <key name="CopyFile.RECENT_KEYS">
+            <recent name="$PROJECT_DIR$/src/views/permission"/>
+        </key>
+    </component>
+    <component name="SvnConfiguration">
+        <configuration/>
+    </component>
+    <component name="TaskManager">
+        <task active="true" id="Default" summary="Default task">
+            <changelist id="ff17f4b7-0ae5-4549-a9f5-db85837a2be1" name="Default Changelist" comment=""/>
+            <created>1584777910142</created>
+            <option name="number" value="Default"/>
+            <option name="presentableId" value="Default"/>
+            <updated>1584777910142</updated>
+            <workItem from="1584777911441" duration="48000"/>
+            <workItem from="1586501008562" duration="184000"/>
+            <workItem from="1586581751847" duration="2504000"/>
+            <workItem from="1586770972711" duration="1132000"/>
+            <workItem from="1586786094110" duration="1201000"/>
+            <workItem from="1586878175494" duration="1153000"/>
+        </task>
+        <servers/>
+    </component>
+    <component name="TypeScriptGeneratedFilesManager">
+        <option name="version" value="1"/>
+    </component>
+    <component name="Vcs.Log.Tabs.Properties">
+        <option name="TAB_STATES">
+            <map>
+                <entry key="MAIN">
+                    <value>
+                        <State>
+                            <option name="COLUMN_ORDER"/>
+                        </State>
+                    </value>
+                </entry>
+            </map>
+        </option>
+    </component>
+    <component name="WindowStateProjectService">
+        <state x="440" y="169" key="#ESLint" timestamp="1586581758761">
+            <screen x="0" y="23" width="1680" height="961"/>
+        </state>
+        <state x="440" y="169" key="#ESLint/0.23.1680.961@0.23.1680.961" timestamp="1586581758761"/>
+        <state x="349" y="142" key="SettingsEditor" timestamp="1586582011776">
+            <screen x="0" y="23" width="1680" height="961"/>
+        </state>
+        <state x="349" y="142" key="SettingsEditor/0.23.1680.961@0.23.1680.961" timestamp="1586582011776"/>
+    </component>
 </project>
