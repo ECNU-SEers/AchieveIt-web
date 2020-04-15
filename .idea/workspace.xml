@@ -3,9 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="ff17f4b7-0ae5-4549-a9f5-db85837a2be1" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/workTime.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/workTime.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/views/login/Login.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/login/Login.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/worktime/check/WorkCheck.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/worktime/check/WorkCheck.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/permission/role/AddRoleDialog.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/permission/role/AddRoleDialog.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/permission/role/EditRoleDialog.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/permission/role/EditRoleDialog.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -57,7 +57,9 @@
       <workItem from="1584777911441" duration="48000" />
       <workItem from="1586501008562" duration="184000" />
       <workItem from="1586581751847" duration="2504000" />
-      <workItem from="1586770972711" duration="1069000" />
+      <workItem from="1586770972711" duration="1132000" />
+      <workItem from="1586786094110" duration="1201000" />
+      <workItem from="1586878175494" duration="700000" />
     </task>
     <servers />
   </component>

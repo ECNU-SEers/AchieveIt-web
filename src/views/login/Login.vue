@@ -19,7 +19,7 @@
       <el-button
         type="primary"
         class="login-btn btn"
-        @click="userLogin"
+        @click="login"
         :loading="loading"
         :disabled="loading"
       >
@@ -65,12 +65,10 @@ export default {
     };
   },
   methods: {
-    async userLogin() {
+    async login() {
       const { username, password } = this.form;
-      await this.login(username, password);
-    },
-    async login(username, password) {
       try {
+        await this.$refs.form.validate();
         this.loading = true;
         await User.getToken(username, password);
         await this.getInformation();
