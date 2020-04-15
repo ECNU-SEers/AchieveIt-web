@@ -3,7 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="ff17f4b7-0ae5-4549-a9f5-db85837a2be1" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/login/Login.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/login/Login.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/permission/project-role/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/permission/project-role/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/permission/role/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/permission/role/index.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/views/permission/user/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/permission/user/index.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -59,6 +60,7 @@
       <workItem from="1586770972711" duration="1132000" />
       <workItem from="1586786094110" duration="1201000" />
       <workItem from="1586878175494" duration="1153000" />
+      <workItem from="1586958751547" duration="921000" />
     </task>
     <servers />
   </component>
@@ -87,5 +89,9 @@
       <screen x="0" y="23" width="1680" height="961" />
     </state>
     <state x="349" y="142" key="SettingsEditor/0.23.1680.961@0.23.1680.961" timestamp="1586582011776" />
+    <state x="503" y="284" key="git4idea.merge.GitPullDialog" timestamp="1586959924174">
+      <screen x="0" y="23" width="1680" height="961" />
+    </state>
+    <state x="503" y="284" key="git4idea.merge.GitPullDialog/0.23.1680.961@0.23.1680.961" timestamp="1586959924174" />
   </component>
 </project>
