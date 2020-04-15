@@ -55,7 +55,8 @@
       onAddRole() {
         const {roleName, permissions} = this.form;
         if (isEmpty(roleName)) return this.$message.error('请输入角色名');
-        if (isEmpty(permissions)) return this.$message.error('请至少分配一项权限');
+        if (isEmpty(permissions))
+          return this.$message.error('请至少分配一项权限');
         addNewRole(roleName, permissions).then(() => {
           this.close();
           this.$message.success('新增角色成功');
