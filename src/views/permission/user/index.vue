@@ -4,10 +4,18 @@
                 v-if="showEditUserDialog"
                 :visibility.sync="showEditUserDialog"
                 v-bind="editingUserInfo"
-                @success="onEditUserSuccess"
+                @success="onEditOrAddUserSuccess"
+        />
+        <AddUserDialog
+                v-if="showAddUserDialog"
+                :visibility.sync="showAddUserDialog"
+                @success="onEditOrAddUserSuccess"
         />
         <PageHeader title="用户权限">
             <Search @search="onSearch" :query-search="querySearch"/>
+            <el-button @click="onAddUser" type="primary" class="add-btn">
+                新增
+            </el-button>
         </PageHeader>
         <LPageTable
                 :table-data="tableData"
@@ -47,6 +55,7 @@
   import PageHeader from '@/components/common/PageHeader';
   import Pagination from '@/components/common/Pagination';
   import EditUserDialog from '@/views/permission/user/EditUserDialog';
+  import AddUserDialog from "@/views/permission/user/AddUserDialog";
   import LPageTable from '../../../components/common/LPageTable';
   import {userPermissionTableHeader} from '../const';
   import {getUserList} from '@/api/permisssion';
@@ -58,6 +67,7 @@
       PageHeader,
       Pagination,
       EditUserDialog,
+      AddUserDialog,
       LPageTable
     },
     mixins: [pageable, loadable],
@@ -65,6 +75,7 @@
       return {
         tableHeader: Object.freeze(userPermissionTableHeader),
         showEditUserDialog: false,
+        showAddUserDialog: false,
         editingUserInfo: null,
         searchKey: ''
       };
@@ -80,6 +91,9 @@
             .map(item => ({value: item.realName}));
         cb(result);
       },
+      onAddUser() {
+        this.showAddUserDialog = true;
+      },
       onPageChange(nextPage) {
         this.getUserListFromServe(nextPage);
       },
@@ -87,7 +101,7 @@
         this.editingUserInfo = row;
         this.showEditUserDialog = true;
       },
-      onEditUserSuccess() {
+      onEditOrAddUserSuccess() {
         this.getUserListFromServe(this.currentPage);
       },
       getUserListFromServe(page) {
@@ -106,5 +120,11 @@
   };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+    .add-btn {
+        margin-left: 20px;
+        border-radius: 3px;
+        width: 80px;
+    }
+</style>
 
