@@ -6,6 +6,7 @@ const dictRouter = {
   inNav: true,
   icon: 'iconfont icon-tushuguanli',
   filePath: 'views/dictinary/',
+  permission: ['字典管理'],
   children: [
     {
       name: 'dictConfig',

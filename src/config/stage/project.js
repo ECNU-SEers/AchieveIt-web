@@ -6,6 +6,7 @@ const projectRouter = {
   inNav: true,
   icon: 'iconfont icon-shangpinguanli',
   filePath: 'views/project/',
+  permission: ['查询项目信息'],
   children: [
     {
       name: 'projectList',
