@@ -496,6 +496,7 @@ export default {
           console.log(res);
           this.addFormVisible = false;
           this.$message.success("添加成功");
+          this.$refs["addForm"].resetFields();
           this.getDeviceList("");
         } else {
           this.$message.error("请填写正确信息");
@@ -553,6 +554,7 @@ export default {
           console.log(res);
           _this.editFormVisible = false;
           _this.$message.success("修改成功");
+          this.$refs["editForm"].resetFields();
 
           this.getDeviceList("");
         } else {

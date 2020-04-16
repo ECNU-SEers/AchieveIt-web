@@ -398,6 +398,7 @@ export default {
             console.log("add function list success!");
             this.addFormVisible = false;
             this.parentId = -1;
+            this.$refs["addForm"].resetFields();
             this.getFunctionList(this.keyword);
           });
         } else {
@@ -503,6 +504,7 @@ export default {
             });
             console.log("edit function list success!");
             this.editFormVisible = false;
+            this.$refs["editForm"].resetFields();
             this.getFunctionList(this.keyword);
           });
         } else {

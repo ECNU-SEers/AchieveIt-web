@@ -557,6 +557,7 @@ export default {
                 message: "提交成功！",
                 type: "success"
               });
+              this.$refs["addForm"].resetFields();
               this.getAllDefects("");
             });
           });
@@ -652,6 +653,7 @@ export default {
                 message: "提交成功！",
                 type: "success"
               });
+              this.$refs["editForm"].resetFields();
               this.getAllDefects("");
             });
           });

@@ -293,7 +293,12 @@ export default {
         this.editForm.emailValue
       );
       this.editFormVisible = false;
+<<<<<<< HEAD
        this.$message.success("修改成功");
+=======
+      this.$message.success("修改成功");
+      this.$refs["editForm"].resetFields();
+>>>>>>> a8a6158561a5369257850af18c8c25b3c3cbcf1e
       if (
         this.editForm.fileAddValue == true &&
         this.editForm.emailValue == true &&

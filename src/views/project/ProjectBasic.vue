@@ -560,6 +560,7 @@ export default {
               message: "已提交!"
             });
             this.dialogFormVisible = false;
+            this.$refs["editForm"].resetFields();
             this.getBasic(this.outerId);
           });
         } else {
