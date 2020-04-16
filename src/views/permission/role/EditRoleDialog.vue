@@ -1,7 +1,7 @@
 <template>
   <el-dialog title="编辑角色" :visible="visibility" :before-close="close">
-    <el-form v-model="form">
-      <el-form-item label="角色名称">
+    <el-form :model="form" :rules="rules">
+      <el-form-item prop="name" label="角色名称">
         <el-input v-model="form.name" />
       </el-form-item>
       <el-form-item label="创建人">
@@ -29,6 +29,7 @@ import RolePermissions from '@/views/admin/role/RolePermissions';
 import { editUserRole } from '@/api/permisssion';
 import { permissions } from '../../../store/getters';
 import { dialogMixin } from '../../../util/mixin';
+import { isEmpty } from 'lodash';
 
 export default {
   components: {
@@ -50,7 +51,12 @@ export default {
       form: {
         name: this.name,
         permissions: this.permissions
-      }
+      },
+      rules: [
+        {
+          name: [{ required: true, message: '请输入角色名' }]
+        }
+      ]
     };
   },
   methods: {
@@ -62,6 +68,9 @@ export default {
     },
     onEditRole() {
       const { name, permissions } = this.form;
+      if (isEmpty(name)) return this.$message.error('请输入角色名');
+      if (isEmpty(permissions))
+        return this.$message.error('请至少分配一项权限');
       editUserRole(this.id, name, permissions).then(() => {
         this.$message.success('更新角色成功');
         this.close();

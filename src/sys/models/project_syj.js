@@ -167,8 +167,8 @@ export default class ProjectSYJ {
     return await put("/project/" + projectId + "/defect/" + defectId, defect);
   }
 
-  static async changeDefectState(projectId, defectId, request) {
-    return await put("/project/" + projectId + "/defect/" + defectId + "/transition", {request});
+  static async changeDefectState(projectId, defectId, state) {
+    return await put("/project/" + projectId + "/defect/" + defectId + "/transition", state);
   }
 
   static async getProjectMembers(projectId) {
@@ -181,11 +181,11 @@ export default class ProjectSYJ {
 
   // 字典
   static async addTech(skillName) {
-    return await post("/skill/add?skillName=" + skillName);
+    return await post("/skill/add", {skillName});
   }
 
   static async updateTech(skillId, newSkillName) {
-    return await put("/skill/update?skillId=" + skillId + "&newSkillName=" + newSkillName);
+    return await put("/skill/update", {skillId, newSkillName});
   }
 
   static async deleteTech(skillIds) {
@@ -193,11 +193,11 @@ export default class ProjectSYJ {
   }
 
   static async addArea(businessAreaName) {
-    return await post("/business/area/add?businessAreaName=" + businessAreaName);
+    return await post("/business/area/add", {businessAreaName});
   }
 
   static async updateArea(businessAreaId, newBusinessAreaName) {
-    return await put("/business/area/update?businessAreaId="+ businessAreaId +"&newBusinessAreaName="+newBusinessAreaName);
+    return await put("/business/area/update", {businessAreaId, newBusinessAreaName});
   }
 
   static async deleteArea(businessAreaIds) {
@@ -208,4 +208,7 @@ export default class ProjectSYJ {
    static async assignRoleForPM(projectId, roleId, assigneeId) {
     return await post("/project/" + projectId + "/role/" + roleId + "/assign", {assigneeId});
    }
+
+   // 功能列表
+   
 }

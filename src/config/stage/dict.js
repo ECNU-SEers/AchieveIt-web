@@ -4,8 +4,9 @@ const dictRouter = {
   title: '字典管理',
   type: 'folder',
   inNav: true,
-  icon: 'iconfont icon-huiyuan1',
+  icon: 'iconfont icon-tushuguanli',
   filePath: 'views/dictinary/',
+  permission: ['字典管理'],
   children: [
     {
       name: 'dictConfig',

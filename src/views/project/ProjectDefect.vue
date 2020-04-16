@@ -52,6 +52,7 @@
       >
         <el-table
           v-if="this.projectId !== undefined"
+          v-loading="infoLoading"
           :data="defects"
           highlight-current-row
           border
@@ -135,7 +136,7 @@
           </el-form-item>-->
           <el-form-item label="预定日期" prop="dueDate">
             <el-date-picker
-              v-model="addForm.dueDate"
+              v-model="addForm.due"
               placeholder="请选择交付日"
               type="datetime"
               format="yyyy-MM-dd HH:mm:ss"
@@ -221,6 +222,7 @@ export default {
   },
   data() {
     return {
+      infoLoading: true,
       loading: true,
       page: 1,
       pageSize: 10,
@@ -351,7 +353,7 @@ export default {
             triggle: "blur"
           }
         ],
-        dueDate: [
+        due: [
           {
             required: true,
             message: "请选择预定日期",
@@ -364,7 +366,7 @@ export default {
         name: "",
         type: "",
         level: "",
-        dueDate: "",
+        due: "",
         handlerId: "",
         description: ""
       },
@@ -506,24 +508,25 @@ export default {
         this.projectId,
         keyword
       );
-
-      this.defects = res.items;
+  
       let i = 0;
-      for (i = 0; i < this.defects.length; i++) {
-        this.defects[i].dueDate = moment(this.defects[i].due).format("YYYY-MM-DD");
-        this.defects[i].createdAt = moment(this.defects[i].createdAt).format(
+      for (i = 0; i < res.items.length; i++) {
+        res.items[i].dueDate = moment(res.items[i].due).format("YYYY-MM-DD");
+        res.items[i].createdAt = moment(res.items[i].createdAt).format(
           "YYYY-MM-DD"
         );
-        this.defects[i].updatedAt = moment(this.defects[i].updatedAt).format(
+        res.items[i].updatedAt = moment(res.items[i].updatedAt).format(
           "YYYY-MM-DD"
         );
-        this.defects[i].levelName = this.matchLevel(this.defects[i].level);
-        this.defects[i].stateName = this.matchState(this.defects[i].state);
-        this.defects[i].typeName = this.matchType(this.defects[i].type);
-        if (this.defects[i].handlerName === null) {
-          this.defects[i].handlerName = "暂未处理";
+        res.items[i].levelName = this.matchLevel(res.items[i].level);
+        res.items[i].stateName = this.matchState(res.items[i].state);
+        res.items[i].typeName = this.matchType(res.items[i].type);
+        if (res.items[i].handlerName === null) {
+          res.items[i].handlerName = "暂未处理";
         }
       }
+      this.defects = res.items;
+      this.infoLoading = false;
     },
 
     // 获取缺陷类型模态框
@@ -577,9 +580,9 @@ export default {
 
     handleChangeState(index, row) {
       let changedState = {};
-      changedState.assigneeId = row.handlerId;
-      changedState.assigneeName = row.handlerName;
-      changedState.due = util.formatDate.format(new Date(row.due), 'yyyy-MM-dd hh:mm:ss')
+      // changedState.assigneeId = row.handlerId;
+      // changedState.assigneeName = row.handlerName;
+      // changedState.due = util.formatDate.format(new Date(row.due), 'yyyy-MM-dd hh:mm:ss')
       if (
         this.handlePermission === true &&
         row.stateName === "已修复" &&

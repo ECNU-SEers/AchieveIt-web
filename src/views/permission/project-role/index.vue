@@ -85,13 +85,16 @@ export default {
       tableHeader: Object.freeze(
         roleListTableHeader.filter(item => item.prop !== 'creator')
       ),
-      editingRoleInfo: null
+      editingRoleInfo: null,
+      noFilteredTableData: []
     };
   },
   methods: {
     onSearch(key) {
       if (isEmpty(key)) return this.getRoleListFromServe();
-      this.tableData = this.tableData.filter(item => item.name.includes(key));
+      this.tableData = this.noFilteredTableData.filter(item =>
+        item.name.includes(key)
+      );
     },
     onAddRole() {
       this.showAddRoleDialog = true;
@@ -111,7 +114,7 @@ export default {
     getRoleListFromServe() {
       this.applyLoading(getProjectRole(this.currentPage, this.pageSize)).then(
         res => {
-          this.tableData = res.items;
+          this.tableData = this.noFilteredTableData = res.items;
         }
       );
     },

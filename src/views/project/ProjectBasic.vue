@@ -1,7 +1,7 @@
 <template>
   <div>
     <PageHeader title="项目基本信息" style="height:40px;"></PageHeader>
-    <el-card v-if="this.outerId !== undefined" class="box-card">
+    <el-card v-loading="infoLoading" v-if="this.outerId !== undefined" class="box-card">
       <div slot="header" class="clearfix">
         <span>当前项目ID: {{ this.outerId }}</span>
         <el-button
@@ -200,6 +200,7 @@ export default {
       }
     };
     return {
+      infoLoading: true,
       state: "",
       outerId: "",
       projectId: "",
@@ -427,6 +428,7 @@ export default {
         } else {
           this.tableData[7].detail = "暂无数据";
         }
+        this.infoLoading = false;
 
         // 功能
         // if (info.projectFunctions.length > 0) {

@@ -79,13 +79,16 @@ export default {
       showAddRoleDialog: false,
       showEditRoleDialog: false,
       tableHeader: Object.freeze(roleListTableHeader),
-      editingRoleInfo: null
+      editingRoleInfo: null,
+      noFilteredTableData: []
     };
   },
   methods: {
     onSearch(key) {
       if (isEmpty(key)) return this.getRoleListFromServe();
-      this.tableData = this.tableData.filter(item => item.name.includes(key));
+      this.tableData = this.noFilteredTableData.filter(item =>
+        item.name.includes(key)
+      );
     },
     onAddRole() {
       this.showAddRoleDialog = true;
@@ -104,7 +107,7 @@ export default {
     },
     getRoleListFromServe() {
       this.applyLoading(getRoleList()).then(res => {
-        this.tableData = res;
+        this.tableData = this.noFilteredTableData = res;
       });
     },
     querySearch(queryString, cb) {
