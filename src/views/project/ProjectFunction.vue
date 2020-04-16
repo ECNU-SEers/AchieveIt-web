@@ -154,11 +154,11 @@
           </el-form-item>-->
 
           <el-form-item label="功能名称" required prop="name">
-            <el-input v-model="addForm.name" placeholder="请填写功能名称"></el-input>
+            <el-input v-model="addForm.name" placeholder="请填写功能名称" clearable :maxlength="maxNameLength" show-word-limit></el-input>
           </el-form-item>
 
           <el-form-item label="功能描述">
-            <el-input type="textarea" v-model="addForm.description" placeholder="请填写功能描述"></el-input>
+            <el-input type="textarea" v-model="addForm.description" placeholder="请填写功能描述" clearable :maxlength="maxDesLength" show-word-limit></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -181,11 +181,11 @@
           </el-form-item>-->
 
           <el-form-item label="项目名称" required prop="name">
-            <el-input v-model="editForm.name" placeholder="请填写项目名称"></el-input>
+            <el-input v-model="editForm.name" placeholder="请填写项目名称" clearable :maxlength="maxNameLength" show-word-limit></el-input>
           </el-form-item>
 
           <el-form-item label="项目描述">
-            <el-input type="textarea" v-model="editForm.description" placeholder="请填写项目描述"></el-input>
+            <el-input type="textarea" v-model="editForm.description" placeholder="请填写项目描述" clearable :maxlength="maxDesLength" show-word-limit></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -212,6 +212,8 @@ export default {
   },
   data() {
     return {
+      maxNameLength: 25,
+      maxDesLength: 200,
       infoLoading: true,
       rules: {
         name: [{ required: true, message: "请输入功能名称", trigger: "blur" }]

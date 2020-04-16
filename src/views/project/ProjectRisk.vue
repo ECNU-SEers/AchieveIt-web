@@ -190,12 +190,12 @@
         >
           <!--文本框-->
           <el-form-item label="风险名称:" prop="name">
-            <el-input v-model="addForm.name"></el-input>
+            <el-input v-model="addForm.name" clearable :maxlength="maxNameLength" show-word-limit></el-input>
           </el-form-item>
 
           <!--文本框-->
           <el-form-item label="风险类型:" prop="type">
-            <el-input v-model="addForm.type"></el-input>
+            <el-input v-model="addForm.type" clearable :maxlength="maxNameLength" show-word-limit></el-input>
           </el-form-item>
 
           <!--文本域-->
@@ -205,6 +205,8 @@
               :row="3"
               placeholder="请对该风险进行简要描述"
               v-model="addForm.description"
+              clearable
+              :maxlength="maxDesLength" show-word-limit
             ></el-input>
           </el-form-item>
 
@@ -228,7 +230,7 @@
 
           <!--文本域-->
           <el-form-item label="风险应对策略:" prop="strategy">
-            <el-input type="textarea" :row="3" placeholder="请输入风险应对策略" v-model="addForm.strategy"></el-input>
+            <el-input type="textarea" :row="3" placeholder="请输入风险应对策略" v-model="addForm.strategy" clearable :maxlength="maxDesLength" show-word-limit></el-input>
           </el-form-item>
 
           <!--单选-->
@@ -319,12 +321,12 @@
         <el-form :model="editForm" :rules="rules" ref="editForm" label-width="120px">
           <!--文本框-->
           <el-form-item label="风险名称:" prop="name">
-            <el-input v-model="editForm.name"></el-input>
+            <el-input v-model="editForm.name" clearable :maxlength="maxNameLength" show-word-limit></el-input>
           </el-form-item>
 
           <!--文本框-->
           <el-form-item label="风险类型:" prop="type">
-            <el-input v-model="editForm.type"></el-input>
+            <el-input v-model="editForm.type" clearable :maxlength="maxNameLength" show-word-limit></el-input>
           </el-form-item>
 
           <!--文本域-->
@@ -334,6 +336,8 @@
               :row="3"
               placeholder="请对该风险进行简要描述"
               v-model="editForm.description"
+              clearable
+              :maxlength="maxDesLength" show-word-limit
             ></el-input>
           </el-form-item>
 
@@ -357,7 +361,7 @@
 
           <!--文本域-->
           <el-form-item label="风险应对策略:" prop="strategy">
-            <el-input type="textarea" :row="3" placeholder="请输入风险应对策略" v-model="editForm.strategy"></el-input>
+            <el-input type="textarea" :row="3" placeholder="请输入风险应对策略" v-model="editForm.strategy" clearable :maxlength="maxDesLength" show-word-limit></el-input>
           </el-form-item>
 
           <!--单选-->
@@ -436,6 +440,8 @@ export default {
   },
   data() {
     return {
+      maxNameLength: 25,
+      maxDesLength: 200,
       infoLoading: true,
       loading: true,
       projectId: 1,
@@ -518,7 +524,7 @@ export default {
       //编辑
       editFormVisible: false,
       editForm: {
-        owner: [],
+        owner: {},
         relatedPersons: []
       },
       rules: {
@@ -539,8 +545,8 @@ export default {
         owner: [
           {
             required: true,
-            message: "请选择资风险责任人",
-            trigger: ["blur", "change"]
+            message: "请选择风险责任人",
+            trigger: "blur"
           }
         ],
         trackingFreq: [

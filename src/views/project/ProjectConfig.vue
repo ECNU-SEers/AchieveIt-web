@@ -37,12 +37,12 @@
             <el-form :model="editForm" ref="editForm" label-width="120px" class="editForm">
               <!-- 输入框 -->
               <el-form-item label="Git仓库地址" prop="GitAddress">
-                <el-input v-model="editForm.GitAddress" clearable></el-input>
+                <el-input v-model="editForm.GitAddress" clearable :maxlength="maxNameLength" show-word-limit></el-input>
               </el-form-item>
 
               <!-- 输入框 -->
               <el-form-item label="虚拟机空间" prop="virtualSpace">
-                <el-input v-model="editForm.virtualSpace" clearable></el-input>
+                <el-input v-model="editForm.virtualSpace" clearable :maxlength="maxNameLength" show-word-limit></el-input>
               </el-form-item>
 
               <!-- 布尔开关 仅第一次可修改 -->
@@ -106,6 +106,7 @@ export default {
 
   data() {
     return {
+      maxNameLength: 100,
       infoLoading: true,
       loading: true,
       editFormVisible: false,

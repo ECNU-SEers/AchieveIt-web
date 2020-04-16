@@ -113,7 +113,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="项目名称" prop="name">
-          <el-input v-model="addForm.name" placeholder="请填写项目名称"></el-input>
+          <el-input v-model="addForm.name" placeholder="请填写项目名称" clearable :maxlength="maxNameLength" show-word-limit></el-input>
         </el-form-item>
         <el-form-item label="客户" prop="company">
           <el-select v-model="addForm.company" value-key="outerId" placeholder="请选择客户">
@@ -237,7 +237,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="备注" prop="remark">
-          <el-input v-model="addForm.remark" placeholder="请填写备注" type="textarea"></el-input>
+          <el-input v-model="addForm.remark" placeholder="请填写备注" type="textarea" clearable :maxlength="maxDesLength" show-word-limit></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -259,7 +259,7 @@
           <el-select v-model="editForm.outerId" placeholder="请选择ID" disabled></el-select>
         </el-form-item>
         <el-form-item label="项目名称" prop="name">
-          <el-input v-model="editForm.name" placeholder="请填写项目名称"></el-input>
+          <el-input v-model="editForm.name" placeholder="请填写项目名称" clearable :maxlength="maxNameLength" show-word-limit></el-input>
         </el-form-item>
         <el-form-item label="客户" prop="company">
           <el-select v-model="editForm.company" value-key="outerId" placeholder="请选择客户">
@@ -379,7 +379,7 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="备注" prop="remark">
-          <el-input type="textarea" v-model="approvalForm.remark"></el-input>
+          <el-input type="textarea" v-model="approvalForm.remark" clearable :maxlength="maxDesLength" show-word-limit></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -573,6 +573,8 @@ export default {
   data() {
     return {
       infoLoading: true,
+      maxNameLength: 25,
+      maxDesLength: 200,
       // 分页
       pageNo: 1,
       pageSize: 10,
