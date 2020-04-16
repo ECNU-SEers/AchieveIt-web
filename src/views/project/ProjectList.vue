@@ -72,7 +72,7 @@
                 icon="el-icon-user-solid"
               ></el-button>
               <el-button
-                v-permission="'审批项目'"
+                v-permission="'审核项目'"
                 size="medium"
                 type="primary"
                 @click.stop="handleApproval(scope.$index, scope.row)"
