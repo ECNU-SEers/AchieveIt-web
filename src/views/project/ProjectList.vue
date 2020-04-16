@@ -141,7 +141,7 @@
               ></el-date-picker>
             </el-form-item>
           </el-col>
-          <el-col class="line" :span="2">至</el-col>
+          <el-col class="line" :span="2" align="center">至</el-col>
           <el-col :span="11">
             <el-form-item prop="endDate">
               <el-date-picker
@@ -287,7 +287,7 @@
               ></el-date-picker>
             </el-form-item>
           </el-col>
-          <el-col class="line" :span="2">至</el-col>
+          <el-col class="line" :span="2" align="center">至</el-col>
           <el-col :span="11">
             <el-form-item prop="endDate">
               <el-date-picker
@@ -351,7 +351,7 @@
               ></el-date-picker>
             </el-form-item>
           </el-col>
-          <el-col class="line" :span="2">至</el-col>
+          <el-col class="line" :span="2" align="center">至</el-col>
           <el-col :span="11">
             <el-form-item prop="endDate">
               <el-date-picker
@@ -425,7 +425,7 @@
               ></el-date-picker>
             </el-form-item>
           </el-col>
-          <el-col class="line" :span="2">至</el-col>
+          <el-col class="line" :span="2" align="center">至</el-col>
           <el-col :span="11">
             <el-form-item prop="endDate">
               <el-date-picker
@@ -509,7 +509,7 @@
               ></el-date-picker>
             </el-form-item>
           </el-col>
-          <el-col class="line" :span="2">至</el-col>
+          <el-col class="line" :span="2" align="center">至</el-col>
           <el-col :span="11">
             <el-form-item prop="endDate">
               <el-date-picker
