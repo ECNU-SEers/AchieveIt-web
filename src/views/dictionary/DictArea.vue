@@ -91,7 +91,7 @@ export default {
           {
             required: true,
             message: "请填写技术名称",
-            triggle: "blur"
+            trigger: "blur"
           }
         ]
       },
@@ -108,7 +108,7 @@ export default {
           {
             required: true,
             message: "请填写业务领域",
-            triggle: "blur"
+            trigger: "blur"
           }
         ]
       }

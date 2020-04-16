@@ -319,7 +319,7 @@ export default {
           {
             required: true,
             message: "请填写缺陷名称",
-            triggle: "blur"
+            trigger: "blur"
           }
         ],
         type: [
@@ -327,7 +327,7 @@ export default {
             type: "number",
             required: true,
             message: "请选择缺陷类型",
-            triggle: "blur"
+            trigger: "blur"
           }
         ],
         level: [
@@ -335,7 +335,7 @@ export default {
             type: "number",
             required: true,
             message: "请选择缺陷等级",
-            triggle: "change"
+            trigger: "change"
           }
         ],
         handlerId: [
@@ -343,21 +343,21 @@ export default {
             type: "number",
             required: true,
             message: "请选择缺陷处理人",
-            triggle: "blur"
+            trigger: "blur"
           }
         ],
         description: [
           {
             required: true,
             message: "请填写缺陷描述",
-            triggle: "blur"
+            trigger: "blur"
           }
         ],
         due: [
           {
             required: true,
             message: "请选择预定日期",
-            triggle: "blur"
+            trigger: "blur"
           }
         ]
       },
@@ -377,7 +377,7 @@ export default {
           {
             required: true,
             message: "请填写缺陷名称",
-            triggle: "blur"
+            trigger: "blur"
           }
         ],
         type: [
@@ -385,7 +385,7 @@ export default {
             type: "number",
             required: true,
             message: "请选择缺陷类型",
-            triggle: "blur"
+            trigger: "blur"
           }
         ],
         level: [
@@ -393,14 +393,14 @@ export default {
             type: "number",
             required: true,
             message: "请选择缺陷等级",
-            triggle: "change"
+            trigger: "change"
           }
         ],
         description: [
           {
             required: true,
             message: "请填写缺陷描述",
-            triggle: "blur"
+            trigger: "blur"
           }
         ]
       },
