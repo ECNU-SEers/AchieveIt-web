@@ -2,6 +2,7 @@
   <div>
     <AddRoleDialog
       @success="getRoleListFromServe"
+      v-if="showAddRoleDialog"
       :visibility.sync="showAddRoleDialog"
     />
     <EditRoleDialog

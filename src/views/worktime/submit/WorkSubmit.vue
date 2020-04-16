@@ -1,6 +1,7 @@
 <template>
   <div>
     <AddWorkTimeDialog
+      v-if="showAddWorkTimeDialog"
       :visibility.sync="showAddWorkTimeDialog"
       @success="_getWorkTimeSubmitList"
     />
@@ -65,7 +66,6 @@ import {
   searchWorkTimeSubmitList
 } from '../../../api/workTime';
 import { isEmpty } from 'lodash';
-import { formCheckMixin } from './mixin';
 
 export default {
   components: {
