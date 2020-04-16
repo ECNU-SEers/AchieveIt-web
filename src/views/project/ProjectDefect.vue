@@ -136,7 +136,7 @@
           </el-form-item>-->
           <el-form-item label="预定日期" prop="dueDate">
             <el-date-picker
-              v-model="addForm.dueDate"
+              v-model="addForm.due"
               placeholder="请选择交付日"
               type="datetime"
               format="yyyy-MM-dd HH:mm:ss"
@@ -353,7 +353,7 @@ export default {
             triggle: "blur"
           }
         ],
-        dueDate: [
+        due: [
           {
             required: true,
             message: "请选择预定日期",
@@ -366,7 +366,7 @@ export default {
         name: "",
         type: "",
         level: "",
-        dueDate: "",
+        due: "",
         handlerId: "",
         description: ""
       },
