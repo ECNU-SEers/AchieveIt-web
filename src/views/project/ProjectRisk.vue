@@ -920,7 +920,7 @@ export default {
             );
             _this.$message.success("导入成功");
           }
-          this.getRiskList();
+          this.getRiskList("");
           this.importFormVisible = false;
         } catch (e) {
           _this.$message.error("导入失败");
