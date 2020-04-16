@@ -291,12 +291,12 @@ export default {
         this.editForm.emailValue
       );
       this.editFormVisible = false;
-      this.$message.success("修改成功");
+       this.$message.success("修改成功");
       if (
         this.editForm.fileAddValue == true &&
         this.editForm.emailValue == true &&
-        this.editForm.GitAddress !== (null || "") &&
-        this.editForm.virtualSpace !== (null || "")
+        this.editForm.GitAddress !==  "" &&
+        this.editForm.virtualSpace !== ""
       ) {
         if (this.fileTrigger == false || this.emailTrigger == false) {
           //第1次配置完成，触发
