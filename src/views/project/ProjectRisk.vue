@@ -688,7 +688,7 @@ export default {
       this.$refs[formName].validate(async valid => {
         if (valid) {
           var _this = this;
-          const res = await ProjectLW.addRisk(
+          ProjectLW.addRisk(
             this.projectId,
             this.addForm.name,
             this.addForm.type,
@@ -700,12 +700,13 @@ export default {
             this.addForm.trackingFreq,
             this.addForm.description,
             this.addForm.relatedPersons
-          );
-          // console.log(res);
-          this.getRiskList("");
-          this.$refs["addForm"].resetFields();
-          this.addFormVisible = false;
-          this.$message.success("添加成功");
+          ).then(() => {
+            // console.log(res);
+            this.getRiskList("");
+            this.$refs["addForm"].resetFields();
+            this.addFormVisible = false;
+            this.$message.success("添加成功");
+          });
         } else {
           this.$message.error("请填写正确信息");
           return false;
@@ -775,7 +776,7 @@ export default {
       this.$refs[formName].validate(async valid => {
         var _this = this;
         if (valid) {
-          const res = await ProjectLW.updateRisk(
+          ProjectLW.updateRisk(
             _this.projectId,
             _this.row.id,
             _this.editForm.name,
@@ -790,12 +791,14 @@ export default {
             _this.editForm.source,
             _this.editForm.description,
             _this.editForm.relatedPersons
-          );
-          // console.log(res);
+          ).then(() => {
+            // console.log(res);
           _this.editFormVisible = false;
           _this.$message.success("修改成功");
           this.$refs["editForm"].resetFields();
           this.getRiskList("");
+          })
+          
         } else {
           this.$message.error("修改失败");
           return false;
@@ -810,12 +813,14 @@ export default {
         type: "warning"
       })
         .then(async () => {
-          const res = await ProjectLW.deleteRisk(this.projectId, row.id);
-          this.$message({
+          ProjectLW.deleteRisk(this.projectId, row.id).then(() => {
+            this.$message({
             type: "success",
             message: "删除成功!"
           });
           this.getRiskList("");
+          })
+          
         })
         .catch(() => {
           this.$message({
@@ -860,15 +865,19 @@ export default {
       } else {
         try {
           if (importSourceId == -1) {
-            const res = await ProjectLW.importRisksFromStdLib(this.projectId);
-            _this.$message.success("导入成功");
+            ProjectLW.importRisksFromStdLib(this.projectId).then(() => {
+              _this.$message.success("导入成功");
+            })
+            
           } else {
             // console.log("importSourceId="+importSourceId[1]);
-            const res = await ProjectLW.importRisksFromOtherProject(
+            ProjectLW.importRisksFromOtherProject(
               this.projectId,
               importSourceId[1]
-            );
-            _this.$message.success("导入成功");
+            ).then(() => {
+              _this.$message.success("导入成功");
+            })
+            
           }
           this.getRiskList("");
           this.importFormVisible = false;

@@ -341,26 +341,28 @@ export default {
         dueDate: "",
         state: ""
       },
-                  editPickerTimeBeg: { //限制开始时间
-                disabledDate: (time) => {
-                    if (this.editForm.dueDate != '' && this.editForm.dueDate) {
-                        let timeStr = new Date(this.editForm.dueDate.replace(/-/g, '/'));
-                        return time.getTime() > timeStr;
-                    } else {
-                        return ''
-                    }
-                }
-            },
-            editPickerTimeEnd: { //限制结束时间
-                disabledDate: (time) => {
-                    if (this.editForm.startDate != '' && this.editForm.startDate) {
-                        let timeStr = new Date(this.editForm.startDate.replace(/-/g, '/'));
-                        return time.getTime() < timeStr;
-                    } else {
-                        return ''
-                    }
-                }
-            },
+      editPickerTimeBeg: {
+        //限制开始时间
+        disabledDate: time => {
+          if (this.editForm.dueDate != "" && this.editForm.dueDate) {
+            let timeStr = new Date(this.editForm.dueDate.replace(/-/g, "/"));
+            return time.getTime() > timeStr;
+          } else {
+            return "";
+          }
+        }
+      },
+      editPickerTimeEnd: {
+        //限制结束时间
+        disabledDate: time => {
+          if (this.editForm.startDate != "" && this.editForm.startDate) {
+            let timeStr = new Date(this.editForm.startDate.replace(/-/g, "/"));
+            return time.getTime() < timeStr;
+          } else {
+            return "";
+          }
+        }
+      },
       //新增
       addFormVisible: false,
       addForm: {
@@ -371,26 +373,28 @@ export default {
         dueDate: "",
         state: ""
       },
-            addPickerTimeBeg: { //限制开始时间
-                disabledDate: (time) => {
-                    if (this.addForm.dueDate != '' && this.addForm.dueDate) {
-                        let timeStr = new Date(this.addForm.dueDate.replace(/-/g, '/'));
-                        return time.getTime() > timeStr;
-                    } else {
-                        return ''
-                    }
-                }
-            },
-            addPickerTimeEnd: { //限制结束时间
-                disabledDate: (time) => {
-                    if (this.addForm.startDate != '' && this.addForm.startDate) {
-                        let timeStr = new Date(this.addForm.startDate.replace(/-/g, '/'));
-                        return time.getTime() < timeStr;
-                    } else {
-                        return ''
-                    }
-                }
-            },
+      addPickerTimeBeg: {
+        //限制开始时间
+        disabledDate: time => {
+          if (this.addForm.dueDate != "" && this.addForm.dueDate) {
+            let timeStr = new Date(this.addForm.dueDate.replace(/-/g, "/"));
+            return time.getTime() > timeStr;
+          } else {
+            return "";
+          }
+        }
+      },
+      addPickerTimeEnd: {
+        //限制结束时间
+        disabledDate: time => {
+          if (this.addForm.startDate != "" && this.addForm.startDate) {
+            let timeStr = new Date(this.addForm.startDate.replace(/-/g, "/"));
+            return time.getTime() < timeStr;
+          } else {
+            return "";
+          }
+        }
+      },
       rules: {
         outerId: [{ required: true, message: "请输入资产ID", trigger: "blur" }],
         type: [
@@ -542,7 +546,7 @@ export default {
         console.log("editForm.startDate=" + _this.editForm.startDate);
         console.log("editForm.dueDate=" + _this.editForm.dueDate);
         if (valid) {
-          const res = await ProjectLW.updateDevice(
+          ProjectLW.updateDevice(
             _this.editForm.outerId,
             _this.editForm.type,
             _this.projectId,
@@ -550,13 +554,12 @@ export default {
             _this.editForm.startDate,
             _this.editForm.dueDate,
             _this.editForm.returnDate
-          );
-          console.log(res);
-          _this.editFormVisible = false;
-          _this.$message.success("修改成功");
-          this.$refs["editForm"].resetFields();
-
-          this.getDeviceList("");
+          ).then(() => {
+            _this.editFormVisible = false;
+            _this.$message.success("修改成功");
+            this.$refs["editForm"].resetFields();
+            this.getDeviceList("");
+          });
         } else {
           this.$message.error("修改失败");
           return false;
@@ -594,14 +597,12 @@ export default {
         .then(async () => {
           if (row.state == "已领取") {
             console.log("row.outerId=" + row.outerId);
-            const res = await ProjectLW.returnDevice(
-              this.projectId,
-              row.outerId
-            );
-            this.getDeviceList("");
-            this.$message({
-              type: "success",
-              message: "归还成功!"
+            ProjectLW.returnDevice(this.projectId, row.outerId).then(() => {
+              this.getDeviceList("");
+              this.$message({
+                type: "success",
+                message: "归还成功!"
+              });
             });
           } else {
             this.$message.error("设备已归还!");

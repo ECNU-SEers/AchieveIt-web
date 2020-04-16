@@ -169,9 +169,13 @@
 
       <!-- 修改 -->
       <el-dialog title="修改项目功能" :visible.sync="editFormVisible">
-        <el-form label-width="150px" class="demo-ruleForm" :model="editForm"
+        <el-form
+          label-width="150px"
+          class="demo-ruleForm"
+          :model="editForm"
           :rules="rules"
-          ref="editForm">
+          ref="editForm"
+        >
           <!-- <el-form-item label="项目ID" required>
           <el-input v-model="editForm.id" placeholder="请填写项目ID"></el-input>
           </el-form-item>-->
@@ -279,12 +283,12 @@ export default {
     async getFunctionList(keyword) {
       try {
         let info;
-        if (keyword === '') {
-          info = await Project.getFirstFunctionList(this.projectId, '');
+        if (keyword === "") {
+          info = await Project.getFirstFunctionList(this.projectId, "");
         } else {
           info = await Project.searchFunction(this.projectId, keyword);
         }
-        
+
         console.log("get function list success!");
         this.tableData = info;
 
@@ -445,13 +449,14 @@ export default {
           .then(async () => {
             try {
               console.log("id: " + row.id);
-              var info = await Project.deleteFunction(this.projectId, row.id);
-              this.$message({
-                type: "success",
-                message: "删除成功!"
+              Project.deleteFunction(this.projectId, row.id).then(() => {
+                this.$message({
+                  type: "success",
+                  message: "删除成功!"
+                });
+                location.reload();
+                // this.getFunctionList(this.keyword);
               });
-              location.reload();
-              // this.getFunctionList(this.keyword);
             } catch (e) {
               console.log(e);
             }
@@ -565,10 +570,10 @@ export default {
             );
           }
         }
-        this.$message({
-          message: "提交成功！",
-          type: "success"
-        });
+        // this.$message({
+        //   message: "提交成功！",
+        //   type: "success"
+        // });
         this.addExcelFormVisible = false;
         this.getFunctionList("");
       } else {
@@ -625,7 +630,7 @@ export default {
       cb(tmp);
     },
     async searchFunctions(keyword) {
-        this.getFunctionList(keyword);    
+      this.getFunctionList(keyword);
     },
     async selectSearch(item) {
       this.selectedMember = item.id;
