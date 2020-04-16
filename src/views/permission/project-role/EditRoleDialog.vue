@@ -2,7 +2,7 @@
   <el-dialog title="编辑角色" :visible="visibility" :before-close="close">
     <el-form v-model="form">
       <el-form-item label="角色名称">
-        <el-input v-model="form.name" />
+        <el-input v-model="form.name" maxlength="30" />
       </el-form-item>
       <el-form-item label="创建人">
         <el-input readonly disabled :value="creator" />
