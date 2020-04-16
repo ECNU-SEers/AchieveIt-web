@@ -209,6 +209,21 @@ export default class ProjectSYJ {
     return await post("/project/" + projectId + "/role/" + roleId + "/assign", {assigneeId});
    }
 
-   // 功能列表
+   // 用户
+   static async getRiskResponsers(projectId) {
+    return await get("/project/" + projectId + "/risk/owners");
+   }
+
+   static async getRiskRelators(projectId) {
+    return await get("/project/" + projectId + "/risk/relatedPeople");
+   }
+
+   static async getDefectHandlers(projectId) {
+     return await get("/project/" + projectId + "/defect/assignees");
+   }
+
+   static async getProjectLeaders(projectId) {
+     return await get("/project/" + projectId + "/member/leaders");
+   }
    
 }

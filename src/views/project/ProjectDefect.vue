@@ -222,9 +222,7 @@ export default {
   },
   data() {
     return {
-      maxNameLength: 25,
-      maxDesLength: 200,
-      maxNameLength: 25,
+      maxNameLength: 30,
       maxDesLength: 200,
       infoLoading: true,
       loading: true,
@@ -542,7 +540,7 @@ export default {
     async handleAdd() {
       this.addFormVisible = true;
       this.getDefectTypeModal();
-      this.members = await ProjectSYJ.getProjectMembers(this.projectId);
+      this.members = await ProjectSYJ.getDefectHandlers(this.projectId);
     },
 
     addDefect() {},

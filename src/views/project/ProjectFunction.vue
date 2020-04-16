@@ -212,7 +212,7 @@ export default {
   },
   data() {
     return {
-      maxNameLength: 25,
+      maxNameLength: 30,
       maxDesLength: 200,
       infoLoading: true,
       rules: {

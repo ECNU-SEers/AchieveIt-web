@@ -37,12 +37,19 @@
             <el-form :model="editForm" ref="editForm" label-width="120px" class="editForm">
               <!-- 输入框 -->
               <el-form-item label="Git仓库地址" prop="GitAddress">
-                <el-input v-model="editForm.GitAddress" clearable :maxlength="maxNameLength" show-word-limit></el-input>
+                <el-input
+                  v-model="editForm.GitAddress"
+                  clearable
+                  :maxlength="maxNameLength"
+                  show-word-limit
+                ></el-input>
               </el-form-item>
 
               <!-- 输入框 -->
               <el-form-item label="虚拟机空间" prop="virtualSpace">
-                <el-input v-model="editForm.virtualSpace" clearable :maxlength="maxNameLength" show-word-limit></el-input>
+                <el-input v-model="editForm.virtualSpace" clearable oninput = "value=value.replace(/[^\d]/g,'')">
+                  <i slot="suffix">GB</i>
+                </el-input>
               </el-form-item>
 
               <!-- 布尔开关 仅第一次可修改 -->
@@ -70,13 +77,11 @@
                   ></el-switch>
                 </el-tooltip>
               </el-form-item>
-
-              <el-form-item style="padding-left:45%;">
-                <!--btn和基本信息中略不同，建议试下放右边-->
-                <el-button type="primary" @click="editSubmit()" style="margin-right:8%;">确定</el-button>
-                <el-button @click="editFormVisible = false">取消</el-button>
-              </el-form-item>
             </el-form>
+            <div slot="footer" class="dialog-footer">
+              <el-button @click="editFormVisible = false">取消</el-button>
+              <el-button type="primary" @click="editSubmit()" style="margin-right:8%;">提交</el-button>
+            </div>
           </el-dialog>
         </div>
 

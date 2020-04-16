@@ -573,7 +573,7 @@ export default {
   data() {
     return {
       infoLoading: true,
-      maxNameLength: 25,
+      maxNameLength: 30,
       maxDesLength: 200,
       // 分页
       pageNo: 1,

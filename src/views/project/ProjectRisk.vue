@@ -40,7 +40,7 @@
               this.projectState !== '立项驳回' &&
               this.permissions.indexOf('新增风险') > -1
           "
-          @click="addFormVisible = true"
+          @click="handleAdd"
           type="primary"
         >新增</el-button>
 
@@ -115,7 +115,7 @@
                     v-for="person in props.row.riskRelatedPeople"
                     :key="person.id"
                   >[{{ person.username }}]</span>
-                  <span v-if="props.row.riskRelatedPeople.length==0">暂无数据</span>
+                  <span v-if="props.row.riskRelatedPeople.length===0">暂无数据</span>
                 </el-form-item>
                 <el-form-item label="风险来源">
                   <span>{{ props.row.source }}</span>
@@ -156,10 +156,7 @@
                   type="primary"
                   icon="el-icon-edit"
                   size="medium"
-                  @click="
-                    editFormVisible = true;
-                    updateRisk(row);
-                  "
+                  @click="handleEdit"
                 ></el-button>
 
                 <el-button
@@ -247,28 +244,34 @@
               placeholder="请选择该风险责任人"
             >
               <el-option
-                v-for="item in users.items"
+                v-for="item in responsers"
                 :key="item.userId"
-                :label="item.realName + '(' + item.username + ')'"
-                :value="item"
-              ></el-option>
+                :label="item.realName"
+                :value="item.userId"
+              >
+              <span style="float: left">{{ item.realName }}</span>
+              <span style="float: right; color: #8492a6; font-size: 13px">{{ item.username }}</span></el-option>
             </el-select>
           </el-form-item>
 
           <!--单选-->
-          <el-form-item label="风险跟踪频度:（单位:天/次）" prop="trackingFreq">
-            <el-input v-model="addForm.trackingFreq"></el-input>
+          <el-form-item label="风险跟踪频度:" prop="trackingFreq">
+            <el-input v-model="addForm.trackingFreq" oninput = "value=value.replace(/[^\d]/g,'')">
+              <i slot="suffix">天/次</i>
+            </el-input>
           </el-form-item>
 
           <!--风险相关人员 （多选、可搜索）-->
           <el-form-item label="风险相关者:" prop="relatedPersons">
             <el-select v-model="addForm.relatedPersons" multiple filterable placeholder="至少有一位相关者">
               <el-option
-                v-for="item in users.items"
+                v-for="item in relators"
                 :key="item.userId"
-                :label="item.realName + '(' + item.username + ')'"
+                :label="item.realName"
                 :value="item.userId"
-              ></el-option>
+              >
+              <span style="float: left">{{ item.realName }}</span>
+              <span style="float: right; color: #8492a6; font-size: 13px">{{ item.username }}</span></el-option>
             </el-select>
           </el-form-item>
 
@@ -381,17 +384,21 @@
               placeholder="请选择该风险责任人"
             >
               <el-option
-                v-for="item in users.items"
+                v-for="item in responsers"
                 :key="item.userId"
-                :label="item.realName + '(' + item.username + ')'"
-                :value="item"
-              ></el-option>
+                :label="item.realName"
+                :value="item.userId"
+              >
+              <span style="float: left">{{ item.realName }}</span>
+              <span style="float: right; color: #8492a6; font-size: 13px">{{ item.username }}</span></el-option>
             </el-select>
           </el-form-item>
 
           <!--单选-->
-          <el-form-item label="风险跟踪频度:（单位:天/次）" prop="trackingFreq">
-            <el-input v-model="editForm.trackingFreq"></el-input>
+          <el-form-item label="风险跟踪频度:" prop="trackingFreq">
+            <el-input v-model="editForm.trackingFreq">
+              <i slot="suffix">天/次</i>
+            </el-input>
           </el-form-item>
 
           <!--风险相关人员 （多选、可搜索）-->
@@ -404,11 +411,13 @@
               placeholder="请选择至少一位相关者"
             >
               <el-option
-                v-for="item in users.items"
+                v-for="item in relators"
                 :key="item.userId"
-                :label="item.realName + '(' + item.username + ')'"
+                :label="item.realName"
                 :value="item.userId"
-              ></el-option>
+              >
+              <span style="float: left">{{ item.realName }}</span>
+              <span style="float: right; color: #8492a6; font-size: 13px">{{ item.username }}</span></el-option>
             </el-select>
           </el-form-item>
 
@@ -431,6 +440,7 @@ import Search from "@/components/common/Search";
 import PageHeader from "@/components/common/PageHeader";
 import Pagination from "@/components/common/Pagination";
 import ProjectLW from "@/sys/models/project_lw";
+import ProjectSYJ from "@/sys/models/project_syj";
 // import { mapGetters } from "vuex";
 export default {
   components: {
@@ -440,7 +450,7 @@ export default {
   },
   data() {
     return {
-      maxNameLength: 25,
+      maxNameLength: 30,
       maxDesLength: 200,
       infoLoading: true,
       loading: true,
@@ -452,6 +462,8 @@ export default {
       riskData: [],
       results: [],
       users: [],
+      responsers: [],
+      relators: [],
       relatedPersons: [],
       row: "",
       permissions: [],
@@ -586,17 +598,12 @@ export default {
   mounted() {
     this.projectId = this.$route.query.projectId;
     this.projectState = this.$route.query.projectState;
-    if (this.projectId === undefined) {
-      this.$message({
-        message: "请先选择项目！",
-        type: "warning"
-      });
-    } else {
+
       this.getMyPermissions(this.projectId);
       this.getRiskList("");
       this.getOtherProjects();
-      this.getAllMembers();
-    }
+      // this.getAllMembers();
+      
   },
   methods: {
     //获取用户当前项目权限
@@ -622,37 +629,37 @@ export default {
       var tmp = [];
       res.items.forEach(item => {
         const obj = {};
-        if (item.id == null || "") {
+        if (item.id === null || "") {
           obj.id = "暂无数据";
         } else {
           obj.id = item.id;
         }
-        if (item.name == null || "") {
+        if (item.name === null || "") {
           obj.name = "暂无数据";
         } else {
           obj.name = item.name;
         }
-        if (item.type == null || "") {
+        if (item.type === null || "") {
           obj.type = "暂无数据";
         } else {
           obj.type = item.type;
         }
-        if (item.level == null || "") {
+        if (item.level === null || "") {
           obj.level = "暂无数据";
         } else {
           obj.level = _this.level[item.level].name;
         }
-        if (item.impact == null || "") {
+        if (item.impact === null || "") {
           obj.impact = "暂无数据";
         } else {
           obj.impact = _this.impact[item.impact].name;
         }
-        if (item.strategy == null || "") {
+        if (item.strategy === null || "") {
           obj.strategy = "暂无数据";
         } else {
           obj.strategy = item.strategy;
         }
-        if (item.ownerName == null || "") {
+        if (item.ownerName === null || "") {
           obj.ownerName = "暂无数据";
         } else {
           obj.ownerName = item.ownerName;
@@ -678,7 +685,7 @@ export default {
           obj.source = _this.source[item.source].name;
         }
 
-        if (this.$options.methods.isEmpty(item.riskRelatedPeople) == true) {
+        if (this.$options.methods.isEmpty(item.riskRelatedPeople) === true) {
           // console.log("this.riskRelatedPeople.length="+item.riskRelatedPeople.length);
           obj.riskRelatedPeople = [];
         } else {
@@ -688,6 +695,12 @@ export default {
       });
       this.riskData = tmp;
       this.infoLoading = false;
+    },
+
+    handleAdd() {
+      this.addFormVisible = true;
+      this.getRiskResponsers();
+      this.getRiskRelators();
     },
     //新增
     addSubmit(formName) {
@@ -720,12 +733,22 @@ export default {
       });
     },
     //Form下拉，项目成员
-    async getAllMembers() {
-      // console.log("回调参数" + callback);
-      const res = await ProjectLW.getAllMembers(this.projectId);
-      console.log("member=" + res);
-      this.users = res;
+    // async getAllMembers() {
+    //   // console.log("回调参数" + callback);
+    //   const res = await ProjectLW.getAllMembers(this.projectId);
+    //   console.log("member=" + res);
+    //   this.users = res;
+    // },
+    async getRiskResponsers() {
+      this.responsers = await ProjectSYJ.getRiskResponsers(this.projectId);
+      console.log(this.responsers);
     },
+
+    async getRiskRelators() {
+      this.relators = await ProjectSYJ.getRiskRelators(this.projectId);
+    },
+
+
     handleClose(done) {
       this.$confirm("确认关闭？")
         .then(_ => {
@@ -743,7 +766,7 @@ export default {
     find(obj, val) {
       var res;
       obj.forEach(item => {
-        if (item.name == val) {
+        if (item.name === val) {
           res = item.value;
         }
       });
@@ -777,6 +800,14 @@ export default {
       };
       this.row = row;
     },
+
+    handleEdit() {
+      editFormVisible = true;
+      updateRisk(row);
+      this.getRiskRelators();
+      this.getRiskResponsers();
+    },
+
     //确认编辑
     editSubmit(formName) {
       this.$refs[formName].validate(async valid => {
@@ -866,11 +897,11 @@ export default {
     async importSubmit() {
       var importSourceId = this.importSourceId;
       var _this = this;
-      if (importSourceId == "" || importSourceId == null) {
+      if (importSourceId === "" || importSourceId === null) {
         _this.$message.warning("请选择风险来源!");
       } else {
         try {
-          if (importSourceId == -1) {
+          if (importSourceId === -1) {
             ProjectLW.importRisksFromStdLib(this.projectId).then(() => {
               _this.$message.success("导入成功");
             })
