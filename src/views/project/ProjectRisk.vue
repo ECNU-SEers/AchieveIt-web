@@ -256,7 +256,7 @@
 
           <!--单选-->
           <el-form-item label="风险跟踪频度:" prop="trackingFreq">
-            <el-input v-model="addForm.trackingFreq" oninput = "value=value.replace(/[^\d]/g,'')">
+            <el-input v-model="addForm.trackingFreq" oninput = "value=value.replace(/[^\d]/g,'')"  :maxlength="3" show-word-limit>
               <i slot="suffix">天/次</i>
             </el-input>
           </el-form-item>

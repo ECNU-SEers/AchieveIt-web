@@ -47,7 +47,7 @@
 
               <!-- 输入框 -->
               <el-form-item label="虚拟机空间" prop="virtualSpace">
-                <el-input v-model="editForm.virtualSpace" clearable oninput = "value=value.replace(/[^\d]/g,'')">
+                <el-input v-model="editForm.virtualSpace" clearable oninput = "value=value.replace(/[^\d]/g,'')" :maxlength="4" show-word-limit>
                   <i slot="suffix">GB</i>
                 </el-input>
               </el-form-item>
