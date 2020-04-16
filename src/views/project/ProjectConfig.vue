@@ -294,6 +294,7 @@ export default {
       );
       this.editFormVisible = false;
       this.$message.success("修改成功");
+      this.$refs["editForm"].resetFields();
       if (
         this.editForm.fileAddValue == true &&
         this.editForm.emailValue == true &&

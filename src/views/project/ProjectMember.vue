@@ -502,6 +502,7 @@ export default {
               message: "已提交!"
             });
             this.addFormVisible = false;
+            this.$refs["addForm"].resetFields();
             // location.reload();
             this.getMemberList(this.keyword);
           });
@@ -571,6 +572,7 @@ export default {
         message: "已提交!"
       });
       this.editFormVisible = false;
+      this.$refs["editForm"].resetFields();
       // location.reload();
       this.getMemberList(this.keyword);
     },

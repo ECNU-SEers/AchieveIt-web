@@ -42,8 +42,7 @@
           "
           @click="addFormVisible = true"
           type="primary"
-          >新增</el-button
-        >
+        >新增</el-button>
 
         <!--导入-->
         <el-button
@@ -57,14 +56,13 @@
               this.projectState !== '立项驳回' &&
               this.permissions.indexOf('新增风险') > -1
           "
-          >导入</el-button
-        >
+        >导入</el-button>
       </PageHeader>
 
       <!--列表展示-->
       <Pagination v-if="this.projectId !== undefined">
         <el-table
-        v-loading="infoLoading"
+          v-loading="infoLoading"
           :data="riskData"
           stripe
           border
@@ -112,12 +110,11 @@
                 <el-form-item label="跟踪频度(单位:次/天)">
                   <span>{{ props.row.trackingFreq }}</span>
                 </el-form-item>
-                <el-form-item label="相关者" >
+                <el-form-item label="相关者">
                   <span
                     v-for="person in props.row.riskRelatedPeople"
                     :key="person.id"
-                    >[{{ person.username }}]
-                  </span>
+                  >[{{ person.username }}]</span>
                   <span v-if="props.row.riskRelatedPeople.length==0">暂无数据</span>
                 </el-form-item>
                 <el-form-item label="风险来源">
@@ -126,11 +123,7 @@
               </el-form>
             </template>
           </el-table-column>
-          <el-table-column
-            label="序号"
-            type="index"
-            width="70px"
-          ></el-table-column>
+          <el-table-column label="序号" type="index" width="70px"></el-table-column>
           <el-table-column label="风险 ID" prop="id"></el-table-column>
           <el-table-column label="风险名称" prop="name"></el-table-column>
           <el-table-column label="风险类型" prop="type"></el-table-column>
@@ -142,7 +135,7 @@
         <el-table-column label="责任人" prop="ownerId"></el-table-column>
         <el-table-column label="跟踪频度" prop="trackingFreq"></el-table-column>
         <el-table-column label="相关者" prop="relatedPersons"></el-table-column>
-        <el-table-column label="风险来源" prop="source"></el-table-column>-->
+          <el-table-column label="风险来源" prop="source"></el-table-column>-->
 
           <!---编辑和移除-->
           <el-table-column
@@ -185,7 +178,6 @@
       <el-dialog
         title="风险信息"
         :visible.sync="addFormVisible"
-        :before-close="handleClose"
         @open="handleForm('addForm')"
         :append-to-body="true"
       >
@@ -236,12 +228,7 @@
 
           <!--文本域-->
           <el-form-item label="风险应对策略:" prop="strategy">
-            <el-input
-              type="textarea"
-              :row="3"
-              placeholder="请输入风险应对策略"
-              v-model="addForm.strategy"
-            ></el-input>
+            <el-input type="textarea" :row="3" placeholder="请输入风险应对策略" v-model="addForm.strategy"></el-input>
           </el-form-item>
 
           <!--单选-->
@@ -273,12 +260,7 @@
 
           <!--风险相关人员 （多选、可搜索）-->
           <el-form-item label="风险相关者:" prop="relatedPersons">
-            <el-select
-              v-model="addForm.relatedPersons"
-              multiple
-              filterable
-              placeholder="至少有一位相关者"
-            >
+            <el-select v-model="addForm.relatedPersons" multiple filterable placeholder="至少有一位相关者">
               <el-option
                 v-for="item in users.items"
                 :key="item.userId"
@@ -292,34 +274,23 @@
           <el-form-item label="资产来源:">
             <el-input placeholder="项目自身识别" :disabled="true"></el-input>
           </el-form-item>
-
-          <el-form-item>
-            <el-button
-              type="primary"
-              @click="addSubmit('addForm')"
-              style="margin-right:8%;"
-              >添加</el-button
-            >
-            <el-button @click="addFormVisible = false">取消</el-button>
-          </el-form-item>
         </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="addFormVisible = false">取消</el-button>
+          <el-button type="primary" @click="addSubmit('addForm')">提交</el-button>
+        </div>
       </el-dialog>
 
       <!--导入-->
       <el-dialog
         title="导入风险信息"
         :visible.sync="importFormVisible"
-        :before-close="handleClose"
         :append-to-body="true"
         @open="clearCascader()"
         center
       >
-        <div
-          style="text-align:center;margin:-20px auto 0 auto;color:red;font-size:1px;"
-        >
-          <span
-            >(提示：若从其他项目导入，可直接搜索项目名称，所选项目所有风险将会被导入)</span
-          >
+        <div style="text-align:center;margin:-20px auto 0 auto;color:red;font-size:1px;">
+          <span>(提示：若从其他项目导入，可直接搜索项目名称，所选项目所有风险将会被导入)</span>
           <div style="padding-top:30px;">
             <el-cascader
               ref="cascader"
@@ -329,17 +300,11 @@
               :show-all-levels="false"
               filterable
               clearable
-            >
-            </el-cascader>
+            ></el-cascader>
           </div>
-          <div style="padding-top:30px;">
-            <el-button
-              type="primary"
-              @click="importSubmit()"
-              style="margin-right:8%;"
-              >导入</el-button
-            >
+          <div slot="footer" class="dialog-footer" style="padding-top:30px;">
             <el-button @click="importFormVisible = false">取消</el-button>
+            <el-button type="primary" @click="importSubmit()">导入</el-button>
           </div>
         </div>
       </el-dialog>
@@ -348,16 +313,10 @@
       <el-dialog
         title="风险信息"
         :visible.sync="editFormVisible"
-        :before-close="handleClose"
         @open="handleForm('editForm')"
         :append-to-body="true"
       >
-        <el-form
-          :model="editForm"
-          :rules="rules"
-          ref="editForm"
-          label-width="120px"
-        >
+        <el-form :model="editForm" :rules="rules" ref="editForm" label-width="120px">
           <!--文本框-->
           <el-form-item label="风险名称:" prop="name">
             <el-input v-model="editForm.name"></el-input>
@@ -398,12 +357,7 @@
 
           <!--文本域-->
           <el-form-item label="风险应对策略:" prop="strategy">
-            <el-input
-              type="textarea"
-              :row="3"
-              placeholder="请输入风险应对策略"
-              v-model="editForm.strategy"
-            ></el-input>
+            <el-input type="textarea" :row="3" placeholder="请输入风险应对策略" v-model="editForm.strategy"></el-input>
           </el-form-item>
 
           <!--单选-->
@@ -458,17 +412,11 @@
           <el-form-item label="风险来源:">
             <el-input v-model="editForm.source" disabled></el-input>
           </el-form-item>
-
-          <el-form-item>
-            <el-button
-              type="primary"
-              @click="editSubmit('editForm')"
-              style="margin-right:8%;"
-              >修改</el-button
-            >
-            <el-button @click="editFormVisible = false">取消</el-button>
-          </el-form-item>
         </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="editFormVisible = false">取消</el-button>
+          <el-button type="primary" @click="editSubmit('editForm')" style="margin-right:8%;">修改</el-button>
+        </div>
       </el-dialog>
     </div>
   </div>
@@ -723,7 +671,7 @@ export default {
         } else {
           obj.source = _this.source[item.source].name;
         }
-       
+
         if (this.$options.methods.isEmpty(item.riskRelatedPeople) == true) {
           // console.log("this.riskRelatedPeople.length="+item.riskRelatedPeople.length);
           obj.riskRelatedPeople = [];
@@ -755,6 +703,7 @@ export default {
           );
           // console.log(res);
           this.getRiskList("");
+          this.$refs["addForm"].resetFields();
           this.addFormVisible = false;
           this.$message.success("添加成功");
         } else {
@@ -845,6 +794,7 @@ export default {
           // console.log(res);
           _this.editFormVisible = false;
           _this.$message.success("修改成功");
+          this.$refs["editForm"].resetFields();
           this.getRiskList("");
         } else {
           this.$message.error("修改失败");
