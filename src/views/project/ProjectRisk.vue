@@ -42,7 +42,8 @@
           "
           @click="addFormVisible = true"
           type="primary"
-        >新增</el-button>
+          >新增</el-button
+        >
 
         <!--导入-->
         <el-button
@@ -56,7 +57,8 @@
               this.projectState !== '立项驳回' &&
               this.permissions.indexOf('新增风险') > -1
           "
-        >导入</el-button>
+          >导入</el-button
+        >
       </PageHeader>
 
       <!--列表展示-->
@@ -114,8 +116,11 @@
                   <span
                     v-for="person in props.row.riskRelatedPeople"
                     :key="person.id"
-                  >[{{ person.username }}]</span>
-                  <span v-if="props.row.riskRelatedPeople.length==0">暂无数据</span>
+                    >[{{ person.username }}]</span
+                  >
+                  <span v-if="props.row.riskRelatedPeople.length == 0"
+                    >暂无数据</span
+                  >
                 </el-form-item>
                 <el-form-item label="风险来源">
                   <span>{{ props.row.source }}</span>
@@ -123,7 +128,11 @@
               </el-form>
             </template>
           </el-table-column>
-          <el-table-column label="序号" type="index" width="70px"></el-table-column>
+          <el-table-column
+            label="序号"
+            type="index"
+            width="70px"
+          ></el-table-column>
           <el-table-column label="风险 ID" prop="id"></el-table-column>
           <el-table-column label="风险名称" prop="name"></el-table-column>
           <el-table-column label="风险类型" prop="type"></el-table-column>
@@ -228,7 +237,12 @@
 
           <!--文本域-->
           <el-form-item label="风险应对策略:" prop="strategy">
-            <el-input type="textarea" :row="3" placeholder="请输入风险应对策略" v-model="addForm.strategy"></el-input>
+            <el-input
+              type="textarea"
+              :row="3"
+              placeholder="请输入风险应对策略"
+              v-model="addForm.strategy"
+            ></el-input>
           </el-form-item>
 
           <!--单选-->
@@ -260,7 +274,12 @@
 
           <!--风险相关人员 （多选、可搜索）-->
           <el-form-item label="风险相关者:" prop="relatedPersons">
-            <el-select v-model="addForm.relatedPersons" multiple filterable placeholder="至少有一位相关者">
+            <el-select
+              v-model="addForm.relatedPersons"
+              multiple
+              filterable
+              placeholder="至少有一位相关者"
+            >
               <el-option
                 v-for="item in users.items"
                 :key="item.userId"
@@ -277,7 +296,9 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="addFormVisible = false">取消</el-button>
-          <el-button type="primary" @click="addSubmit('addForm')">提交</el-button>
+          <el-button type="primary" @click="addSubmit('addForm')"
+            >提交</el-button
+          >
         </div>
       </el-dialog>
 
@@ -289,8 +310,12 @@
         @open="clearCascader()"
         center
       >
-        <div style="text-align:center;margin:-20px auto 0 auto;color:red;font-size:1px;">
-          <span>(提示：若从其他项目导入，可直接搜索项目名称，所选项目所有风险将会被导入)</span>
+        <div
+          style="text-align:center;margin:-20px auto 0 auto;color:red;font-size:1px;"
+        >
+          <span
+            >(提示：若从其他项目导入，可直接搜索项目名称，所选项目所有风险将会被导入)</span
+          >
           <div style="padding-top:30px;">
             <el-cascader
               ref="cascader"
@@ -316,7 +341,12 @@
         @open="handleForm('editForm')"
         :append-to-body="true"
       >
-        <el-form :model="editForm" :rules="rules" ref="editForm" label-width="120px">
+        <el-form
+          :model="editForm"
+          :rules="rules"
+          ref="editForm"
+          label-width="120px"
+        >
           <!--文本框-->
           <el-form-item label="风险名称:" prop="name">
             <el-input v-model="editForm.name"></el-input>
@@ -357,7 +387,12 @@
 
           <!--文本域-->
           <el-form-item label="风险应对策略:" prop="strategy">
-            <el-input type="textarea" :row="3" placeholder="请输入风险应对策略" v-model="editForm.strategy"></el-input>
+            <el-input
+              type="textarea"
+              :row="3"
+              placeholder="请输入风险应对策略"
+              v-model="editForm.strategy"
+            ></el-input>
           </el-form-item>
 
           <!--单选-->
@@ -415,7 +450,12 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="editFormVisible = false">取消</el-button>
-          <el-button type="primary" @click="editSubmit('editForm')" style="margin-right:8%;">修改</el-button>
+          <el-button
+            type="primary"
+            @click="editSubmit('editForm')"
+            style="margin-right:8%;"
+            >修改</el-button
+          >
         </div>
       </el-dialog>
     </div>
