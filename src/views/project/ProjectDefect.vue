@@ -559,6 +559,7 @@ export default {
                 message: "提交成功！",
                 type: "success"
               });
+              this.submitLoading = false;
               this.$refs["addForm"].resetFields();
               this.getAllDefects("");
             });
