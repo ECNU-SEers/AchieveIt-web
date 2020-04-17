@@ -2,7 +2,7 @@
   <el-dialog title="新增角色" :visible="visibility" :before-close="close">
     <el-form v-model="form">
       <el-form-item label="角色名称">
-        <el-input v-model="form.roleName" />
+        <el-input v-model="form.roleName" maxlength="30" />
       </el-form-item>
       <el-form-item>
         <RolePermissions
