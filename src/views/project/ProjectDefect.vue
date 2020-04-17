@@ -114,7 +114,7 @@
           class="demo-ruleForm"
         >
           <el-form-item label="缺陷名称" prop="name">
-            <el-input v-model="addForm.name" placeholder="请填写缺陷名称"></el-input>
+            <el-input v-model="addForm.name" placeholder="请填写缺陷名称" clearable :maxlength="maxNameLength" show-word-limit></el-input>
           </el-form-item>
           <el-form-item label="缺陷类型" prop="type">
             <el-select v-model="addForm.type" placeholder="请选择缺陷类型">
@@ -155,7 +155,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="缺陷描述" prop="description">
-            <el-input type="textarea" v-model="addForm.description" placeholder></el-input>
+            <el-input type="textarea" v-model="addForm.description" placeholder clearable :maxlength="maxDesLength" show-word-limit></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -175,7 +175,7 @@
           class="demo-ruleForm"
         >
           <el-form-item label="缺陷名称" prop="name">
-            <el-input v-model="editForm.name" placeholder="请填写缺陷名称"></el-input>
+            <el-input v-model="editForm.name" placeholder="请填写缺陷名称" clearable :maxlength="maxNameLength" show-word-limit></el-input>
           </el-form-item>
           <el-form-item label="缺陷类型" prop="type">
             <el-select v-model="editForm.type" placeholder="请选择缺陷类型">
@@ -193,7 +193,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="缺陷描述" prop="description">
-            <el-input type="textarea" v-model="editForm.description" placeholder></el-input>
+            <el-input type="textarea" v-model="editForm.description" placeholder clearable :maxlength="maxDesLength" show-word-limit></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -222,6 +222,8 @@ export default {
   },
   data() {
     return {
+      maxNameLength: 30,
+      maxDesLength: 200,
       infoLoading: true,
       loading: true,
       page: 1,
@@ -319,7 +321,7 @@ export default {
           {
             required: true,
             message: "请填写缺陷名称",
-            triggle: "blur"
+            trigger: "blur"
           }
         ],
         type: [
@@ -327,7 +329,7 @@ export default {
             type: "number",
             required: true,
             message: "请选择缺陷类型",
-            triggle: "blur"
+            trigger: "blur"
           }
         ],
         level: [
@@ -335,7 +337,7 @@ export default {
             type: "number",
             required: true,
             message: "请选择缺陷等级",
-            triggle: "change"
+            trigger: "change"
           }
         ],
         handlerId: [
@@ -343,21 +345,21 @@ export default {
             type: "number",
             required: true,
             message: "请选择缺陷处理人",
-            triggle: "blur"
+            trigger: "blur"
           }
         ],
         description: [
           {
             required: true,
             message: "请填写缺陷描述",
-            triggle: "blur"
+            trigger: "blur"
           }
         ],
         due: [
           {
             required: true,
             message: "请选择预定日期",
-            triggle: "blur"
+            trigger: "blur"
           }
         ]
       },
@@ -377,7 +379,7 @@ export default {
           {
             required: true,
             message: "请填写缺陷名称",
-            triggle: "blur"
+            trigger: "blur"
           }
         ],
         type: [
@@ -385,7 +387,7 @@ export default {
             type: "number",
             required: true,
             message: "请选择缺陷类型",
-            triggle: "blur"
+            trigger: "blur"
           }
         ],
         level: [
@@ -393,14 +395,14 @@ export default {
             type: "number",
             required: true,
             message: "请选择缺陷等级",
-            triggle: "change"
+            trigger: "change"
           }
         ],
         description: [
           {
             required: true,
             message: "请填写缺陷描述",
-            triggle: "blur"
+            trigger: "blur"
           }
         ]
       },
@@ -538,7 +540,7 @@ export default {
     async handleAdd() {
       this.addFormVisible = true;
       this.getDefectTypeModal();
-      this.members = await ProjectSYJ.getProjectMembers(this.projectId);
+      this.members = await ProjectSYJ.getDefectHandlers(this.projectId);
     },
 
     addDefect() {},

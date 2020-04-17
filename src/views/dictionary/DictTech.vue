@@ -42,7 +42,7 @@
         label-width="130px"
       >
         <el-form-item label="技术名称" prop="name">
-          <el-input v-model="addForm.name" placeholder="请填写技术名称"></el-input>
+          <el-input v-model="addForm.name" placeholder="请填写技术名称" clearable :maxlength="maxNameLength" show-word-limit></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -61,7 +61,7 @@
         label-width="130px"
       >
         <el-form-item label="技术名称" prop="name">
-          <el-input v-model="editForm.name" placeholder="请填写技术名称"></el-input>
+          <el-input v-model="editForm.name" placeholder="请填写技术名称" clearable :maxlength="maxNameLength" show-word-limit></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -78,6 +78,7 @@ import ProjectSYJ from "@/sys/models/project_syj";
 export default {
   data() {
     return {
+      maxNameLength: 30,
       infoLoading: true,
       teches: [],
 
@@ -91,7 +92,7 @@ export default {
           {
             required: true,
             message: "请填写技术名称",
-            triggle: "blur"
+            trigger: "blur"
           }
         ]
       },
@@ -108,7 +109,7 @@ export default {
           {
             required: true,
             message: "请填写技术名称",
-            triggle: "blur"
+            trigger: "blur"
           }
         ]
       }

@@ -40,6 +40,7 @@
                 v-model="editForm.name"
                 placeholder="请输入项目名称"
                 clearable
+                :maxlength="maxNameLength" show-word-limit
               ></el-input>
             </el-form-item>
 
@@ -109,6 +110,8 @@
                 type="textarea"
                 autosize
                 v-model="editForm.milestone"
+                clearable
+                :maxlength="maxDesLength" show-word-limit
               ></el-input>
             </el-form-item>
 
@@ -200,6 +203,8 @@ export default {
       }
     };
     return {
+      maxNameLength: 30,
+      maxDesLength: 200,
       infoLoading: true,
       state: "",
       outerId: "",

@@ -5,6 +5,7 @@
     :fetch-suggestions="querySearch"
     :placeholder="placeholder || '请输入关键字查询'"
     @select="handleSelect"
+    maxlength="30"
   >
     <el-button
       @click="onSearch"

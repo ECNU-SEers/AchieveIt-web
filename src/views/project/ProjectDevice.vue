@@ -163,7 +163,7 @@
         >
           <!--文本框-->
           <el-form-item label="资产ID:" prop="outerId">
-            <el-input v-model="addForm.outerId"></el-input>
+            <el-input v-model="addForm.outerId" clearable :maxlength="maxNameLength" show-word-limit></el-input>
           </el-form-item>
 
           <!--单选-->
@@ -307,6 +307,8 @@ export default {
   },
   data() {
     return {
+      maxNameLength: 30,
+      maxDesLength: 200,
       infoLoading: true,
       loading: true,
       //分页

@@ -219,7 +219,7 @@
               clearable
             >
               <el-option
-                v-for="item in tableData"
+                v-for="item in projectLeaders"
                 :key="item.userId"
                 :label="item.realName"
                 :value="item"
@@ -247,6 +247,7 @@ import Pagination from "../../components/common/Pagination";
 import Project from "@/sys/models/project_htx";
 import { mapGetters } from "vuex";
 import XLSX from "xlsx";
+import ProjectSYJ from "@/sys/models/project_syj";
 
 export default {
   components: {
@@ -298,6 +299,7 @@ export default {
         leader: ""
       },
       tableData: [],
+      projectLeaders: [],
 
       // 导入excel
       uploadMember: [],
@@ -329,6 +331,12 @@ export default {
       // }
       console.log("permission: " + this.permission);
     },
+
+    // 获取项目中的上级
+    async getProjectLeaders() {
+      this.projectLeaders = await ProjectSYJ.getProjectLeaders(this.projectId);
+    },
+
     // 上传excel
     submitUpload() {
       if (this.submitUploadfailed === false) {

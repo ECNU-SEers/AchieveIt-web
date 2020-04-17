@@ -2,7 +2,7 @@
   <el-dialog title="编辑角色" :visible="visibility" :before-close="close">
     <el-form :model="form" :rules="rules">
       <el-form-item prop="name" label="角色名称">
-        <el-input v-model="form.name" />
+        <el-input v-model="form.name" maxlength="30" />
       </el-form-item>
       <el-form-item label="创建人">
         <el-input readonly disabled :value="creator" />
@@ -52,11 +52,9 @@ export default {
         name: this.name,
         permissions: this.permissions
       },
-      rules: [
-        {
-          name: [{ required: true, message: '请输入角色名' }]
-        }
-      ]
+      rules: {
+        name: [{ required: true, message: '请输入角色名' }]
+      }
     };
   },
   methods: {

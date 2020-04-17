@@ -51,15 +51,44 @@
                 icon="el-icon-search"
               ></el-button>
               <el-button
+                v-permission="'新建项目'"
                 size="medium"
                 type="primary"
                 @click.stop="handleEdit(scope.$index, scope.row)"
                 icon="el-icon-edit"
               ></el-button>
               <el-button
+                v-permission="'分配QA'"
+                size="medium"
+                type="primary"
+                @click.stop="handleAssignQA(scope.$index, scope.row)"
+                icon="el-icon-user-solid"
+              ></el-button>
+              <el-button
+                v-permission="'分配EPG'"
+                size="medium"
+                type="primary"
+                @click.stop="handleAssignEPG(scope.$index, scope.row)"
+                icon="el-icon-user-solid"
+              ></el-button>
+              <el-button
+                v-permission="'审核项目'"
+                size="medium"
+                type="primary"
+                @click.stop="handleApproval(scope.$index, scope.row)"
+                icon="el-icon-document"
+              ></el-button>
+              <el-button
+                v-permission="'归档审批'"
+                size="medium"
+                type="primary"
+                @click.stop="handleArchive(scope.$index, scope.row)"
+                icon="el-icon-document"
+              ></el-button>
+              <el-button
+                v-permission="'归档申请'"
                 size="medium"
                 type="danger"
-                v-permission="'归档申请'"
                 @click.stop="handleDel(scope.$index, scope.row)"
                 icon="el-icon-delete"
               ></el-button>
@@ -84,7 +113,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="项目名称" prop="name">
-          <el-input v-model="addForm.name" placeholder="请填写项目名称"></el-input>
+          <el-input v-model="addForm.name" placeholder="请填写项目名称" clearable :maxlength="maxNameLength" show-word-limit></el-input>
         </el-form-item>
         <el-form-item label="客户" prop="company">
           <el-select v-model="addForm.company" value-key="outerId" placeholder="请选择客户">
@@ -112,7 +141,7 @@
               ></el-date-picker>
             </el-form-item>
           </el-col>
-          <el-col class="line" :span="2">至</el-col>
+          <el-col class="line" :span="2" align="center">至</el-col>
           <el-col :span="11">
             <el-form-item prop="endDate">
               <el-date-picker
@@ -208,7 +237,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="备注" prop="remark">
-          <el-input v-model="addForm.remark" placeholder="请填写备注" type="textarea"></el-input>
+          <el-input v-model="addForm.remark" placeholder="请填写备注" type="textarea" clearable :maxlength="maxDesLength" show-word-limit></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -230,7 +259,7 @@
           <el-select v-model="editForm.outerId" placeholder="请选择ID" disabled></el-select>
         </el-form-item>
         <el-form-item label="项目名称" prop="name">
-          <el-input v-model="editForm.name" placeholder="请填写项目名称"></el-input>
+          <el-input v-model="editForm.name" placeholder="请填写项目名称" clearable :maxlength="maxNameLength" show-word-limit></el-input>
         </el-form-item>
         <el-form-item label="客户" prop="company">
           <el-select v-model="editForm.company" value-key="outerId" placeholder="请选择客户">
@@ -258,7 +287,7 @@
               ></el-date-picker>
             </el-form-item>
           </el-col>
-          <el-col class="line" :span="2">至</el-col>
+          <el-col class="line" :span="2" align="center">至</el-col>
           <el-col :span="11">
             <el-form-item prop="endDate">
               <el-date-picker
@@ -322,7 +351,7 @@
               ></el-date-picker>
             </el-form-item>
           </el-col>
-          <el-col class="line" :span="2">至</el-col>
+          <el-col class="line" :span="2" align="center">至</el-col>
           <el-col :span="11">
             <el-form-item prop="endDate">
               <el-date-picker
@@ -350,7 +379,7 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="备注" prop="remark">
-          <el-input type="textarea" v-model="approvalForm.remark"></el-input>
+          <el-input type="textarea" v-model="approvalForm.remark" clearable :maxlength="maxDesLength" show-word-limit></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -396,7 +425,7 @@
               ></el-date-picker>
             </el-form-item>
           </el-col>
-          <el-col class="line" :span="2">至</el-col>
+          <el-col class="line" :span="2" align="center">至</el-col>
           <el-col :span="11">
             <el-form-item prop="endDate">
               <el-date-picker
@@ -450,6 +479,7 @@
         :model="assignEPGForm"
         :rules="assignEPGFormRules"
         label-width="100px"
+        :validate-on-rule-change="false"
       >
         <el-form-item label="项目ID" prop="outerId">
           <el-select v-model="assignEPGForm.outerId" placeholder="请选择ID" disabled></el-select>
@@ -479,7 +509,7 @@
               ></el-date-picker>
             </el-form-item>
           </el-col>
-          <el-col class="line" :span="2">至</el-col>
+          <el-col class="line" :span="2" align="center">至</el-col>
           <el-col :span="11">
             <el-form-item prop="endDate">
               <el-date-picker
@@ -543,6 +573,8 @@ export default {
   data() {
     return {
       infoLoading: true,
+      maxNameLength: 30,
+      maxDesLength: 200,
       // 分页
       pageNo: 1,
       pageSize: 10,
@@ -602,14 +634,14 @@ export default {
           {
             required: true,
             message: "请选择项目ID",
-            triggle: "blur"
+            trigger: "blur"
           }
         ],
         name: [
           {
             required: true,
             message: "请填写项目名称",
-            triggle: "blur"
+            trigger: "blur"
           }
         ],
         company: [
@@ -617,21 +649,21 @@ export default {
             type: "object",
             required: true,
             message: "请选择客户",
-            triggle: "blur"
+            trigger: "blur"
           }
         ],
         startDate: [
           {
             required: true,
             message: "请选择项目开始日期",
-            triggle: "blur"
+            trigger: "blur"
           }
         ],
         endDate: [
           {
             required: true,
             message: "请选择项目结束日期",
-            triggle: "blur"
+            trigger: "blur"
           }
         ],
         supervisorName: [
@@ -639,7 +671,7 @@ export default {
             type: "object",
             required: true,
             message: "请选择项目主管",
-            triggle: "blur"
+            trigger: "blur"
           }
         ],
         qaManagerName: [
@@ -647,7 +679,7 @@ export default {
             type: "object",
             required: true,
             message: "请选择QA经理",
-            triggle: "blur"
+            trigger: "blur"
           }
         ],
         epgLeaderName: [
@@ -655,7 +687,7 @@ export default {
             type: "object",
             required: true,
             message: "请选择EPG Leader",
-            triggle: "blur"
+            trigger: "blur"
           }
         ],
         configOrganizerName: [
@@ -663,7 +695,7 @@ export default {
             type: "object",
             required: true,
             message: "请选择组织配置管理员",
-            triggle: "blur"
+            trigger: "blur"
           }
         ],
         skillNames: [
@@ -671,7 +703,7 @@ export default {
             type: "array",
             required: true,
             message: "请选择采用技术",
-            triggle: "blur"
+            trigger: "blur"
           }
         ]
       },
@@ -738,7 +770,7 @@ export default {
           {
             required: true,
             message: "请填写项目名称",
-            triggle: "blur"
+            trigger: "blur"
           }
         ],
         company: [
@@ -746,21 +778,21 @@ export default {
             type: "object",
             required: true,
             message: "请选择客户",
-            triggle: "blur"
+            trigger: "blur"
           }
         ],
         startDate: [
           {
             required: true,
             message: "请选择预定日期",
-            triggle: "blur"
+            trigger: "blur"
           }
         ],
         endDate: [
           {
             required: true,
             message: "请选择交付日期",
-            triggle: "blur"
+            trigger: "blur"
           }
         ]
       },
@@ -807,14 +839,14 @@ export default {
           {
             required: true,
             message: "请选择审批结果",
-            triggle: "blur"
+            trigger: "blur"
           }
         ],
         remark: [
           {
             required: true,
             message: "请填写审批意见",
-            triggle: "blur"
+            trigger: "blur"
           }
         ]
       },
@@ -840,7 +872,7 @@ export default {
             type: "array",
             required: true,
             message: "请选择QA",
-            triggle: "blur"
+            trigger: "blur"
           }
         ]
       },
@@ -865,7 +897,7 @@ export default {
             type: "array",
             required: true,
             message: "请选择EPG",
-            triggle: "blur"
+            trigger: "blur"
           }
         ]
       }
@@ -883,6 +915,12 @@ export default {
     refresh() {
       this.getProjects();
       this.getProjectModals();
+    },
+
+    clearcheck(formName) {
+      if (this.$refs[formName]) {
+        this.$refs[formName].clearValidate();
+      }
     },
 
     handleDetail(index, row) {
@@ -1054,131 +1092,139 @@ export default {
     },
 
     handleEdit(index, row) {
-      // const permission = "2";
-      if (this.permissions !== []) {
-        this.permissions.find(value => {
-          if (value === "新建项目") {
-            if (row.state === "已立项") {
-              this.$prompt("如果确定将进行该项目，请填写备注（选填）", "提示", {
-                confirmButtonText: "确定",
-                cancelButtonText: "取消",
-                type: "warning"
-              })
-                .then(({ value }) => {
-                  ProjectSYJ.stateToRun(row.outerId, value).then(res => {
-                    this.getProjects();
-                    this.$message({
-                      type: "success",
-                      message: "已修改!"
-                    });
-                  });
-                })
-                .catch(() => {
-                  this.$message({
-                    type: "info",
-                    message: "已取消"
-                  });
-                });
-            } else if (row.state === "进行中") {
-              this.$prompt("如果确定交付该项目，请填写备注（选填）", "提示", {
-                confirmButtonText: "确定",
-                cancelButtonText: "取消",
-                type: "warning"
-              })
-                .then(({ value }) => {
-                  ProjectSYJ.stateToDeliver(row.outerId, value).then(res => {
-                    this.getProjects();
-                    this.$message({
-                      type: "success",
-                      message: "已修改!"
-                    });
-                  });
-                })
-                .catch(() => {
-                  this.$message({
-                    type: "info",
-                    message: "已取消"
-                  });
-                });
-            } else if (row.state === "已交付" || row.state === "结束" || row.state === "已归档") {
+      if (row.state === "已立项") {
+        this.$prompt("如果确定将进行该项目，请填写备注（选填）", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        })
+          .then(({ value }) => {
+            ProjectSYJ.stateToRun(row.outerId, value).then(res => {
+              this.getProjects();
               this.$message({
-                type: "warning",
-                message: "当前项目已交付，不允许编辑"
+                type: "success",
+                message: "已修改!"
               });
-            } else {
-              this.editFormVisible = true;
-              this.editForm = Object.assign({}, row);
-              const id = this.editForm.clientOuterId;
-              const name = this.editForm.company;
-              this.editForm.company = { outerId: id, company: name };
-              this.getClientModal();
-              this.getTechModal();
-              this.getBusinessModal();
-              this.getMentorModal();
-              this.getProjectIdModal();
-            }
-          } else if (value === "审核项目") {
-            if (row.state === "申请立项") {
-              this.approvalVisible = true;
-              this.approvalForm = Object.assign({}, row);
-            } else {
+            });
+          })
+          .catch(() => {
+            this.$message({
+              type: "info",
+              message: "已取消"
+            });
+          });
+      } else if (row.state === "进行中") {
+        this.$prompt("如果确定交付该项目，请填写备注（选填）", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        })
+          .then(({ value }) => {
+            ProjectSYJ.stateToDeliver(row.outerId, value).then(res => {
+              this.getProjects();
               this.$message({
-                type: "warning",
-                message: "项目当前状态不需要审批"
+                type: "success",
+                message: "已修改!"
               });
-            }
-          } else if (value === "分配QA") {
-            this.assignQAForm = Object.assign({}, row);
-            if (this.assignQAForm.state === "已立项") {
-              this.getAllUsers();
-              this.assignQAVisible = true;
-            } else {
+            });
+          })
+          .catch(() => {
+            this.$message({
+              type: "info",
+              message: "已取消"
+            });
+          });
+      } else if (
+        row.state === "已交付" ||
+        row.state === "结束" ||
+        row.state === "已归档"
+      ) {
+        this.$message({
+          type: "warning",
+          message: "当前项目已交付，不允许编辑"
+        });
+      } else {
+        this.editFormVisible = true;
+        this.editForm = Object.assign({}, row);
+        const id = this.editForm.clientOuterId;
+        const name = this.editForm.company;
+        this.editForm.company = { outerId: id, company: name };
+        this.getClientModal();
+        this.getTechModal();
+        this.getBusinessModal();
+        this.getMentorModal();
+        this.getProjectIdModal();
+      }
+    },
+
+    handleAssignQA(index, row) {
+      this.clearcheck(this.assignQAForm);
+      this.assignQAForm = Object.assign({}, row);
+      if (this.assignQAForm.state === "已立项") {
+        this.getAllUsers();
+        this.assignQAVisible = true;
+      } else {
+        this.$message({
+          type: "warning",
+          message: "项目当前状态不允许分配QA"
+        });
+      }
+    },
+
+    handleAssignEPG(index, row) {
+      this.assignEPGForm = Object.assign({}, row);  
+      // this.$refs.assignEPGForm.clearValidate();
+      if (this.assignEPGForm.state === "已立项") {
+        this.getAllUsers();
+        this.assignEPGVisible = true;
+        
+      } else {
+        this.$message({
+          type: "warning",
+          message: "项目当前状态不允许分配EPG"
+        });
+      }
+    },
+
+    handleApproval(index, row) {
+      if (row.state === "申请立项") {
+        this.approvalVisible = true;
+        this.approvalForm = Object.assign({}, row);
+      } else {
+        this.$message({
+          type: "warning",
+          message: "项目当前状态不需要审批"
+        });
+      }
+    },
+
+    handleArchive(index, row) {
+      const tmp = Object.assign({}, row);
+      if (tmp.state === "结束") {
+        this.$prompt("如果确定对该项目进行归档，请填写备注", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        })
+          .then(({ value }) => {
+            ProjectSYJ.approvalArchive(row.outerId, value).then(res => {
               this.$message({
-                type: "warning",
-                message: "项目当前状态不允许分配QA"
+                type: "success",
+                message: "已同意!"
               });
-            }
-          } else if (value === "分配EPG") {
-            this.assignEPGForm = Object.assign({}, row);
-            if (this.assignEPGForm.state === "已立项") {
-              this.getAllUsers();
-              this.assignEPGVisible = true;
-            } else {
-              this.$message({
-                type: "warning",
-                message: "项目当前状态不允许分配EPG"
-              });
-            }
-          } else if (value === "归档审批") {
-            const tmp = Object.assign({}, row);
-            if (tmp.state === "结束") {
-              this.$prompt("如果确定对该项目进行归档，请填写备注", "提示", {
-                confirmButtonText: "确定",
-                cancelButtonText: "取消",
-                type: "warning"
-              })
-                .then(({ value }) => {
-                  ProjectSYJ.approvalArchive(row.outerId, value).then(res => {
-                    this.$message({
-                      type: "success",
-                      message: "已同意!"
-                    });
-                    this.getProjects();
-                  });
-                })
-                .catch(() => {
-                  this.$message({
-                    type: "info",
-                    message: "已取消"
-                  });
-                });
-            } else {
-              this.$message({
-                type: "warning",
-                message: "当前项目未结束，不允许归档"
-              });
-            }
-          }
+              this.getProjects();
+            });
+          })
+          .catch(() => {
+            this.$message({
+              type: "info",
+              message: "已取消"
+            });
+          });
+      } else {
+        this.$message({
+          type: "warning",
+          message: "当前项目未结束，不允许归档"
         });
       }
     },
