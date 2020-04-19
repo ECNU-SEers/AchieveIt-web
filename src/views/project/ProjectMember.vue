@@ -519,7 +519,8 @@ export default {
         this.editFormVisible = false;
         this.$refs["editForm"].resetFields();
         // location.reload();
-        this.getMemberList(this.keyword);
+       
+         this.getMemberList(this.keyword);
       });
     },
     async handleDelete(index, row) {

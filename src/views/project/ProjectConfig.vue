@@ -96,20 +96,6 @@
                   ></el-switch>
                 </el-tooltip>
               </el-form-item>
-<<<<<<< HEAD
-
-              <el-form-item style="padding-left:45%;">
-                <!--btn和基本信息中略不同，建议试下放右边-->
-                <el-button
-                  type="primary"
-                  @click="editSubmit()"
-                  style="margin-right:8%;"
-                  >确定</el-button
-                >
-                <el-button @click="editFormVisible = false">取消</el-button>
-              </el-form-item>
-=======
->>>>>>> 449a68b5748282354c541e8e6a561d4aa066518b
             </el-form>
             <div slot="footer" class="dialog-footer">
               <el-button @click="editFormVisible = false">取消</el-button>
