@@ -11,10 +11,148 @@
           v-if="
             this.state !== '结束' &&
               this.state !== '已归档' &&
+              this.state !== '立项驳回' &&
               this.permission === true
           "
-          >编辑</el-button
-        >
+        >编辑</el-button>
+
+        <el-button
+          style="float: right; padding: 3px 0"
+          type="text"
+          @click="updateRejectProject"
+          v-if="
+        this.state === '立项驳回' 
+        "
+        >重新申请</el-button>
+
+        <!-- 修改驳回项目 -->
+        <el-dialog title="修改项目基本信息" :visible.sync="dialogRejectFormVisible">
+          <el-form
+            :model="editRejectForm"
+            :rules="rules2"
+            ref="editRejectForm"
+            label-width="100px"
+            class="demo-editForm"
+          >
+            <!-- 不可修改 -->
+            <el-form-item label="项目ID">
+              <el-input v-model="editRejectForm.outerId" :disabled="true" placeholder></el-input>
+            </el-form-item>
+
+            <!-- 输入框 -->
+            <el-form-item label="项目名称" prop="name">
+              <el-input
+                v-model="editRejectForm.name"
+                placeholder="请输入项目名称"
+                clearable
+                :maxlength="maxNameLength"
+                show-word-limit
+              ></el-input>
+            </el-form-item>
+
+            <!-- 下拉单选 -->
+            <el-form-item label="客户名称" prop="client.company">
+              <el-select
+                v-model="editRejectForm.client"
+                value-key="outerId"
+                filterable
+                placeholder="请选择客户"
+                clearable
+              >
+                <el-option
+                  v-for="item in clients"
+                  :key="item.outerId"
+                  :label="item.company"
+                  :value="item"
+                >
+                  <span style="float: left">{{ item.company }}</span>
+                  <span style="float: right; color: #8492a6; font-size: 13px">
+                    {{
+                    item.outerId
+                    }}
+                  </span>
+                </el-option>
+              </el-select>
+            </el-form-item>
+
+            <!-- 预定时间 -->
+            <el-form-item label="预定时间" required prop="startDate">
+              <el-date-picker
+                type="date"
+                placeholder="选择日期"
+                v-model="editRejectForm.startDate"
+                style="width: 30%;"
+                value-format="yyyy-MM-dd"
+              ></el-date-picker>
+            </el-form-item>
+            <!-- 交付日 -->
+            <el-form-item label="交付日" required prop="endDate">
+              <el-date-picker
+                type="date"
+                placeholder="选择日期"
+                v-model="editRejectForm.endDate"
+                style="width: 30%;"
+                value-format="yyyy-MM-dd"
+              ></el-date-picker>
+            </el-form-item>
+
+            <!-- 不可修改 -->
+            <el-form-item label="项目上级" prop="leader">
+              <el-input v-model="tableData[5].detail" :disabled="true" placeholder></el-input>
+            </el-form-item>
+
+            <!-- 多选 -->
+            <el-form-item label="采用技术" prop="skillNames">
+              <el-select
+                v-model="editRejectForm.skillNames"
+                multiple
+                filterable
+                placehoder="请选择采用的技术"
+              >
+                <el-option
+                  v-for="item in skills"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.name"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+
+            <el-form-item label="业务领域" prop="businessAreaName">
+              <el-select
+                v-model="editRejectForm.businessAreaName"
+                placeholder="请选择业务领域"
+                clearable
+                @change="change()"
+              >
+                <el-option v-for="item in areas" :key="item" :label="item" :value="item"></el-option>
+              </el-select>
+            </el-form-item>
+
+            <!-- 单选
+            <el-form-item label="业务领域">
+              <el-radio-group v-model="editRejectForm.businessAreaName">
+                <el-radio v-for="item in areas" :key="item" :label="item" :value="item"></el-radio>
+              </el-radio-group>
+            </el-form-item>-->
+
+            <!-- 文本框 -->
+            <el-form-item label="备注">
+              <el-input
+                v-model="editRejectForm.remark"
+                placeholder="请填写备注"
+                type="textarea"
+                clearable
+                :maxlength="maxDesLength"
+                show-word-limit
+              ></el-input>
+            </el-form-item>
+          </el-form>
+          <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogRejectFormVisible = false">取消</el-button>
+            <el-button type="primary" @click="submitRejectForm('editRejectForm')">提交</el-button>
+          </div>
+        </el-dialog>
 
         <!-- 修改项目信息 -->
         <el-dialog title="修改项目基本信息" :visible.sync="dialogFormVisible">
@@ -27,11 +165,7 @@
           >
             <!-- 不可修改 -->
             <el-form-item label="项目ID">
-              <el-input
-                v-model="editForm.outerId"
-                :disabled="true"
-                placeholder
-              ></el-input>
+              <el-input v-model="editForm.outerId" :disabled="true" placeholder></el-input>
             </el-form-item>
 
             <!-- 输入框 -->
@@ -40,7 +174,8 @@
                 v-model="editForm.name"
                 placeholder="请输入项目名称"
                 clearable
-                :maxlength="maxNameLength" show-word-limit
+                :maxlength="maxNameLength"
+                show-word-limit
               ></el-input>
             </el-form-item>
 
@@ -60,9 +195,11 @@
                   :value="item"
                 >
                   <span style="float: left">{{ item.company }}</span>
-                  <span style="float: right; color: #8492a6; font-size: 13px">{{
+                  <span style="float: right; color: #8492a6; font-size: 13px">
+                    {{
                     item.outerId
-                  }}</span>
+                    }}
+                  </span>
                 </el-option>
               </el-select>
             </el-form-item>
@@ -90,39 +227,26 @@
 
             <!-- 不可修改 -->
             <el-form-item label="项目上级" prop="leader">
-              <el-input
-                v-model="tableData[5].detail"
-                :disabled="true"
-                placeholder
-              ></el-input>
+              <el-input v-model="tableData[5].detail" :disabled="true" placeholder></el-input>
             </el-form-item>
 
             <!-- 文本框 -->
             <el-form-item label="主要里程碑" prop="milestone">
-              <el-input
-                type="textarea"
-                autosize
-                :disabled="true"
-                v-model="this.stones"
-              ></el-input>
+              <el-input type="textarea" autosize :disabled="true" v-model="this.stones"></el-input>
               <el-input
                 v-if="this.state !== '申请立项'"
                 type="textarea"
                 autosize
                 v-model="editForm.milestone"
                 clearable
-                :maxlength="maxDesLength" show-word-limit
+                :maxlength="maxDesLength"
+                show-word-limit
               ></el-input>
             </el-form-item>
 
             <!-- 多选 -->
             <el-form-item label="采用技术" prop="skillNames">
-              <el-select
-                v-model="editForm.skillNames"
-                multiple
-                filterable
-                placehoder="请选择采用的技术"
-              >
+              <el-select v-model="editForm.skillNames" multiple filterable placehoder="请选择采用的技术">
                 <el-option
                   v-for="item in skills"
                   :key="item.id"
@@ -133,16 +257,23 @@
             </el-form-item>
 
             <!-- 单选 -->
-            <el-form-item label="业务领域">
-              <el-radio-group v-model="editForm.businessAreaName">
-                <el-radio
-                  v-for="item in areas"
-                  :key="item"
-                  :label="item"
-                  :value="item"
-                ></el-radio>
-              </el-radio-group>
+
+            <el-form-item label="业务领域" prop="businessAreaName">
+              <el-select
+                v-model="editForm.businessAreaName"
+                placeholder="请选择业务领域"
+                clearable
+                @change="change()"
+              >
+                <el-option v-for="item in areas" :key="item" :label="item" :value="item"></el-option>
+              </el-select>
             </el-form-item>
+
+            <!-- <el-form-item label="业务领域">
+              <el-radio-group v-model="editForm.businessAreaName">
+                <el-radio v-for="item in areas" :key="item" :label="item" :value="item"></el-radio>
+              </el-radio-group>
+            </el-form-item>-->
 
             <!-- 文本框 -->
             <!-- <el-form-item label="主要功能" prop="function">
@@ -151,9 +282,7 @@
           </el-form>
           <div slot="footer" class="dialog-footer">
             <el-button @click="dialogFormVisible = false">取消</el-button>
-            <el-button type="primary" @click="submitForm('editForm')"
-              >提交</el-button
-            >
+            <el-button type="primary" @click="submitForm('editForm')">提交</el-button>
           </div>
         </el-dialog>
       </div>
@@ -202,6 +331,16 @@ export default {
         callback();
       }
     };
+    let validateDate2 = (rule, value, callback) => {
+      if (
+        this.editRejectForm.endDate > this.editRejectForm.startDate ==
+        false
+      ) {
+        callback(new Error("交付日须在预定时间之后！"));
+      } else {
+        callback();
+      }
+    };
     return {
       maxNameLength: 30,
       maxDesLength: 200,
@@ -211,6 +350,7 @@ export default {
       projectId: "",
       permission: false,
       // 修改弹框
+      dialogRejectFormVisible: false,
       dialogFormVisible: false,
       formLabelWidth: "120px",
 
@@ -271,6 +411,19 @@ export default {
       ],
 
       // 修改框
+      editRejectForm: {
+        outerId: "",
+        name: "",
+        client: {
+          outerId: "",
+          company: ""
+        },
+        startDate: "",
+        endDate: "",
+        skillNames: [],
+        businessAreaName: "",
+        remark: ""
+      },
       editForm: {
         outerId: "",
         name: "",
@@ -301,12 +454,46 @@ export default {
       areas: [],
       skills: [],
       stones: "暂无数据",
+      rules2: {
+        name: [
+          { required: true, message: "请输入项目名称", trigger: "blur" }
+          // { min: 3, max: 30, message: "长度在 3 到 30 个字符", trigger: "blur" }
+        ],
+        ["client.company"]: [
+          { required: true, message: "请选择客户姓名", trigger: "blur" }
+        ],
+        startDate: [
+          {
+            // type: "date",
+            required: true,
+            message: "请选择预定日期",
+            trigger: "blur"
+          }
+        ],
+        endDate: [
+          {
+            // type: "date",
+            required: true,
+            message: "请选择交付时间",
+            trigger: "blur"
+          },
+          { validator: validateDate2, trigger: "blur" }
+        ],
+        skillNames: [
+          {
+            type: "array",
+            required: true,
+            message: "请至少选择一个技术",
+            trigger: "blur"
+          }
+        ]
+      },
       rules: {
         name: [
           { required: true, message: "请输入项目名称", trigger: "blur" }
           // { min: 3, max: 30, message: "长度在 3 到 30 个字符", trigger: "blur" }
         ],
-        ['client.company']: [
+        ["client.company"]: [
           { required: true, message: "请选择客户姓名", trigger: "blur" }
         ],
         startDate: [
@@ -348,6 +535,11 @@ export default {
       if (row.isExpend === 0) {
         return "row-expand-cover";
       }
+    },
+
+    // 解决无法选中的问题
+    change() {
+      this.$forceUpdate();
     },
 
     // 获取项目详细信息
@@ -452,9 +644,11 @@ export default {
         // 业务领域
         var tmp = await Project.getAreas();
         this.areas = [];
-        for(var i=0;i<tmp.length;++i){
+        for (var i = 0; i < tmp.length; ++i) {
           this.areas.push(tmp[i].name);
         }
+        console.log(tmp);
+        // this.areas=await Project.getAreas();
         console.log(this.areas);
         // 采用技术
         this.skills = await Project.getSkills();
@@ -497,6 +691,36 @@ export default {
       console.log("permission: " + this.permission);
     },
 
+    async updateRejectProject() {
+      this.dialogRejectFormVisible = true;
+      const info = await Project.getBasic(this.outerId);
+      this.editRejectForm = {
+        outerId: info.project.outerId,
+        name: info.project.name,
+        client: {
+          outerId: info.projectClient.outerId,
+          company: info.projectClient.company
+        },
+        startDate: info.project.startDate,
+        endDate: info.project.endDate,
+        skillNames: [],
+        remark: ""
+      };
+      if (
+        info.projectBusinessArea === null ||
+        info.projectBusinessArea === ""
+      ) {
+        this.editRejectForm.businessAreaName = "";
+      } else {
+        this.editRejectForm.businessAreaName =
+          info.projectBusinessArea.businessAreaName;
+        console.log(this.editRejectForm.businessAreaName);
+      }
+      for (var i = 0; i < info.projectSkills.length; ++i) {
+        this.editRejectForm.skillNames.push(info.projectSkills[i].skillName);
+      }
+    },
+
     // 修改弹框
     async editBasic() {
       // 项目状态判断
@@ -529,7 +753,7 @@ export default {
         } else {
           this.editForm.businessAreaName =
             info.projectBusinessArea.businessAreaName;
-            console.log(this.editForm.businessAreaName);
+          console.log(this.editForm.businessAreaName);
         }
         for (var i = 0; i < info.projectSkills.length; ++i) {
           this.editForm.skillNames.push(info.projectSkills[i].skillName);
@@ -541,6 +765,36 @@ export default {
       }
     },
     // 提交表单
+    submitRejectForm(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          console.log("!!!!!");
+          Project.updateReject(
+            this.editRejectForm.outerId,
+            this.editRejectForm.name,
+            this.editRejectForm.client.outerId,
+            this.editRejectForm.client.company,
+            this.editRejectForm.startDate,
+            this.editRejectForm.endDate,
+            "",
+            this.editRejectForm.skillNames,
+            this.editRejectForm.businessAreaName,
+            this.editRejectForm.remark
+          ).then(() => {
+            this.$message({
+              type: "success",
+              message: "已提交!"
+            });
+            this.dialogRejectFormVisible = false;
+            this.$refs[formName].resetFields();
+            this.getBasic(this.outerId);
+          });
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
+    },
     submitForm(formName) {
       // console.log(formName);
       // console.log(this.editForm);
