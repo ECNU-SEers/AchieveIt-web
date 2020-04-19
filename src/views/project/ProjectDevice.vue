@@ -100,7 +100,7 @@
 
           <el-table-column label="资产类型" prop="type"></el-table-column>
 
-          <el-table-column label="资产管理者" prop="managerId"></el-table-column>
+          <el-table-column label="资产管理者" prop="managerName"></el-table-column>
 
           <el-table-column label="开始时间" prop="startDate"></el-table-column>
           <el-table-column label="归还期限" prop="dueDate"></el-table-column>
@@ -129,7 +129,6 @@
                   icon="el-icon-edit"
                   size="medium"
                   @click="
-                    editFormVisible = true;
                     updateDevice(row);
                   "
                 ></el-button>
@@ -177,16 +176,16 @@
           </el-form-item>
 
           <!--带搜索的下拉选择-->
-          <el-form-item label="资产管理者:" prop="managerId">
-            <el-select v-model="addForm.managerId" filterable placeholder="请选择资产管理者">
+          <el-form-item label="资产管理者:" prop="owner">
+            <el-select v-model="addForm.owner" filterable placeholder="请选择资产管理者">
               <el-option
-                v-for="(item, index) in users"
-                :key="index + '1'"
-                :label="item.realName"
-                :value="item.userId"
+                v-for="item in users"
+                :key="item.userId"
+                :label="item.username"
+                :value="item"
               >
-              <span style="float: left">{{ item.realName }}</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">{{ item.username }}</span></el-option>
+              <span style="float: left">{{ item.username }}</span>
+              <span style="float: right; color: #8492a6; font-size: 13px">id:{{ item.userId }}</span></el-option>
             </el-select>
           </el-form-item>
 
@@ -248,16 +247,16 @@
           </el-form-item>
 
           <!--带搜索的下拉选择-->
-          <el-form-item label="资产管理者:" prop="managerId">
-            <el-select v-model="editForm.managerId" filterable placeholder="请选择资产管理者">
+          <el-form-item label="资产管理者:" prop="owner">
+            <el-select v-model="editForm.owner" filterable placeholder="请选择资产管理者">
               <el-option
-                v-for="(item, index) in users"
-                :key="index"
-                :label="item.realName"
-                :value="item.userId"
+                v-for="item in users"
+                :key="item.userId"
+                :label="item.username"
+                :value="item"
               >
-              <span style="float: left">{{ item.realName }}</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">{{ item.username }}</span></el-option>
+              <span style="float: left">{{ item.username }}</span>
+              <span style="float: right; color: #8492a6; font-size: 13px">id:{{ item.userId }}</span></el-option>
             </el-select>
           </el-form-item>
 
@@ -406,8 +405,8 @@ export default {
         type: [
           { required: true, message: "请选择资产类型", trigger: "change" }
         ],
-        managerId: [
-          { required: true, message: "请选择资产管理者", trigger: "change" }
+        owner: [
+          { required: true, message: "请选择资产管理者", trigger: "blur" }
         ],
         startDate: [
           {
@@ -499,7 +498,8 @@ export default {
             _this.addForm.outerId,
             _this.addForm.type,
             _this.projectId,
-            _this.addForm.managerId,
+            _this.addForm.owner.userId,
+            _this.addForm.owner.userName,
             _this.addForm.startDate,
             _this.addForm.dueDate
           );
@@ -535,15 +535,20 @@ export default {
     },
     //点击“编辑” 深拷贝原信息
     updateDevice(row) {
+      if(row.state== "已归还"){
+        this.$message.warning("设备已归还，不可编辑！");
+      }else{
+        this.editFormVisible = true;
       console.log(row.type);
       this.editForm = {
         outerId: row.outerId,
         type: row.type,
-        managerId: row.managerId,
+        owner: row.managerName,
         startDate: row.startDate,
         dueDate: row.dueDate,
         state: row.state
       };
+      }
     },
     //确认编辑
     editSubmit(formName) {
@@ -556,10 +561,10 @@ export default {
             _this.editForm.outerId,
             _this.editForm.type,
             _this.projectId,
-            _this.editForm.managerId,
+            _this.editForm.owner.userId,
+            _this.editForm.owner.userName,
             _this.editForm.startDate,
-            _this.editForm.dueDate,
-            _this.editForm.returnDate
+            _this.editForm.dueDate
           ).then(() => {
             _this.editFormVisible = false;
             _this.$message.success("修改成功");
@@ -595,6 +600,11 @@ export default {
     },
     //确认归还
     checkSubmit(row) {
+      var _this=this;
+      if(row.state=="已归还"){
+        this.$message.warning("设备已归还！");
+      }
+      else{
       this.$confirm("确认归还该设备？", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -603,7 +613,7 @@ export default {
         .then(async () => {
           if (row.state == "已领取") {
             console.log("row.outerId=" + row.outerId);
-            ProjectLW.returnDevice(this.projectId, row.outerId).then(() => {
+            ProjectLW.returnDevice(_this.projectId, row.outerId).then(() => {
               this.getDeviceList("");
               this.$message({
                 type: "success",
@@ -620,7 +630,9 @@ export default {
             message: "已取消删除"
           });
         });
+      }
     }
+  
   }
 };
 </script>

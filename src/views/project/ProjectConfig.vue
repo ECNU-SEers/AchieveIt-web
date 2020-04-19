@@ -246,7 +246,7 @@ export default {
         _this.tableData[0].detail = res.gitRepoAddress;
         _this.git = true;
       }
-      if (res.virtualMachineSpace == "" || res.gitRepoAddress == null) {
+      if (res.virtualMachineSpace == "" || res.virtualMachineSpace == null) {
         _this.tableData[1].detail = "暂无数据";
         _this.virtual = false;
       } else {
