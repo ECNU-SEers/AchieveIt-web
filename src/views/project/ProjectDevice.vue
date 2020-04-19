@@ -512,7 +512,7 @@ export default {
     },
     //下拉，可选设备管理员
     async getAllMembers() {
-      const res = await ProjectLW.getAllMembers(this.projectId);
+      const res = await ProjectLW.getDeviceManager(this.projectId);
       console.log(res);
       this.users = res;
     },
