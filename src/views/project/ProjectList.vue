@@ -36,8 +36,8 @@
         <el-table-column label="客户名称" prop="company"></el-table-column>
         <el-table-column label="预定时间" prop="startDate"></el-table-column>
         <el-table-column label="交付日" prop="endDate"></el-table-column>
-        <el-table-column label="项目经理" prop="managerName"></el-table-column>
-        <el-table-column label="项目主管" prop="supervisorName"></el-table-column>
+        <el-table-column label="项目经理" prop="managerRealName"></el-table-column>
+        <el-table-column label="项目主管" prop="supervisorRealName"></el-table-column>
         <el-table-column label="项目状态" prop="state"></el-table-column>
         <el-table-column label="QA" prop="qaAssigned"></el-table-column>
         <el-table-column label="EPG" prop="epgAssigned"></el-table-column>

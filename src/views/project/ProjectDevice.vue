@@ -180,11 +180,13 @@
           <el-form-item label="资产管理者:" prop="managerId">
             <el-select v-model="addForm.managerId" filterable placeholder="请选择资产管理者">
               <el-option
-                v-for="(item, index) in users.items"
+                v-for="(item, index) in users"
                 :key="index + '1'"
-                :label="item.realName + '(' + item.username + ')'"
+                :label="item.realName"
                 :value="item.userId"
-              ></el-option>
+              >
+              <span style="float: left">{{ item.realName }}</span>
+              <span style="float: right; color: #8492a6; font-size: 13px">{{ item.username }}</span></el-option>
             </el-select>
           </el-form-item>
 
@@ -249,11 +251,13 @@
           <el-form-item label="资产管理者:" prop="managerId">
             <el-select v-model="editForm.managerId" filterable placeholder="请选择资产管理者">
               <el-option
-                v-for="(item, index) in users.items"
+                v-for="(item, index) in users"
                 :key="index"
-                :label="item.realName + '(' + item.username + ')'"
+                :label="item.realName"
                 :value="item.userId"
-              ></el-option>
+              >
+              <span style="float: left">{{ item.realName }}</span>
+              <span style="float: right; color: #8492a6; font-size: 13px">{{ item.username }}</span></el-option>
             </el-select>
           </el-form-item>
 
@@ -512,7 +516,7 @@ export default {
     },
     //下拉，可选设备管理员
     async getAllMembers() {
-      const res = await ProjectLW.getAllMembers(this.projectId);
+      const res = await ProjectLW.getDeviceManager(this.projectId);
       console.log(res);
       this.users = res;
     },

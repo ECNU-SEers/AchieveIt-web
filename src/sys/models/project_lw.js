@@ -385,4 +385,8 @@ export default class ProjectLW {
     // console.log("getRemark="+res);
     return res;
   }
+
+  static async getDeviceManager(projectId) {
+    return await get("/project/members/with/device/permissions?projectId=" +projectId);
+  }
 }

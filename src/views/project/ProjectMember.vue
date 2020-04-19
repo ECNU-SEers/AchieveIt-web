@@ -92,16 +92,16 @@
           </el-form-item>
 
           <!-- 单选 -->
-          <el-form-item label="项目中的上级">
+          <el-form-item label="项目中的上级" prop="leader">
             <el-select
               v-model="addForm.leader"
-              value-key="userId"
+              value-key="id"
               filterable
               placeholder="请选择项目中的上级"
             >
               <el-option
-                v-for="item in members"
-                :key="item.userId"
+                v-for="item in projectLeaders"
+                :key="item.id"
                 :label="item.realName"
                 :value="item"
               >
@@ -197,7 +197,7 @@
 
       <!-- 编辑项目成员信息 -->
       <el-dialog title="编辑项目成员信息" :visible.sync="editFormVisible">
-        <el-form label-width="150px" class="demo-ruleForm">
+        <el-form label-width="150px" class="demo-ruleForm" ref="editForm">
           <!-- 不可修改 -->
           <el-form-item label="用户姓名" required>
             <el-input v-model="editForm.username" :disabled="true" placeholder style="width:40%"></el-input>
@@ -214,13 +214,13 @@
           <el-form-item label="项目中的上级">
             <el-select
               v-model="editForm.leader"
-              value-key="userId"
+              value-key="id"
               placeholder="请选择项目中的上级"
               clearable
             >
               <el-option
                 v-for="item in projectLeaders"
-                :key="item.userId"
+                :key="item.id"
                 :label="item.realName"
                 :value="item"
               >
@@ -335,6 +335,8 @@ export default {
     // 获取项目中的上级
     async getProjectLeaders() {
       this.projectLeaders = await ProjectSYJ.getProjectLeaders(this.projectId);
+      console.log("!!!!!!!");
+      console.log(this.projectLeaders);
     },
 
     // 上传excel
@@ -415,13 +417,13 @@ export default {
             this.users.push(user);
           }
         });
-        var info = await Project.getMemberList(
-          this.projectId,
-          this.page,
-          this.pageSize,
-          ""
-        );
-        this.members = info.items;
+        // var info = await Project.getMemberList(
+        //   this.projectId,
+        //   this.page,
+        //   this.pageSize,
+        //   ""
+        // );
+        // this.members = info.items;
         this.roles = await Project.getRoles();
       }
     },
@@ -438,7 +440,7 @@ export default {
             this.projectId,
             this.addForm.user.userId,
             this.addForm.user.username,
-            this.addForm.leader.userId,
+            this.addForm.leader.id,
             this.addForm.leader.username,
             this.addForm.roles
           ).then(() => {
@@ -446,8 +448,9 @@ export default {
               type: "success",
               message: "已提交!"
             });
-            this.addFormVisible = false;
             this.$refs["addForm"].resetFields();
+            this.addFormVisible = false;
+            
             // location.reload();
             this.getMemberList(this.keyword);
           });
@@ -471,14 +474,15 @@ export default {
         });
       } else {
         this.editFormVisible = true;
-        // 获取项目成员
-        var info = await Project.getMemberList(
-          this.projectId,
-          this.page,
-          this.pageSize,
-          ""
-        );
-        this.members = info.items;
+        // // 获取项目成员
+        // var info = await Project.getMemberList(
+        //   this.projectId,
+        //   this.page,
+        //   this.pageSize,
+        //   ""
+        // );
+        // this.members = info.items;
+
         // 获取所有角色
         this.roles = await Project.getRoles();
         // 表格预设值
@@ -496,9 +500,14 @@ export default {
           }
         }
         if (row.leaderRealName === "暂无数据") {
-          this.editForm.leader = "";
+          this.editForm.leader = {};
         } else {
-          this.editForm.leader = row.leaderRealName;
+          console.log("leader")
+          console.log(row);
+          this.editForm.leader.id = row.leaderId;
+          this.editForm.leader.realName=row.leaderRealName;
+          this.editForm.leader.username=row.leaderUsername;
+
         }
       }
     },
@@ -508,7 +517,7 @@ export default {
       Project.editMember(
         this.projectId,
         this.editForm.userId,
-        this.editForm.leader.userId,
+        this.editForm.leader.id,
         this.editForm.leader.username,
         this.editForm.roles
       ).then(() => {
@@ -601,6 +610,8 @@ export default {
         this.tableData = info.items;
         this.infoLoading = false;
         this.showInfo();
+        // 获取可选的项目上级
+        this.getProjectLeaders();
       } catch (e) {
         console.log(e);
       }
@@ -748,6 +759,7 @@ export default {
       this.getMemberList(this.keyword);
       // 获取项目权限
       this.getPermission(this.projectId);
+
     }
   }
 };

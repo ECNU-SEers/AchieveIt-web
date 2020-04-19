@@ -157,7 +157,7 @@
             <el-input v-model="addForm.name" placeholder="请填写功能名称" clearable :maxlength="maxNameLength" show-word-limit></el-input>
           </el-form-item>
 
-          <el-form-item label="功能描述">
+          <el-form-item label="功能描述" prop="description">
             <el-input type="textarea" v-model="addForm.description" placeholder="请填写功能描述" clearable :maxlength="maxDesLength" show-word-limit></el-input>
           </el-form-item>
         </el-form>
