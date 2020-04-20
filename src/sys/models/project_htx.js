@@ -21,6 +21,31 @@ export default class Project {
     return info;
   }
 
+  static async updateReject(outerId,
+    name,
+    clientOuterId,
+    company,
+    startDate,
+    endDate,
+    milestone,
+    skillNames,
+    businessAreaName,
+    remark) {
+      console.log("!!!!!!!!!!");
+    return put("/project/update/reject", {
+      outerId,
+      name,
+      clientOuterId,
+      company,
+      startDate,
+      endDate,
+      milestone,
+      skillNames,
+      businessAreaName,
+      remark
+    });
+  }
+
   /**
    * 修改项目基本信息
    * @param {*} projectId
@@ -127,13 +152,13 @@ export default class Project {
   static async getMemberList(projectId, page, pageSize, keyword) {
     const info = await get(
       "/project/" +
-        projectId +
-        "/members?page=" +
-        page +
-        "&pageSize=" +
-        pageSize +
-        "&keyword=" +
-        keyword
+      projectId +
+      "/members?page=" +
+      page +
+      "&pageSize=" +
+      pageSize +
+      "&keyword=" +
+      keyword
     );
     console.log("interface getMember succcess");
     console.log(info);
@@ -298,11 +323,11 @@ export default class Project {
   static async getOneFunction(projectId, functionId, keyword) {
     return get(
       "/project/" +
-        projectId +
-        "/functions/" +
-        functionId +
-        "?keyword=" +
-        keyword
+      projectId +
+      "/functions/" +
+      functionId +
+      "?keyword=" +
+      keyword
     );
   }
 
@@ -328,6 +353,6 @@ export default class Project {
   }
 
   static async searchFunction(projectId, keyword) {
-    return await get("/project/"+ projectId +"/functions/search?keyword=" + keyword);
+    return await get("/project/" + projectId + "/functions/search?keyword=" + keyword);
   }
 }
