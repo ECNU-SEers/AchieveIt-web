@@ -93,6 +93,10 @@ export default class ProjectSYJ {
     );
   }
 
+  static async reSubmitProject(newProject) {
+    return await put("/project/update/reject", newProject);
+  }
+
   static async getAllUser() {
     return await get("/users");
   }
@@ -224,6 +228,15 @@ export default class ProjectSYJ {
 
    static async getProjectLeaders(projectId) {
      return await get("/project/" + projectId + "/member/leaders");
+   }
+
+   // 归档信息
+   static async getArchivedInfo(projectId) {
+     return await get("/archived/info/get?projectId=" + projectId);
+   }
+
+   static async updateArchivedInfo(archievedInfo) {
+     return await put("/archived/info/update", archievedInfo);
    }
    
 }

@@ -113,7 +113,13 @@
           </el-select>
         </el-form-item>
         <el-form-item label="项目名称" prop="name">
-          <el-input v-model="addForm.name" placeholder="请填写项目名称" clearable :maxlength="maxNameLength" show-word-limit></el-input>
+          <el-input
+            v-model="addForm.name"
+            placeholder="请填写项目名称"
+            clearable
+            :maxlength="maxNameLength"
+            show-word-limit
+          ></el-input>
         </el-form-item>
         <el-form-item label="客户" prop="company">
           <el-select v-model="addForm.company" value-key="outerId" placeholder="请选择客户">
@@ -237,7 +243,14 @@
           </el-select>
         </el-form-item>
         <el-form-item label="备注" prop="remark">
-          <el-input v-model="addForm.remark" placeholder="请填写备注" type="textarea" clearable :maxlength="maxDesLength" show-word-limit></el-input>
+          <el-input
+            v-model="addForm.remark"
+            placeholder="请填写备注"
+            type="textarea"
+            clearable
+            :maxlength="maxDesLength"
+            show-word-limit
+          ></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -259,7 +272,13 @@
           <el-select v-model="editForm.outerId" placeholder="请选择ID" disabled></el-select>
         </el-form-item>
         <el-form-item label="项目名称" prop="name">
-          <el-input v-model="editForm.name" placeholder="请填写项目名称" clearable :maxlength="maxNameLength" show-word-limit></el-input>
+          <el-input
+            v-model="editForm.name"
+            placeholder="请填写项目名称"
+            clearable
+            :maxlength="maxNameLength"
+            show-word-limit
+          ></el-input>
         </el-form-item>
         <el-form-item label="客户" prop="company">
           <el-select v-model="editForm.company" value-key="outerId" placeholder="请选择客户">
@@ -379,7 +398,13 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="备注" prop="remark">
-          <el-input type="textarea" v-model="approvalForm.remark" clearable :maxlength="maxDesLength" show-word-limit></el-input>
+          <el-input
+            type="textarea"
+            v-model="approvalForm.remark"
+            clearable
+            :maxlength="maxDesLength"
+            show-word-limit
+          ></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -552,6 +577,49 @@
       <div slot="footer" class="dialog-footer">
         <el-button @click="assignEPGVisible = false">取消</el-button>
         <el-button type="primary" @click="assignEPGSubmit" :loading="submitLoading">提交</el-button>
+      </div>
+    </el-dialog>
+
+    <!-- 归档审批 -->
+    <el-dialog title="归档审批" :visible.sync="archiveVisible" :close-on-click-modal="false">
+      <el-form
+        @submit.native.prevent
+        ref="archiveForm"
+        :model="archiveForm"
+        label-width="100px"
+        :validate-on-rule-change="false"
+      >
+        <el-form-item label="资产列表" prop="info">
+          <el-checkbox-group v-model="archivelist">
+            <el-checkbox
+              v-for="info in infoOptions"
+              :label="info.id"
+              :key="info.id"
+              :disabled="info.state === true"
+            >{{info.name}}</el-checkbox>
+            <!-- <el-checkbox label="basicData">项目基础数据表</el-checkbox>
+              <el-checkbox label="proposal">项目提案书</el-checkbox>
+              <el-checkbox label="quotation">项目报价书</el-checkbox>
+              <el-checkbox label="estimation">项目估算表(功能点)</el-checkbox>
+              <el-checkbox label="planning">项目计划书</el-checkbox>
+              <el-checkbox label="processClipping">项目过程裁剪表</el-checkbox>
+              <el-checkbox label="costManage">项目成本管理表</el-checkbox>
+              <el-checkbox label="reqChange">项目需求变更管理表</el-checkbox>
+              <el-checkbox label="riskManage">项目风险管理表</el-checkbox>
+              <el-checkbox label="clientAccPro">客户验收问题表</el-checkbox>
+              <el-checkbox label="clientAcc">客户验收报告</el-checkbox>
+              <el-checkbox label="infoSummary">项目总结</el-checkbox>
+              <el-checkbox label="bestExperience">最佳经验和教训</el-checkbox>
+              <el-checkbox label="devTool">开发工具</el-checkbox>
+              <el-checkbox label="devTemplate">开发模板(设计模板，测试模板)</el-checkbox>
+              <el-checkbox label="checklist">各阶段检查单</el-checkbox>
+            <el-checkbox label="qaSummary">QA总结</el-checkbox>-->
+          </el-checkbox-group>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="archiveVisible = false">取消</el-button>
+        <el-button type="primary" @click="archiveSubmit" :loading="submitLoading">提交</el-button>
       </div>
     </el-dialog>
   </div>
@@ -900,7 +968,60 @@ export default {
             trigger: "blur"
           }
         ]
-      }
+      },
+
+      // 归档审批
+      archiveVisible: false,
+      infoOptions: [
+        { id: "basicData", name: "项目基础数据表", state: false },
+        { id: "proposal", name: "项目提案书", state: false },
+        { id: "quotation", name: "项目报价书", state: false },
+        { id: "estimation", name: "项目估算表(功能点)", state: false },
+        { id: "planning", name: "项目计划书", state: false },
+        { id: "processClipping", name: "项目过程裁剪表", state: false },
+        { id: "costManage", name: "项目成本管理表", state: false },
+        { id: "reqChange", name: "项目需求变更管理表", state: false },
+        { id: "riskManage", name: "项目风险管理表", state: false },
+        { id: "clientAccPro", name: "客户验收问题表", state: false },
+        { id: "clientAcc", name: "客户验收报告", state: false },
+        { id: "infoSummary", name: "项目总结", state: false },
+        { id: "bestExperience", name: "最佳经验和教训", state: false },
+        { id: "devTool", name: "开发工具", state: false },
+        {
+          id: "devTemplate",
+          name: "开发模板(设计模板，测试模板)",
+          state: false
+        },
+        { id: "checklist", name: "各阶段检查单", state: false },
+        { id: "qaSummary", name: "QA总结", state: false }
+      ],
+
+      archiveForm: {
+        id: 0,
+        projectId: 0,
+        info: [
+          "basicData",
+          "proposal",
+          "quotation",
+          "estimation",
+          "planning",
+          "processClipping",
+          "costManage",
+          "reqChange",
+          "riskManage",
+          "clientAccPro",
+          "clientAcc",
+          "infoSummary",
+          "bestExperience",
+          "devTool",
+          "devTemplate",
+          "checklist",
+          "qaSummary"
+        ]
+      },
+      archivelist: [],
+      archiveOuterId: "",
+      archiveFormRules: [{}]
     };
   },
   computed: {
@@ -1172,12 +1293,11 @@ export default {
     },
 
     handleAssignEPG(index, row) {
-      this.assignEPGForm = Object.assign({}, row);  
+      this.assignEPGForm = Object.assign({}, row);
       // this.$refs.assignEPGForm.clearValidate();
       if (this.assignEPGForm.state === "已立项") {
         this.getAllUsers();
         this.assignEPGVisible = true;
-        
       } else {
         this.$message({
           type: "warning",
@@ -1198,33 +1318,117 @@ export default {
       }
     },
 
-    handleArchive(index, row) {
-      const tmp = Object.assign({}, row);
-      if (tmp.state === "结束") {
-        this.$prompt("如果确定对该项目进行归档，请填写备注", "提示", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        })
-          .then(({ value }) => {
-            ProjectSYJ.approvalArchive(row.outerId, value).then(res => {
-              this.$message({
-                type: "success",
-                message: "已同意!"
-              });
-              this.getProjects();
-            });
-          })
-          .catch(() => {
-            this.$message({
-              type: "info",
-              message: "已取消"
-            });
-          });
+    async handleArchive(index, row) {
+      if (row.state === "结束") {
+        this.archivelist = [];
+        const res = await ProjectSYJ.getArchivedInfo(row.id);
+        this.archiveForm = res;
+        this.archiveVisible = true;
+        this.infoOptions[0].state = res["basicData"];
+        this.archiveOuterId = row.outerId;
+        if (res["basicData"] === true) {
+          this.archivelist.push("basicData");
+        }
+        this.infoOptions[1].state = res["proposal"];
+        if (res["proposal"] === true) {
+          this.archivelist.push("proposal");
+        }
+        this.infoOptions[2].state = res["quotation"];
+        if (res["quotation"] === true) {
+          this.archivelist.push("quotation");
+        }
+        this.infoOptions[3].state = res["estimation"];
+        if (res["estimation"] === true) {
+          this.archivelist.push("estimation");
+        }
+        this.infoOptions[4].state = res["planning"];
+        if (res["planning"] === true) {
+          this.archivelist.push("planning");
+        }
+        this.infoOptions[5].state = res["processClipping"];
+        if (res["processClipping"] === true) {
+          this.archivelist.push("processClipping");
+        }
+        this.infoOptions[6].state = res["costManage"];
+        if (res["costManage"] === true) {
+          this.archivelist.push("costManage");
+        }
+        this.infoOptions[7].state = res["reqChange"];
+        if (res["reqChange"] === true) {
+          this.archivelist.push("reqChange");
+        }
+        this.infoOptions[8].state = res["riskManage"];
+        if (res["riskManage"] === true) {
+          this.archivelist.push("riskManage");
+        }
+        this.infoOptions[9].state = res["clientAccPro"];
+        if (res["clientAccPro"] === true) {
+          this.archivelist.push("clientAccPro");
+        }
+        this.infoOptions[10].state = res["clientAcc"];
+        if (res["clientAcc"] === true) {
+          this.archivelist.push("clientAcc");
+        }
+        this.infoOptions[11].state = res["infoSummary"];
+        if (res["infoSummary"] === true) {
+          this.archivelist.push("infoSummary");
+        }
+        this.infoOptions[12].state = res["bestExperience"];
+        if (res["bestExperience"] === true) {
+          this.archivelist.push("bestExperience");
+        }
+        this.infoOptions[13].state = res["devTool"];
+        if (res["devTool"] === true) {
+          this.archivelist.push("devTool");
+        }
+        this.infoOptions[14].state = res["devTemplate"];
+        if (res["devTemplate"] === true) {
+          this.archivelist.push("devTemplate");
+        }
+        this.infoOptions[15].state = res["checklist"];
+        if (res["checklist"] === true) {
+          this.archivelist.push("checklist");
+        }
+        this.infoOptions[16].state = res["qaSummary"];
+        if (res["qaSummary"] === true) {
+          this.archivelist.push("qaSummary");
+        }
+        
       } else {
         this.$message({
           type: "warning",
           message: "当前项目未结束，不允许归档"
+        });
+      }
+    },
+
+    archiveSubmit() {
+      this.submitLoading = true;
+      this.archivelist.forEach(item => {
+        this.archiveForm[item] = true;
+      });
+      console.log(this.archiveForm);
+      console.log(this.archivelist.length);
+      if (this.archivelist.length === 17) {
+        ProjectSYJ.updateArchivedInfo(this.archiveForm).then(() => {
+          this.submitLoading = false;
+          this.archiveVisible = false;
+        });
+        ProjectSYJ.approvalArchive(this.archiveOuterId, "").then(res => {
+          this.$message({
+            type: "success",
+            message: "已审批!"
+          });
+          this.getProjects();
+        });
+      } else {
+        ProjectSYJ.updateArchivedInfo(this.archiveForm).then(() => {
+          this.submitLoading = false;
+          this.$message({
+            message: "提交成功！",
+            type: "success"
+          });
+          this.archiveVisible = false;
         });
       }
     },
