@@ -203,7 +203,8 @@
               placeholder="请对该风险进行简要描述"
               v-model="addForm.description"
               clearable
-              :maxlength="maxDesLength" show-word-limit
+              :maxlength="maxDesLength"
+              show-word-limit
             ></el-input>
           </el-form-item>
 
@@ -227,7 +228,15 @@
 
           <!--文本域-->
           <el-form-item label="风险应对策略:" prop="strategy">
-            <el-input type="textarea" :row="3" placeholder="请输入风险应对策略" v-model="addForm.strategy" clearable :maxlength="maxDesLength" show-word-limit></el-input>
+            <el-input
+              type="textarea"
+              :row="3"
+              placeholder="请输入风险应对策略"
+              v-model="addForm.strategy"
+              clearable
+              :maxlength="maxDesLength"
+              show-word-limit
+            ></el-input>
           </el-form-item>
 
           <!--单选-->
@@ -237,26 +246,27 @@
 
           <!--带搜索的下拉选择-->
           <el-form-item label="风险责任人:" prop="owner">
-            <el-select
-              v-model="addForm.owner"
-              value-key="id"
-              filterable
-              placeholder="请选择该风险责任人"
-            >
+            <el-select v-model="addForm.owner" value-key="id" filterable placeholder="请选择该风险责任人">
               <el-option
                 v-for="item in responsers"
                 :key="item.id"
                 :label="item.realName"
                 :value="item"
               >
-              <span style="float: left">{{ item.realName }}</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">{{ item.username }}</span></el-option>
+                <span style="float: left">{{ item.realName }}</span>
+                <span style="float: right; color: #8492a6; font-size: 13px">{{ item.username }}</span>
+              </el-option>
             </el-select>
           </el-form-item>
 
           <!--单选-->
           <el-form-item label="风险跟踪频度:" prop="trackingFreq">
-            <el-input v-model="addForm.trackingFreq" oninput = "value=value.replace(/[^\d]/g,'')"  :maxlength="3" show-word-limit>
+            <el-input
+              v-model="addForm.trackingFreq"
+              oninput="value=value.replace(/[^\d]/g,'')"
+              :maxlength="3"
+              show-word-limit
+            >
               <i slot="suffix">天/次</i>
             </el-input>
           </el-form-item>
@@ -270,8 +280,9 @@
                 :label="item.realName"
                 :value="item.id"
               >
-              <span style="float: left">{{ item.realName }}</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">{{ item.username }}</span></el-option>
+                <span style="float: left">{{ item.realName }}</span>
+                <span style="float: right; color: #8492a6; font-size: 13px">{{ item.username }}</span>
+              </el-option>
             </el-select>
           </el-form-item>
 
@@ -340,7 +351,8 @@
               placeholder="请对该风险进行简要描述"
               v-model="editForm.description"
               clearable
-              :maxlength="maxDesLength" show-word-limit
+              :maxlength="maxDesLength"
+              show-word-limit
             ></el-input>
           </el-form-item>
 
@@ -364,7 +376,15 @@
 
           <!--文本域-->
           <el-form-item label="风险应对策略:" prop="strategy">
-            <el-input type="textarea" :row="3" placeholder="请输入风险应对策略" v-model="editForm.strategy" clearable :maxlength="maxDesLength" show-word-limit></el-input>
+            <el-input
+              type="textarea"
+              :row="3"
+              placeholder="请输入风险应对策略"
+              v-model="editForm.strategy"
+              clearable
+              :maxlength="maxDesLength"
+              show-word-limit
+            ></el-input>
           </el-form-item>
 
           <!--单选-->
@@ -377,20 +397,16 @@
 
           <!--带搜索的下拉选择-->
           <el-form-item label="风险责任人:" prop="owner">
-            <el-select
-              v-model="editForm.owner"
-              value-key="id"
-              filterable
-              placeholder="请选择该风险责任人"
-            >
+            <el-select v-model="editForm.owner" value-key="id" filterable placeholder="请选择该风险责任人">
               <el-option
                 v-for="item in responsers"
                 :key="item.id"
                 :label="item.realName"
                 :value="item"
               >
-              <span style="float: left">{{ item.realName }}</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">{{ item.username }}</span></el-option>
+                <span style="float: left">{{ item.realName }}</span>
+                <span style="float: right; color: #8492a6; font-size: 13px">{{ item.username }}</span>
+              </el-option>
             </el-select>
           </el-form-item>
 
@@ -416,8 +432,9 @@
                 :label="item.realName"
                 :value="item.id"
               >
-              <span style="float: left">{{ item.realName }}</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">{{ item.username }}</span></el-option>
+                <span style="float: left">{{ item.realName }}</span>
+                <span style="float: right; color: #8492a6; font-size: 13px">{{ item.username }}</span>
+              </el-option>
             </el-select>
           </el-form-item>
 
@@ -599,11 +616,10 @@ export default {
     this.projectId = this.$route.query.projectId;
     this.projectState = this.$route.query.projectState;
 
-      this.getMyPermissions(this.projectId);
-      this.getRiskList("");
-      this.getOtherProjects();
-      // this.getAllMembers();
-      
+    this.getMyPermissions(this.projectId);
+    this.getRiskList("");
+    this.getOtherProjects();
+    // this.getAllMembers();
   },
   methods: {
     //获取用户当前项目权限
@@ -746,9 +762,8 @@ export default {
 
     async getRiskRelators() {
       this.relators = await ProjectSYJ.getRiskRelators(this.projectId);
-       console.log("this.relators="+this.relators);
+      console.log("this.relators=" + this.relators);
     },
-
 
     handleClose(done) {
       this.$confirm("确认关闭？")
@@ -830,12 +845,11 @@ export default {
             _this.editForm.relatedPersons
           ).then(() => {
             // console.log(res);
-          _this.editFormVisible = false;
-          _this.$message.success("修改成功");
-          this.$refs["editForm"].resetFields();
-          this.getRiskList("");
-          })
-          
+            _this.editFormVisible = false;
+            _this.$message.success("修改成功");
+            this.$refs["editForm"].resetFields();
+            this.getRiskList("");
+          });
         } else {
           this.$message.error("修改失败");
           return false;
@@ -852,12 +866,11 @@ export default {
         .then(async () => {
           ProjectLW.deleteRisk(this.projectId, row.id).then(() => {
             this.$message({
-            type: "success",
-            message: "删除成功!"
+              type: "success",
+              message: "删除成功!"
+            });
+            this.getRiskList("");
           });
-          this.getRiskList("");
-          })
-          
         })
         .catch(() => {
           this.$message({
@@ -904,8 +917,9 @@ export default {
           if (importSourceId == -1) {
             ProjectLW.importRisksFromStdLib(this.projectId).then(() => {
               _this.$message.success("导入成功");
-            })
-            
+              this.getRiskList("");
+              this.importFormVisible = false;
+            });
           } else {
             // console.log("importSourceId="+importSourceId[1]);
             ProjectLW.importRisksFromOtherProject(
@@ -913,11 +927,10 @@ export default {
               importSourceId[1]
             ).then(() => {
               _this.$message.success("导入成功");
-            })
-            
+              this.getRiskList("");
+              this.importFormVisible = false;
+            });
           }
-          this.getRiskList("");
-          this.importFormVisible = false;
         } catch (e) {
           _this.$message.error("导入失败");
         }
