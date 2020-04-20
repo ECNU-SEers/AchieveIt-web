@@ -56,12 +56,13 @@ export default class ProjectLW {
    * @param {string} startDate;
    * @param {string} dueDate;
    */
-  static addDevice(outerId, type, projectId, managerId, startDate, dueDate) {
+  static addDevice(outerId, type, projectId, managerId, managerName,startDate, dueDate) {
     return post("device/create", {
       outerId,
       type,
       projectId,
       managerId,
+      managerName,
       startDate,
       dueDate
     });
@@ -73,15 +74,17 @@ export default class ProjectLW {
    * @param {string} type;
    * @param {number} projectId;
    * @param {number}  managerId;
+   * @param {string} managerNamw;
    * @param {string} startDate;
    * @param {string} dueDate;
    */
-  static updateDevice(outerId, type, projectId, managerId, startDate, dueDate) {
+  static updateDevice(outerId, type, projectId, managerId,managerName, startDate, dueDate) {
     return put("device/update", {
       outerId,
       type,
       projectId,
       managerId,
+      managerName,
       startDate,
       dueDate
     });

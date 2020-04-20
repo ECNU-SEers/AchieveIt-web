@@ -156,7 +156,7 @@
                   type="primary"
                   icon="el-icon-edit"
                   size="medium"
-                  @click="handleEdit"
+                  @click="updateRisk(row);handleEdit()"
                 ></el-button>
 
                 <el-button
@@ -239,15 +239,15 @@
           <el-form-item label="风险责任人:" prop="owner">
             <el-select
               v-model="addForm.owner"
-              value-key="userId"
+              value-key="id"
               filterable
               placeholder="请选择该风险责任人"
             >
               <el-option
                 v-for="item in responsers"
-                :key="item.userId"
+                :key="item.id"
                 :label="item.realName"
-                :value="item.userId"
+                :value="item"
               >
               <span style="float: left">{{ item.realName }}</span>
               <span style="float: right; color: #8492a6; font-size: 13px">{{ item.username }}</span></el-option>
@@ -266,9 +266,9 @@
             <el-select v-model="addForm.relatedPersons" multiple filterable placeholder="至少有一位相关者">
               <el-option
                 v-for="item in relators"
-                :key="item.userId"
+                :key="item.id"
                 :label="item.realName"
-                :value="item.userId"
+                :value="item.id"
               >
               <span style="float: left">{{ item.realName }}</span>
               <span style="float: right; color: #8492a6; font-size: 13px">{{ item.username }}</span></el-option>
@@ -379,15 +379,15 @@
           <el-form-item label="风险责任人:" prop="owner">
             <el-select
               v-model="editForm.owner"
-              value-key="userId"
+              value-key="id"
               filterable
               placeholder="请选择该风险责任人"
             >
               <el-option
                 v-for="item in responsers"
-                :key="item.userId"
+                :key="item.id"
                 :label="item.realName"
-                :value="item.userId"
+                :value="item"
               >
               <span style="float: left">{{ item.realName }}</span>
               <span style="float: right; color: #8492a6; font-size: 13px">{{ item.username }}</span></el-option>
@@ -412,9 +412,9 @@
             >
               <el-option
                 v-for="item in relators"
-                :key="item.userId"
+                :key="item.id"
                 :label="item.realName"
-                :value="item.userId"
+                :value="item.id"
               >
               <span style="float: left">{{ item.realName }}</span>
               <span style="float: right; color: #8492a6; font-size: 13px">{{ item.username }}</span></el-option>
@@ -714,7 +714,7 @@ export default {
             this.addForm.level,
             this.addForm.impact,
             this.addForm.strategy,
-            this.addForm.owner.userId,
+            this.addForm.owner.id,
             this.addForm.owner.realName, //realname or username
             this.addForm.trackingFreq,
             this.addForm.description,
@@ -746,6 +746,7 @@ export default {
 
     async getRiskRelators() {
       this.relators = await ProjectSYJ.getRiskRelators(this.projectId);
+       console.log("this.relators="+this.relators);
     },
 
 
@@ -802,8 +803,7 @@ export default {
     },
 
     handleEdit() {
-      editFormVisible = true;
-      updateRisk(row);
+      this.editFormVisible = true;
       this.getRiskRelators();
       this.getRiskResponsers();
     },
@@ -822,7 +822,7 @@ export default {
             _this.editForm.impact,
             _this.editForm.strategy,
             _this.editForm.state,
-            _this.editForm.owner.userId,
+            _this.editForm.owner.id,
             _this.editForm.owner.realName, //realname or username
             _this.editForm.trackingFreq,
             _this.editForm.source,
@@ -901,7 +901,7 @@ export default {
         _this.$message.warning("请选择风险来源!");
       } else {
         try {
-          if (importSourceId === -1) {
+          if (importSourceId == -1) {
             ProjectLW.importRisksFromStdLib(this.projectId).then(() => {
               _this.$message.success("导入成功");
             })

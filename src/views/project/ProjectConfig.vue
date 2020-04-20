@@ -1,7 +1,10 @@
 <template>
   <div>
     <el-row
-      v-if="this.projectId !== undefined && this.permissions.indexOf('管理项目配置信息') <= -1"
+      v-if="
+        this.projectId !== undefined &&
+          this.permissions.indexOf('管理项目配置信息') <= -1
+      "
       style="height: 800px"
     >
       <el-col
@@ -13,7 +16,11 @@
     </el-row>
     <div v-if="this.permissions.indexOf('管理项目配置信息') > -1">
       <PageHeader title="项目配置信息" style="height:40px;"></PageHeader>
-      <el-card v-loading="infoLoading" class="box-card" v-if="this.projectId !== undefined">
+      <el-card
+        v-loading="infoLoading"
+        class="box-card"
+        v-if="this.projectId !== undefined"
+      >
         <div slot="header" class="clearfix">
           <span>当前项目ID: {{ this.outerId }}</span>
           <el-button
@@ -21,20 +28,26 @@
             type="text"
             :disabled="this.projectStateTrigger == true ? false : true"
             v-if="
-            this.permissions.indexOf('管理项目配置信息') > -1 &&
-              this.projectState !== '结束' &&
-              this.projectState !== '已归档' &&
-              this.projectState !== '申请立项' &&
-              this.projectState !== '立项驳回'
-          "
+              this.permissions.indexOf('管理项目配置信息') > -1 &&
+                this.projectState !== '结束' &&
+                this.projectState !== '已归档' &&
+                this.projectState !== '申请立项' &&
+                this.projectState !== '立项驳回'
+            "
             @click="
-            editFormVisible = true;
-            edit();
-          "
-          >编辑</el-button>
+              editFormVisible = true;
+              edit();
+            "
+            >编辑</el-button
+          >
           <!--仅配置管理员可见-->
           <el-dialog title="项目配置信息" :visible.sync="editFormVisible">
-            <el-form :model="editForm" ref="editForm" label-width="120px" class="editForm">
+            <el-form
+              :model="editForm"
+              ref="editForm"
+              label-width="120px"
+              class="editForm"
+            >
               <!-- 输入框 -->
               <el-form-item label="Git仓库地址" prop="GitAddress">
                 <el-input
@@ -54,7 +67,10 @@
 
               <!-- 布尔开关 仅第一次可修改 -->
               <el-form-item label="文件服务器目录" prop="fileCatalog">
-                <el-tooltip :content="'当前情况: ' + this.editForm.fileAddValue" placement="top">
+                <el-tooltip
+                  :content="'当前情况: ' + this.editForm.fileAddValue"
+                  placement="top"
+                >
                   <el-switch
                     ref="file"
                     v-model="editForm.fileAddValue"
@@ -67,7 +83,10 @@
 
               <!-- 布尔开关 仅第一次可修改 -->
               <el-form-item label="邮件" prop="email">
-                <el-tooltip :content="'当前情况: ' + this.editForm.emailValue" placement="top">
+                <el-tooltip
+                  :content="'当前情况: ' + this.editForm.emailValue"
+                  placement="top"
+                >
                   <el-switch
                     ref="file"
                     v-model="editForm.emailValue"
@@ -90,7 +109,11 @@
           :show-header="hiddenTableHeader"
           v-if="this.permissions.indexOf('查询项目配置信息') > -1"
         >
-          <el-table-column prop="name" label="名称" width="140"></el-table-column>
+          <el-table-column
+            prop="name"
+            label="名称"
+            width="140"
+          ></el-table-column>
           <el-table-column prop="detail" label="详细信息"></el-table-column>
         </el-table>
       </el-card>
@@ -223,7 +246,7 @@ export default {
         _this.tableData[0].detail = res.gitRepoAddress;
         _this.git = true;
       }
-      if (res.virtualMachineSpace == "" || res.gitRepoAddress == null) {
+      if (res.virtualMachineSpace == "" || res.virtualMachineSpace == null) {
         _this.tableData[1].detail = "暂无数据";
         _this.virtual = false;
       } else {
@@ -274,23 +297,21 @@ export default {
     //确认编辑
     async editSubmit() {
       console.log(this.editForm);
-      ProjectLW.editConfig(
+      const res = await ProjectLW.editConfig(
         this.projectId,
         this.editForm.GitAddress,
         this.editForm.virtualSpace,
         this.editForm.fileAddValue,
         this.editForm.emailValue
-      ).then(() => {
-        this.editFormVisible = false;
-        this.$message.success("修改成功");
-        this.$refs["editForm"].resetFields();
-      });
-
+      );
+      this.editFormVisible = false;
+      this.$message.success("修改成功");
+      this.$refs["editForm"].resetFields();
       if (
         this.editForm.fileAddValue == true &&
         this.editForm.emailValue == true &&
-        this.editForm.GitAddress !== (null || "") &&
-        this.editForm.virtualSpace !== (null || "")
+        this.editForm.GitAddress !== "" &&
+        this.editForm.virtualSpace !== ""
       ) {
         if (this.fileTrigger == false || this.emailTrigger == false) {
           //第1次配置完成，触发
