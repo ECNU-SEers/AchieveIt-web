@@ -310,8 +310,8 @@ export default {
       if (
         this.editForm.fileAddValue == true &&
         this.editForm.emailValue == true &&
-        this.editForm.GitAddress !== "" &&
-        this.editForm.virtualSpace !== ""
+        (this.editForm.GitAddress != "" || this.editForm.GitAddress != null) &&
+        (this.editForm.virtualSpace != "" || this.editForm.virtualSpace != null)
       ) {
         if (this.fileTrigger == false || this.emailTrigger == false) {
           //第1次配置完成，触发
