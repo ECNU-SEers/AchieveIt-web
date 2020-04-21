@@ -34,7 +34,7 @@
         <el-button
           class="add-btn"
           v-if="
-            this.projectState !== '结束' &&
+            this.projectState !== '申请归档' &&
               this.projectState !== '已归档' &&
               this.projectState !== '申请立项' &&
               this.projectState !== '立项驳回' &&
@@ -50,7 +50,7 @@
           @click="importFormVisible = true"
           type="primary"
           v-if="
-            this.projectState !== '结束' &&
+            this.projectState !== '申请归档' &&
               this.projectState !== '已归档' &&
               this.projectState !== '申请立项' &&
               this.projectState !== '立项驳回' &&
@@ -143,7 +143,7 @@
             width="180px"
             prop="action"
             v-if="
-              this.projectState !== '结束' &&
+              this.projectState !== '申请归档' &&
                 this.projectState !== '已归档' &&
                 this.projectState !== '申请立项' &&
                 this.projectState !== '立项驳回' &&

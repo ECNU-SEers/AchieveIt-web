@@ -30,7 +30,7 @@
           class="add-btn"
           @click="addFirst"
           v-if="
-            this.state !== '结束' &&
+            this.state !== '申请归档' &&
               this.state !== '已归档' &&
               this.state !== '申请立项' &&
               this.state !== '立项驳回' &&
@@ -42,7 +42,7 @@
           class="add-btn"
           @click="addExcelFormVisible = true"
           v-if="
-            this.state !== '结束' &&
+            this.state !== '申请归档' &&
               this.state !== '已归档' &&
               this.state !== '申请立项' &&
               this.state !== '立项驳回' &&
@@ -53,7 +53,7 @@
           type="primary"
           class="add-btn"
           v-if="
-            this.state !== '结束' &&
+            this.state !== '申请归档' &&
               this.state !== '已归档' &&
               this.state !== '申请立项' &&
               this.state !== '立项驳回' &&
@@ -107,7 +107,7 @@
             label="操作"
             width="180px"
             v-if="
-              this.state !== '结束' &&
+              this.state !== '申请归档' &&
                 this.state !== '已归档' &&
                 this.state !== '申请立项' &&
                 this.state !== '立项驳回' &&
@@ -345,13 +345,13 @@ export default {
     addFirst() {
       // 项目状态判断
       if (
-        this.state === "结束" ||
+        this.state === "申请归档" ||
         (this.state === "已归档" &&
           this.state !== "申请立项" &&
           this.state !== "立项驳回")
       ) {
         this.$message({
-          message: "项目已结束，不可修改！",
+          message: "项目已交付，不可修改！",
           type: "warning"
         });
       } else {
@@ -363,13 +363,13 @@ export default {
     addSubFunction(index, row) {
       // 项目状态判断
       if (
-        this.state === "结束" ||
+        this.state === "申请归档" ||
         (this.state === "已归档" &&
           this.state !== "申请立项" &&
           this.state !== "立项驳回")
       ) {
         this.$message({
-          message: "项目已结束，不可修改！",
+          message: "项目已交付，不可修改！",
           type: "warning"
         });
       } else {
@@ -431,13 +431,13 @@ export default {
     // 删除功能
     async deleteFunction(index, row) {
       if (
-        this.state === "结束" ||
+        this.state === "申请归档" ||
         (this.state === "已归档" &&
           this.state !== "申请立项" &&
           this.state !== "立项驳回")
       ) {
         this.$message({
-          message: "项目已结束，不可修改！",
+          message: "项目已交付，不可修改！",
           type: "warning"
         });
       } else {
@@ -474,13 +474,13 @@ export default {
     // 修改弹窗
     editFunction(index, row) {
       if (
-        this.state === "结束" ||
+        this.state === "申请归档" ||
         (this.state === "已归档" &&
           this.state !== "申请立项" &&
           this.state !== "立项驳回")
       ) {
         this.$message({
-          message: "项目已结束，不可修改！",
+          message: "项目已交付，不可修改！",
           type: "warning"
         });
       } else {

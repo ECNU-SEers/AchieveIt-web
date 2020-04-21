@@ -22,7 +22,7 @@
         ></Search>
         <el-button
           v-if="
-          this.projectState !== '结束' &&
+          this.projectState !== '申请归档' &&
             this.projectState !== '已归档' &&
             this.projectState !== '申请立项' &&
             this.projectState !== '立项驳回' &&
@@ -76,7 +76,7 @@
             label="操作"
             width="140px"
             v-if="
-            this.projectState !== '结束' &&
+            this.projectState !== '申请归档' &&
               this.projectState !== '已归档' &&
               this.projectState !== '申请立项' &&
               this.projectState !== '立项驳回' &&

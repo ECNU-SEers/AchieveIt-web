@@ -35,7 +35,7 @@
 
       <!-- <el-table-column label="备注" width="180px" prop="operation">
         <template slot-scope="scope">
-          <el-button-group v-if="scope.row.latterState === ('立项驳回' || '结束')">
+          <el-button-group v-if="scope.row.latterState === ('立项驳回' || '申请归档')">
             <el-button
               type="info"
               icon="el-icon-s-comment"

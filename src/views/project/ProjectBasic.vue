@@ -9,7 +9,7 @@
           type="text"
           @click="editBasic"
           v-if="
-            this.state !== '结束' &&
+            this.state !== '申请归档' &&
               this.state !== '已归档' &&
               this.state !== '立项驳回' &&
               this.permission === true
@@ -724,9 +724,9 @@ export default {
     // 修改弹框
     async editBasic() {
       // 项目状态判断
-      if (this.state === "结束" || this.state === "已归档") {
+      if (this.state === "申请归档" || this.state === "已归档") {
         this.$message({
-          message: "项目已结束，不可修改！",
+          message: "项目已交付，不可修改！",
           type: "warning"
         });
       } else {

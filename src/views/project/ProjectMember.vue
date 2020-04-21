@@ -24,7 +24,7 @@
         <!-- <el-input prefix-icon="el-icon-search" v-model="search" style="width: 200px" placeholder="输入关键字搜索"></el-input> -->
         <el-button
           v-if="
-            this.state !== '结束' &&
+            this.state !== '申请归档' &&
               this.state !== '已归档' &&
               this.state !== '申请立项' &&
               this.state !== '立项驳回' &&
@@ -36,7 +36,7 @@
         >新增</el-button>
         <el-button
           v-if="
-            this.state !== '结束' &&
+            this.state !== '申请归档' &&
               this.state !== '已归档' &&
               this.state !== '申请立项' &&
               this.state !== '立项驳回' &&
@@ -50,7 +50,7 @@
           type="primary"
           class="add-btn"
           v-if="
-            this.state !== '结束' &&
+            this.state !== '申请归档' &&
               this.state !== '已归档' &&
               this.state !== '申请立项' &&
               this.state !== '立项驳回' &&
@@ -168,7 +168,7 @@
             label="操作"
             width="120px"
             v-if="
-              this.state !== '结束' &&
+              this.state !== '申请归档' &&
                 this.state !== '已归档' &&
                 this.state !== '申请立项' &&
                 this.state !== '立项驳回' &&
@@ -392,13 +392,13 @@ export default {
     // 新增项目成员
     async addMember() {
       if (
-        this.state === "结束" ||
+        this.state === "申请归档" ||
         (this.state === "已归档" &&
           this.state !== "申请立项" &&
           this.state !== "立项驳回")
       ) {
         this.$message({
-          message: "项目已结束，不可修改！",
+          message: "项目已交付，不可修改！",
           type: "warning"
         });
       } else {
@@ -463,13 +463,13 @@ export default {
     // 编辑项目成员信息
     async handleEdit(index, row) {
       if (
-        this.state === "结束" ||
+        this.state === "申请归档" ||
         (this.state === "已归档" &&
           this.state !== "申请立项" &&
           this.state !== "立项驳回")
       ) {
         this.$message({
-          message: "项目已结束，不可修改！",
+          message: "项目已交付，不可修改！",
           type: "warning"
         });
       } else {
@@ -534,13 +534,13 @@ export default {
     },
     async handleDelete(index, row) {
       if (
-        this.state === "结束" ||
+        this.state === "申请归档" ||
         (this.state === "已归档" &&
           this.state !== "申请立项" &&
           this.state !== "立项驳回")
       ) {
         this.$message({
-          message: "项目已结束，不可修改！",
+          message: "项目已交付，不可修改！",
           type: "warning"
         });
       } else {

@@ -29,7 +29,7 @@
             :disabled="this.projectStateTrigger == true ? false : true"
             v-if="
               this.permissions.indexOf('管理项目配置信息') > -1 &&
-                this.projectState !== '结束' &&
+                this.projectState !== '申请归档' &&
                 this.projectState !== '已归档' &&
                 this.projectState !== '申请立项' &&
                 this.projectState !== '立项驳回'

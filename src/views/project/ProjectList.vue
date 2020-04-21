@@ -1257,7 +1257,7 @@ export default {
           });
       } else if (
         row.state === "已交付" ||
-        row.state === "结束" ||
+        row.state === "申请归档" ||
         row.state === "已归档"
       ) {
         this.$message({
@@ -1319,7 +1319,7 @@ export default {
     },
 
     async handleArchive(index, row) {
-      if (row.state === "结束") {
+      if (row.state === "申请归档") {
         this.archivelist = [];
         const res = await ProjectSYJ.getArchivedInfo(row.id);
         this.archiveForm = res;
@@ -1397,7 +1397,7 @@ export default {
       } else {
         this.$message({
           type: "warning",
-          message: "当前项目未结束，不允许归档"
+          message: "当前项目未交付，不允许归档"
         });
       }
     },
@@ -1576,7 +1576,7 @@ export default {
           message: "项目未交付，不允许进行归档"
         });
       } else {
-        this.$prompt("如果确定结束该项目，请填写备注", "提示", {
+        this.$prompt("如果确定申请归档，请填写备注", "提示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
