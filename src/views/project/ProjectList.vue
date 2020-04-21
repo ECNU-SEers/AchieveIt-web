@@ -88,9 +88,9 @@
               <el-button
                 v-permission="'归档申请'"
                 size="medium"
-                type="danger"
+                type="success"
                 @click.stop="handleDel(scope.$index, scope.row)"
-                icon="el-icon-delete"
+                icon="el-icon-document-checked"
               ></el-button>
             </el-button-group>
           </template>
